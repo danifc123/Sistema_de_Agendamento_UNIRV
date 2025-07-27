@@ -1,7 +1,8 @@
-<form class="example-form">
-  <mat-form-field class="example-full-width">
-    <mat-label>Email</mat-label>
-    <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+<form class="input-form">
+  @if(label === 'Email'){
+  <mat-form-field class="input-container-email">
+    <mat-label >{{label}}</mat-label>
+    <input class="input-email" type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
            placeholder="email@email.com">
     @if (emailFormControl.hasError('email') && !emailFormControl.hasError('required')) {
       <mat-error>Please enter a valid email address</mat-error>
@@ -10,4 +11,17 @@
       <mat-error>Email is <strong>required</strong></mat-error>
     }
   </mat-form-field>
+}
+@if(label === 'Password'){
+ <mat-form-field class="example-full-width">
+    <mat-label>{{label}}</mat-label>
+    <input type="password" matInput [formControl]="passwordFormControl" [errorStateMatcher]="match">
+    @if (passwordFormControl.hasError('password') && !passwordFormControl.hasError('required')) {
+      <mat-error></mat-error>
+    }
+    @if (passwordFormControl.hasError('required')) {
+      <mat-error>Password is <strong>required</strong></mat-error>
+    }
+  </mat-form-field>
+}
 </form>

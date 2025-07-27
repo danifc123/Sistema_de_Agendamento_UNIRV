@@ -3,11 +3,11 @@ import { InputComponent } from "../../components/input/input.component";
 import { ButtonComponent } from "../../components/button/button.component";
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-esqueceu-senha',
   imports: [InputComponent, ButtonComponent],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  templateUrl: './forgetPassword.component.html',
+  styleUrl: './forgetPassword.component.scss'
 })
-export class LoginComponent {
+export class forgetPasswordComponent {
 
 }

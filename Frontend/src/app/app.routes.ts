@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LayoutAuthComponent } from './layout/layout-auth/layout-auth.component';
 import { LoginComponent } from './models/login/login.component';
 import { RegisterComponent } from './models/register/register.component';
+import { forgetPasswordComponent } from './models/forgetPassword/forgetPasswordcomponent';
 export const routes: Routes = [
   {
     path: '',
@@ -10,11 +11,18 @@ export const routes: Routes = [
     children: [
       {
         path:'login',
-        component:LoginComponent
+        component:LoginComponent,
+        data:{title:'Login'}
       },
       {
         path:'register',
-        component:RegisterComponent
+        component:RegisterComponent,
+        data:{title:'Register'}
+      },
+      {
+        path:'forgetPassword',
+        component:forgetPasswordComponent,
+        data:{title:'Esqueceu Senha'}
       }
     ]
   },
