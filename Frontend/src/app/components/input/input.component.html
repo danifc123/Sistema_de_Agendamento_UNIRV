@@ -14,7 +14,7 @@
 }
 @if(label === 'Password'){
  <mat-form-field class="example-full-width">
-    <mat-label>Password</mat-label>
+    <mat-label>{{label}}</mat-label>
     <input type="password" matInput [formControl]="passwordFormControl" [errorStateMatcher]="match">
     @if (passwordFormControl.hasError('password') && !passwordFormControl.hasError('required')) {
       <mat-error></mat-error>
