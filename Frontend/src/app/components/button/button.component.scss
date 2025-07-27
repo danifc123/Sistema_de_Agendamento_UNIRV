@@ -2,9 +2,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 15px;
+  height: 30px;
+  width: 100px;
   padding: 10px;
   margin: 10px;
+
   .button{
-      background-color: var(--secondary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    border: solid 1px var(--secondary-color-strong);
+    background-color: var(--secondary-color);
+    color: white;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+    &:hover{
+      background-color: var(--secondary-color-light);
+    }
   }
+
 }
