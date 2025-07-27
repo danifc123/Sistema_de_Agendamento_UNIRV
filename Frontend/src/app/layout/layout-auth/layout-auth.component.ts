@@ -9,5 +9,5 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './layout-auth.component.scss'
 })
 export class LayoutAuthComponent {
-@Input({required: true}) title: string = "";
+
 }
