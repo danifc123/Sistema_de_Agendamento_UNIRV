@@ -1,10 +1,10 @@
 import { Component, Input, input } from '@angular/core';
-import { InputComponent } from "../../components/input/input.component";
-import { InputPasswordComponent } from "../../components/input-password/input-password.component";
+import { RouterOutlet } from '@angular/router';
+
 
 @Component({
   selector: 'app-layout-auth',
-  imports: [InputComponent, InputPasswordComponent],
+  imports: [RouterOutlet],
   templateUrl: './layout-auth.component.html',
   styleUrl: './layout-auth.component.scss'
 })
