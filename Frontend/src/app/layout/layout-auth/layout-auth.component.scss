@@ -1,5 +1,6 @@
 .layout-auth-body{
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: var(--primary-color);
@@ -7,7 +8,12 @@
   margin: 0px;
   height: 100%;
   width: 100%;
-
+  .logo-container{
+    margin-bottom: 15px;
+    .logo{
+      width: 300px;
+    }
+  }
   .layout-auth-container{
     display: flex;
     flex-direction: column;
@@ -23,5 +29,6 @@
     justify-content: center;
     align-items: center;
     margin-top: 15px;
-    margin-bottom: 15px;}
+    margin-bottom: 15px;
+  }
 }
