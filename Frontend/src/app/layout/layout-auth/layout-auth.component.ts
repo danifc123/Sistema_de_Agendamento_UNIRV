@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, input } from '@angular/core';
 import { InputComponent } from "../../components/input/input.component";
 import { InputPasswordComponent } from "../../components/input-password/input-password.component";
 
@@ -9,5 +9,5 @@ import { InputPasswordComponent } from "../../components/input-password/input-pa
   styleUrl: './layout-auth.component.scss'
 })
 export class LayoutAuthComponent {
-
+@Input({required: true}) title: string = "";
 }
