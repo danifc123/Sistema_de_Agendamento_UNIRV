@@ -4,6 +4,7 @@ import { LoginComponent } from './models/login/login.component';
 import { RegisterComponent } from './models/register/register.component';
 import { forgetPasswordComponent } from './models/forgetPassword/forgetPasswordcomponent';
 import { CalendarioComponent } from './components/calendario/calendario.component';
+import { LayoutDefaultComponent } from './layout/layout-default/layout-default.component';
 export const routes: Routes = [
   {
     path: '',
@@ -30,6 +31,6 @@ export const routes: Routes = [
   {
     path: 'default',
     title: 'Agendamento UNIRV',
-    component: CalendarioComponent,
+    component: LayoutDefaultComponent,
   }
 ];
