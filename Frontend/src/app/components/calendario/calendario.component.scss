@@ -1,0 +1,126 @@
+/* Importe os estilos globais da angular-calendar */
+/* Este import é crucial para que a grade do calendário funcione corretamente */
+
+.calendar-container {
+  height: 170px;
+  width: 450px; /* Ajuste a largura para um tamanho mais quadrado e compacto */
+  border: 1px solid #2a73c0;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif; /* Usando Inter para um visual mais moderno */
+  font-size: 14px;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.15); /* Sombra mais pronunciada */
+  overflow: hidden; /* Garante que os cantos arredondados sejam respeitados */
+}
+
+.calendar-header {
+  background-color: #2a73c0;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px 0; /* Aumentar o padding para um cabeçalho mais robusto */
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px; /* Espaçamento entre o ícone e o texto */
+}
+
+.custom-calendar {
+  padding: 8px; /* Ajuste o padding interno */
+}
+
+.custom-calendar .cal-month-view {
+  width: 100%;
+  border-collapse: collapse; /* Garante que as bordas da tabela se unam */
+}
+
+/* Estilos para o cabeçalho dos dias da semana (Seg, Ter, Qua...) */
+.custom-calendar .cal-header {
+  font-weight: bold;
+  color: #555;
+  font-size: 12px;
+  text-align: center;
+  padding: 5px 0; /* Adiciona um pouco de padding */
+  border-bottom: 1px solid #eee; /* Linha sutil abaixo dos dias da semana */
+}
+
+/* Estilos para cada célula do dia (onde os números ficam) */
+.custom-calendar .cal-day {
+  width: calc(100% / 7) !important; /* Distribui a largura igualmente entre 7 dias */
+  height: 40px !important; /* Altura fixa para tornar os dias mais quadrados */
+  line-height: 40px !important; /* Centraliza o número verticalmente */
+  text-align: center;
+  font-weight: normal;
+  cursor: pointer; /* Indica que os dias são clicáveis */
+  box-sizing: border-box; /* Inclui padding e border na largura/altura */
+  border: 1px solid transparent; /* Borda transparente para hover */
+  transition: background-color 0.2s ease, border-color 0.2s ease; /* Transição suave */
+}
+
+.custom-calendar .cal-day-number {
+  font-weight: normal;
+  color: #222;
+  display: block; /* Garante que o número ocupe a célula inteira */
+}
+
+.custom-calendar .cal-week-number {
+  font-style: italic;
+  color: #999;
+  font-size: 10px; /* Tamanho menor para o número da semana */
+  vertical-align: middle; /* Alinha verticalmente */
+  padding-left: 5px; /* Espaçamento à esquerda */
+}
+
+/* Estilo para o dia atual */
+.custom-calendar .cal-day.cal-today .cal-day-number {
+  color: #2a73c0; /* Cor azul para o dia atual */
+  font-weight: bold;
+  background-color: #e6f0ff; /* Fundo azul claro para o dia atual */
+  border-radius: 50%; /* Torna o fundo circular */
+  display: inline-flex; /* Permite centralizar o texto dentro do círculo */
+  justify-content: center;
+  align-items: center;
+  width: 30px; /* Tamanho do círculo */
+  height: 30px; /* Tamanho do círculo */
+}
+
+/* Estilo para dias fora do mês atual */
+.custom-calendar .cal-day.cal-out-month {
+  color: #bbb; /* Cor mais clara para dias de outros meses */
+  opacity: 0.6; /* Levemente transparente */
+}
+
+/* Efeito de hover para os dias */
+.custom-calendar .cal-day:hover {
+  background-color: #f0f7ff; /* Fundo mais claro no hover */
+  border-radius: 4px;
+  border-color: #a3c7f7; /* Borda sutil no hover */
+}
+
+/* Estilos para os dias de fim de semana (sábado e domingo) */
+.custom-calendar .cal-day.cal-weekend .cal-day-number {
+  color: #d9534f; /* Cor vermelha para fins de semana */
+}
+
+/* Ajustes para o layout da visualização de mês */
+.cal-month-view .cal-cell-row {
+  display: flex; /* Usa flexbox para as linhas */
+  width: 100%;
+}
+
+.cal-month-view .cal-cell {
+  flex-grow: 1; /* Faz as células crescerem para preencher o espaço */
+  flex-basis: 0; /* Importante para flex-grow funcionar */
+  max-width: calc(100% / 7); /* Garante que não exceda 1/7 da largura */
+}
+
+/* Remover bordas padrão da biblioteca se elas estiverem causando problemas */
+.cal-month-view .cal-days {
+  border: none;
+}
+
+.cal-month-view .cal-day-cell {
+  border: none;
+}
