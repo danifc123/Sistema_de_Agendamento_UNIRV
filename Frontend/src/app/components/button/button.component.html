@@ -1,3 +1,17 @@
+@if(button === "Login" || (button === "login") || (button === "Registrar") || (button === "registrar") || (button === "Enviar") || (button === "enviar")){
 <div class="button-container">
   <button class="button">{{button}}</button>
 </div>
+}
+@if(button === "Agendamento" || (button === "agendamento")){
+  <button class="button-agendamento"><span class="material-symbols-outlined">
+person</span>
+  </button>
+}
+@if(button === "editar" || (button === "Editar")){
+    <button class="button-editar">
+<span class="material-symbols-outlined">
+edit
+</span>
+</button>
+}

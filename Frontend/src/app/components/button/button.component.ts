@@ -8,4 +8,5 @@ import { Component, Input } from '@angular/core';
 })
 export class ButtonComponent {
 @Input({required: true}) button?: string;
+@Input() tipo?: string;
 }
