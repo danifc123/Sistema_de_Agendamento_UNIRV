@@ -50,7 +50,7 @@ const NAMES: string[] = [
  */
 @Component({
   selector: 'app-tabela-agendamento',
-  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule],
+  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, ],
   templateUrl: './tabela-agendamento.component.html',
   styleUrl: './tabela-agendamento.component.scss'
 })
