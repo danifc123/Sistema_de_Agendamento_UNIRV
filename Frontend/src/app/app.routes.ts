@@ -3,7 +3,6 @@ import { LayoutAuthComponent } from './layout/layout-auth/layout-auth.component'
 import { LoginComponent } from './models/login/login.component';
 import { RegisterComponent } from './models/register/register.component';
 import { forgetPasswordComponent } from './models/forgetPassword/forgetPasswordcomponent';
-import { CalendarioComponent } from './components/calendario/calendario.component';
 import { LayoutDefaultComponent } from './layout/layout-default/layout-default.component';
 export const routes: Routes = [
   {
@@ -22,7 +21,7 @@ export const routes: Routes = [
         data:{title:'Register'}
       },
       {
-        path:'forgetPassword',
+        path:'forgetpassword',
         component:forgetPasswordComponent,
         data:{title:'Esqueceu Senha'}
       }
@@ -32,5 +31,6 @@ export const routes: Routes = [
     path: 'default',
     title: 'Agendamento UNIRV',
     component: LayoutDefaultComponent,
+
   }
 ];
