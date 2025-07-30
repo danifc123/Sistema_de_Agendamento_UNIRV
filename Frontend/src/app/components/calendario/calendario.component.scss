@@ -59,9 +59,14 @@
 
 .custom-calendar .cal-day-number {
   font-weight: normal;
+  width: 100%;
   color: #222;
   display: flex; /* Garante que o número ocupe a célula inteira */
   justify-content: center;
+  &:hover{
+    background-color: var(--secondary-color);
+    cursor: pointer;
+  }
 }
 
 .custom-calendar .cal-week-number {
@@ -124,3 +129,19 @@
 .cal-month-view .cal-day-cell {
   border: none;
 }
+.calendar-header button {
+  background: white;
+  color: #2a73c0;
+  border: 1px solid #2a73c0;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.calendar-header button:hover {
+  background-color: #2a73c0;
+  color: white;
+}
+

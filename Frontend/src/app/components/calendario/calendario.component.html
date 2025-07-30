@@ -1,6 +1,8 @@
 <div class="calendar-container">
   <div class="calendar-header">
+    <button (click)="previousMonth()">◀</button>
     <span>📅 {{ viewDate | date: 'MMMM yyyy' }}</span>
+    <button (click)="nextMonth()">▶</button>
   </div>
 
   <mwl-calendar-month-view
@@ -9,5 +11,9 @@
     [events]="[]"
     [activeDayIsOpen]="false"
     class="custom-calendar"
+    (dayClicked)="onDayClicked($event.day.date)"
   ></mwl-calendar-month-view>
+</div>
+<div *ngIf="selectedDate" class="selected-info">
+  Dia selecionado: {{ selectedDate | date: 'fullDate' }}
 </div>
