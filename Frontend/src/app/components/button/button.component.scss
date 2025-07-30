@@ -23,5 +23,26 @@
       background-color: var(--secondary-color-light);
     }
   }
-
+}
+.button-agendamento{
+  background-color: var(--primary-color-light);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  &:hover{
+    color: var(--primary-color);
+    border: solid var(--primary-color) 2px;
+  }
+}
+.button-editar{
+   background-color: var(--primary-color-light);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  &:hover{
+    color: var(--primary-color);
+    border: solid var(--primary-color) 2px;
+  }
 }

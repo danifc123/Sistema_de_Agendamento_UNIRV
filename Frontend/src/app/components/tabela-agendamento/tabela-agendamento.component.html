@@ -11,13 +11,7 @@
     <!-- ID Column -->
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-      <td mat-cell *matCellDef="let row"> {{row.id}} </td> <!--adicionar os botoes de editar e de ver o aluno por aqui-->
-    </ng-container>
-
-    <!-- Progress Column -->
-    <ng-container matColumnDef="progress">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Progress </th>
-      <td mat-cell *matCellDef="let row"> {{row.progress}}% </td>
+      <td mat-cell *matCellDef="let row">{{row.id}}</td>
     </ng-container>
 
     <!-- Name Column -->
@@ -26,10 +20,16 @@
       <td mat-cell *matCellDef="let row"> {{row.name}} </td>
     </ng-container>
 
+  <!-- Progress Column -->
+    <ng-container matColumnDef="progress">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Progress </th>
+      <td mat-cell *matCellDef="let row"><app-button title="Editar" button="Editar"></app-button></td>
+    </ng-container>
+
     <!-- Fruit Column -->
     <ng-container matColumnDef="fruit">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Fruit </th>
-      <td mat-cell *matCellDef="let row"> {{row.fruit}} </td>
+      <td mat-cell *matCellDef="let row"><app-button title="Agendamento" button="Agendamento"></app-button></td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

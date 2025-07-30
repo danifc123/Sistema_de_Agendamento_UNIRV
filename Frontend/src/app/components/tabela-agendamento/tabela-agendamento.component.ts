@@ -4,6 +4,7 @@ import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import { ButtonComponent } from "../button/button.component";
 
 export interface UserData {
   id: string;
@@ -50,7 +51,7 @@ const NAMES: string[] = [
  */
 @Component({
   selector: 'app-tabela-agendamento',
-  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, ],
+  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, ButtonComponent],
   templateUrl: './tabela-agendamento.component.html',
   styleUrl: './tabela-agendamento.component.scss'
 })
