@@ -31,6 +31,5 @@ export const routes: Routes = [
     path: 'default',
     title: 'Agendamento UNIRV',
     component: LayoutDefaultComponent,
-
   }
 ];
