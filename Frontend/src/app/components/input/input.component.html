@@ -1,5 +1,5 @@
 <form class="input-form">
-  @if(label === 'Email'){
+  @if(label === 'Email' || (label === 'email')){
   <mat-form-field class="input-container-email">
     <mat-label >{{label}}</mat-label>
     <input class="input-email" type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
@@ -12,7 +12,7 @@
     }
   </mat-form-field>
 }
-@if(label === 'Password'){
+@if(label === 'Password' || (label === 'password')){
  <mat-form-field class="example-full-width">
     <mat-label>{{label}}</mat-label>
     <input type="password" matInput [formControl]="passwordFormControl" [errorStateMatcher]="match">

@@ -2,8 +2,8 @@
 /* Este import é crucial para que a grade do calendário funcione corretamente */
 
 .calendar-container {
-  height: 170px;
-  width: 450px; /* Ajuste a largura para um tamanho mais quadrado e compacto */
+  height: auto;
+  width: auto; /* Ajuste a largura para um tamanho mais quadrado e compacto */
   border: 1px solid #2a73c0;
   border-radius: 8px;
   font-family: 'Inter', sans-serif; /* Usando Inter para um visual mais moderno */
@@ -27,9 +27,7 @@
   gap: 8px; /* Espaçamento entre o ícone e o texto */
 }
 
-.custom-calendar {
-  padding: 8px; /* Ajuste o padding interno */
-}
+
 
 .custom-calendar .cal-month-view {
   width: 100%;
@@ -61,8 +59,14 @@
 
 .custom-calendar .cal-day-number {
   font-weight: normal;
+  width: 100%;
   color: #222;
-  display: block; /* Garante que o número ocupe a célula inteira */
+  display: flex; /* Garante que o número ocupe a célula inteira */
+  justify-content: center;
+  &:hover{
+    background-color: var(--secondary-color);
+    cursor: pointer;
+  }
 }
 
 .custom-calendar .cal-week-number {
@@ -107,7 +111,8 @@
 /* Ajustes para o layout da visualização de mês */
 .cal-month-view .cal-cell-row {
   display: flex; /* Usa flexbox para as linhas */
-  width: 100%;
+  padding: 10px;
+  gap: 10px;
 }
 
 .cal-month-view .cal-cell {
@@ -124,3 +129,19 @@
 .cal-month-view .cal-day-cell {
   border: none;
 }
+.calendar-header button {
+  background: white;
+  color: #2a73c0;
+  border: 1px solid #2a73c0;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.calendar-header button:hover {
+  background-color: #2a73c0;
+  color: white;
+}
+
