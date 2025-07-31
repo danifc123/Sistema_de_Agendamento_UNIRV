@@ -1,35 +1,42 @@
 import { Routes } from '@angular/router';
 import { LayoutAuthComponent } from './layout/layout-auth/layout-auth.component';
+import { LayoutDefaultComponent } from './layout/layout-default/layout-default.component';
+import { AgendaComponent } from './components/agenda/agenda.component';
 import { LoginComponent } from './models/login/login.component';
 import { RegisterComponent } from './models/register/register.component';
-import { forgetPasswordComponent } from './models/forgetPassword/forgetPasswordcomponent';
-import { LayoutDefaultComponent } from './layout/layout-default/layout-default.component';
+import { ForgetPasswordComponent } from './models/forget-password/forget-password.component';
+
 export const routes: Routes = [
   {
-    path: '',
-    title: 'Agendamento UNIRV - Login',
-    component:LayoutAuthComponent,
+    path: 'auth',
+    component: LayoutAuthComponent,
     children: [
       {
-        path:'login',
-        component:LoginComponent,
-        data:{title:'Login'}
+        path: '',
+        component: LoginComponent,
+        data: { title: 'Login' }
       },
       {
-        path:'register',
-        component:RegisterComponent,
-        data:{title:'Register'}
+        path: 'register',
+        component: RegisterComponent,
+        data: { title: 'Register' }
       },
       {
-        path:'forgetpassword',
-        component:forgetPasswordComponent,
-        data:{title:'Esqueceu Senha'}
+        path: 'forgetpassword',
+        component: ForgetPasswordComponent,
+        data: { title: 'Esqueceu Senha' }
       }
     ]
   },
   {
-    path: 'default',
-    title: 'Agendamento UNIRV',
+    path: '',
     component: LayoutDefaultComponent,
-  }
+    children: [
+      {
+        path: '',
+        component: AgendaComponent,
+        data: { title: 'Agenda' }
+      }
+    ]
+  },
 ];
