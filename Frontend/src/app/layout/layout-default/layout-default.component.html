@@ -1,15 +1,14 @@
-  <header class="layout-default-header">
-      <img class="layout-defaul-logo" src="logo/Logo.png" alt="logoUnirv">
-      <img class="layout-defaul-photo" src="img/Ellipse.png" alt="fotousuario">
-  </header>
-  <nav class="layout-defaul-nav">
-    <ul class="layout-defaul-list">
-    <li><a href="#">Agendamentos</a></li>
-    <li><a href="#">Calendarios</a></li>
-    <li><a href="#">Relatórios</a></li>
+<header class="layout-default-header">
+  <img class="layout-defaul-logo" src="logo/Logo.png" alt="logoUnirv">
+  <img class="layout-defaul-photo" src="img/Ellipse.png" alt="fotousuario">
+</header>
+<nav class="layout-defaul-nav">
+  <ul class="layout-defaul-list">
+    <li><a routerLink="/">Agendamentos</a></li>
+    <li><a routerLink="/calendario">Calendários</a></li>
+    <li><a routerLink="/relatorios">Relatórios</a></li>
   </ul>
-  </nav>
-  <div class="layout-default-contain">
-  <!-- <app-calendario></app-calendario>
-   <app-tabela-agendamento></app-tabela-agendamento> -->
-  </div>
+</nav>
+<div class="layout-default-contain">
+  <router-outlet />
+</div>
