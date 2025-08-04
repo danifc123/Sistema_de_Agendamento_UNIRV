@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
 import { LayoutAuthComponent } from './layout/layout-auth/layout-auth.component';
 import { LayoutDefaultComponent } from './layout/layout-default/layout-default.component';
-import { AgendaComponent } from './components/agenda/agenda.component';
 import { LoginComponent } from './models/login/login.component';
 import { RegisterComponent } from './models/register/register.component';
 import { ForgetPasswordComponent } from './models/forget-password/forget-password.component';
+import { CalendarioComponent } from './components/calendario/calendario.component';
 
 export const routes: Routes = [
   {
@@ -34,7 +34,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: AgendaComponent,
+        component: CalendarioComponent,
         data: { title: 'Agenda' }
       }
     ]
