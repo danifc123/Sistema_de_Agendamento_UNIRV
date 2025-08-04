@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CalendarModule, CalendarView } from 'angular-calendar';
 import { registerLocaleData } from '@angular/common';
@@ -17,6 +17,7 @@ registerLocaleData(localePt);
   encapsulation: ViewEncapsulation.None
 })
 export class CalendarioComponent{
+@Input ({required : true}) tipo: "Calendario"| "Agenda" = "Calendario";
 
   protected selectedDate: Date | null = null;
   protected view: CalendarView = CalendarView.Month;

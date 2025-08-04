@@ -1,3 +1,4 @@
+@if(tipo === "Calendario"){
 <div class="calendar-container">
   <div class="calendar-header">
     <button (click)="previousMonth()">◀</button>
@@ -5,15 +6,12 @@
     <button (click)="nextMonth()">▶</button>
   </div>
 
-  <mwl-calendar-month-view
-    [viewDate]="viewDate"
-    [weekStartsOn]="1"
-    [events]="[]"
-    [activeDayIsOpen]="false"
-    class="custom-calendar"
-    (dayClicked)="onDayClicked($event.day.date)"
-  ></mwl-calendar-month-view>
+  <mwl-calendar-month-view tipo [viewDate]="viewDate" [weekStartsOn]="1" [events]="[]" [activeDayIsOpen]="false" class="custom-calendar" (dayClicked)="onDayClicked($event.day.date)"></mwl-calendar-month-view>
 </div>
 <div *ngIf="selectedDate" class="selected-info">
   Dia selecionado: {{ selectedDate | date: 'fullDate' }}
 </div>
+}
+@if(tipo === "Agenda"){
+
+}
