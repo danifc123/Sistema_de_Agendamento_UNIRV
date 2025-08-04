@@ -1,17 +1,21 @@
-.home-content {
+.home-page {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.form-section {
   display: flex;
   flex-direction: column;
-  align-items: center; // centraliza tudo
+  align-items: center;
+  gap: 20px;
+}
 
-  .home-inputs {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 10px;
-    gap: 0 20px;
-    max-width: 600px;
-
-
-  }
-
+.home-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 20px;
+  max-width: 600px;
 }
