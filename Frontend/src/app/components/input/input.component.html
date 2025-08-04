@@ -1,27 +1,46 @@
 <form class="input-form">
   @if(label === 'Email' || (label === 'email')){
   <mat-form-field class="input-container-email">
-    <mat-label >{{label}}</mat-label>
-    <input class="input-email" type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
-           placeholder="email@email.com">
+    <mat-label>{{label}}</mat-label>
+    <input class="input-email" type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher" placeholder="email@email.com">
     @if (emailFormControl.hasError('email') && !emailFormControl.hasError('required')) {
-      <mat-error>Please enter a valid email address</mat-error>
+    <mat-error>Please enter a valid email address</mat-error>
     }
     @if (emailFormControl.hasError('required')) {
-      <mat-error>Email is <strong>required</strong></mat-error>
+    <mat-error>Email is <strong>required</strong></mat-error>
     }
   </mat-form-field>
-}
-@if(label === 'Password' || (label === 'password')){
- <mat-form-field class="example-full-width">
+  }
+  @if(label === 'Password' || (label === 'password')){
+  <mat-form-field class="example-full-width">
     <mat-label>{{label}}</mat-label>
     <input type="password" matInput [formControl]="passwordFormControl" [errorStateMatcher]="match">
     @if (passwordFormControl.hasError('password') && !passwordFormControl.hasError('required')) {
-      <mat-error></mat-error>
+    <mat-error></mat-error>
     }
     @if (passwordFormControl.hasError('required')) {
-      <mat-error>Password is <strong>required</strong></mat-error>
+    <mat-error>Password is <strong>required</strong></mat-error>
     }
   </mat-form-field>
-}
+  }
 </form>
+
+<!-- <div>
+  <mat-form-field>
+    <mat-label>{{label}}</mat-label>
+    <input [type]="type" matInput [formControl]="controll" [errorStateMatcher]="match">
+    @if (controll.hasError('password')) {
+    @if (controll.hasError('required')) {
+    <mat-error>Password is <strong>required</strong></mat-error>
+    }@else {
+    <mat-error></mat-error>
+    }
+    } @else if (controll.hasError('email')) {
+    @if (controll.hasError('required')) {
+    <mat-error>Email is <strong>required</strong></mat-error>
+    }@else {
+    <mat-error></mat-error>
+    }
+    }
+  </mat-form-field>
+</div> -->
