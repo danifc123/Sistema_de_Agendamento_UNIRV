@@ -1,13 +1,14 @@
 .table-input-seach{
   display: flex;
 
+
   .material-symbols-outlined {
     font-weight: 900;
   }
-
+}
 ::ng-deep{
   .mat-mdc-form-field-subscript-wrapper{
     display: none !important;
+
   }
   }
-}

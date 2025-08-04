@@ -33,6 +33,8 @@ export class InputComponent {
   passwordFormControl = new FormControl('', [Validators.required, Validators.email]);
   match = new MyErrorStateMatcher();
 
-  @Input({required: true}) label: string = '';
+  @Input({required: true}) label!: string;
+  // @Input() type: 'password' | 'email' | 'text' = 'text';
+  // @Input({required: true}) controll!: FormControl<any>;
 
 }

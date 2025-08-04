@@ -2,16 +2,14 @@ import { Component } from '@angular/core';
 import { InputComponent } from "../../components/input/input.component";
 import { ButtonComponent } from "../../components/button/button.component";
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-forget-password',
   standalone: true,
-  imports: [InputComponent, ButtonComponent, CommonModule, RouterModule],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  imports: [InputComponent, ButtonComponent, CommonModule],
+  templateUrl: './forget-password.component.html',
+  styleUrl: './forget-password.component.scss'
 })
-export class RegisterComponent {
+export class ForgetPasswordComponent {
 
 }
