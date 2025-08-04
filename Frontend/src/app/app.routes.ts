@@ -5,6 +5,7 @@ import { LoginComponent } from './models/login/login.component';
 import { RegisterComponent } from './models/register/register.component';
 import { ForgetPasswordComponent } from './models/forget-password/forget-password.component';
 import { CalendarioComponent } from './components/calendario/calendario.component';
+import { HomeComponent } from './models/home/home.component';
 
 export const routes: Routes = [
   {
@@ -34,7 +35,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: CalendarioComponent,
+        component: HomeComponent,
         data: { title: 'Agenda' }
       }
     ]
