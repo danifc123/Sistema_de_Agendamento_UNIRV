@@ -1,8 +1,10 @@
 .home-page {
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  width: 100%;
   margin-top: 20px;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0 2rem;
 }
 
 .form-section {
@@ -16,6 +18,6 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0 20px;
+  gap: 5px 20px;
   max-width: 600px;
 }

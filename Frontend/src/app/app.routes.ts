@@ -6,6 +6,7 @@ import { RegisterComponent } from './models/register/register.component';
 import { ForgetPasswordComponent } from './models/forget-password/forget-password.component';
 import { CalendarioComponent } from './components/calendario/calendario.component';
 import { HomeComponent } from './models/home/home.component';
+import { AgendamentosComponent } from './models/agendamentos/agendamentos.component';
 
 export const routes: Routes = [
   {
@@ -34,9 +35,12 @@ export const routes: Routes = [
     component: LayoutDefaultComponent,
     children: [
       {
-        path: '',
+        path: 'home',
         component: HomeComponent,
-        data: { title: 'Agenda' }
+      },
+      {
+        path: 'agendamentos',
+        component: AgendamentosComponent,
       }
     ]
   },

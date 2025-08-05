@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import {MatIconModule} from '@angular/material/icon';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-layout-default',
-  imports: [MatIconModule, RouterOutlet],
+  standalone: true,
+  imports: [RouterModule],
   templateUrl: './layout-default.component.html',
   styleUrl: './layout-default.component.scss'
 })
