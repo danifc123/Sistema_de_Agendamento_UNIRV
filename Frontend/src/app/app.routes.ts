@@ -35,7 +35,7 @@ export const routes: Routes = [
     component: LayoutDefaultComponent,
     children: [
       {
-        path: 'home',
+        path: '',
         component: HomeComponent,
       },
       {
