@@ -56,3 +56,28 @@
 .layout-default-contain{
   display: flex;
 }
+
+.user-menu-container {
+  position: relative;
+  display: inline-block; /* Para o container ter o tamanho da imagem */
+}
+
+app-menu {
+  position: absolute;
+  top: 93%; /* Posiciona o menu logo abaixo do container */
+  right: 0; /* Alinha o menu à direita do container */
+  margin-top: 8px; /* Adiciona um pequeno espaço */
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
