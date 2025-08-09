@@ -7,6 +7,7 @@ import { ForgetPasswordComponent } from './models/forget-password/forget-passwor
 import { CalendarioComponent } from './components/calendario/calendario.component';
 import { HomeComponent } from './models/home/home.component';
 import { AgendamentosComponent } from './models/agendamentos/agendamentos.component';
+import { RelatorioComponent } from './models/relatorio/relatorio.component';
 
 export const routes: Routes = [
   {
@@ -41,6 +42,10 @@ export const routes: Routes = [
       {
         path: 'agendamentos',
         component: AgendamentosComponent,
+      },
+      {
+        path: 'relatorio',
+        component: RelatorioComponent,
       }
     ]
   },
