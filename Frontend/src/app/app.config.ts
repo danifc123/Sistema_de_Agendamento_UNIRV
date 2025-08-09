@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, LOCALE_ID } from '@angular/core';
 import { provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
@@ -8,11 +8,20 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
+import { setDefaultOptions } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+
+registerLocaleData(localePt);
+setDefaultOptions({ locale: ptBR });
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimations(),
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
     importProvidersFrom(
       CalendarModule.forRoot({
         provide: DateAdapter,
