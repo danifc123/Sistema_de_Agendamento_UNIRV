@@ -6,14 +6,54 @@
     <button (click)="nextMonth()">▶</button>
   </div>
 
-  <mwl-calendar-month-view tipo [viewDate]="viewDate" [weekStartsOn]="1" [events]="[]" [activeDayIsOpen]="false" class="custom-calendar" (dayClicked)="onDayClicked($event.day.date)"></mwl-calendar-month-view>
+  <mwl-calendar-month-view tipo [viewDate]="viewDate" [weekStartsOn]="1" [events]="[]" [activeDayIsOpen]="false" [locale]="'pt-BR'" class="custom-calendar" (dayClicked)="onDayClicked($event.day.date)"></mwl-calendar-month-view>
 </div>
 <div *ngIf="selectedDate" class="selected-info">
   Dia selecionado: {{ selectedDate | date: 'fullDate' }}
 </div>
 }
 @else if(tipo === "Agenda"){
-<div>
-  <p>componete agenda</p>
+<div class="agenda-wrapper">
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <button (click)="previousMonth()">◀</button>
+      <span>🗓️ {{ viewDate | date: 'MMMM yyyy' }}</span>
+      <button (click)="nextMonth()">▶</button>
+    </div>
+
+    <div class="agenda-weekdays">
+      <div class="weekday" *ngFor="let w of weekDays">{{ w }}</div>
+    </div>
+
+    <div class="agenda-grid">
+      <div
+        class="agenda-cell"
+        *ngFor="let d of monthDays"
+        [class.out-month]="!d.inCurrentMonth"
+        [class.is-today]="d.isToday"
+        [class.has-note]="hasNote(d.date)"
+        [class.is-selected]="isSameDate(d.date, selectedDate)"
+        (click)="openDayPanel(d)"
+        tabindex="0"
+      >
+        <span class="day-number">{{ d.date | date: 'd' }}</span>
+        <span class="note-dot" *ngIf="hasNote(d.date)"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="agenda-panel" [class.open]="panelOpen">
+    <div class="panel-header">
+      <div class="panel-title">{{ selectedDate ? (selectedDate | date: 'fullDate') : 'Selecione um dia' }}</div>
+      <button class="close-btn" (click)="closePanel()">✕</button>
+    </div>
+    <div class="panel-body" *ngIf="selectedDate">
+      <textarea [(ngModel)]="noteText" rows="8" placeholder="Escreva suas anotações para o dia..."></textarea>
+    </div>
+    <div class="panel-actions" *ngIf="selectedDate">
+      <button class="btn save" (click)="saveNote()">Salvar</button>
+      <button class="btn delete" (click)="deleteNote()" [disabled]="!hasNote(selectedDate)">Excluir</button>
+    </div>
+  </div>
 </div>
 }
