@@ -55,6 +55,10 @@
 }
 .layout-default-contain{
   display: flex;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px;
 }
 
 .user-menu-container {

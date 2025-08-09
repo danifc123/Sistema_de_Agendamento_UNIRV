@@ -1,17 +1,22 @@
 @if(button === "Login" || (button === "login") || (button === "Registrar") || (button === "registrar") || (button === "Enviar") || (button === "enviar")){
 <div class="button-container">
-  <button class="button">{{button}}</button>
+  <button class="button" (click)="clicked.emit()">{{button}}</button>
 </div>
 }
 @if(button === "Agendamento" || (button === "agendamento")){
-  <button class="button-agendamento"><span class="material-symbols-outlined">
+  <button class="button-agendamento" (click)="clicked.emit()"><span class="material-symbols-outlined">
 person</span>
   </button>
 }
 @if(button === "editar" || (button === "Editar")){
-    <button class="button-editar">
+    <button class="button-editar" (click)="clicked.emit()">
 <span class="material-symbols-outlined">
 edit
 </span>
 </button>
+}
+@if(button === "Info" || button === "info"){
+  <button class="button-info" (click)="clicked.emit()">
+    <span class="material-symbols-outlined">info</span>
+  </button>
 }

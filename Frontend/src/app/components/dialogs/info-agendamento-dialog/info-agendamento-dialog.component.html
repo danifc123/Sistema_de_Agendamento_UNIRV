@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>Detalhes do Agendamento</h2>
+<mat-dialog-content>
+  <mat-list>
+    <mat-list-item>
+      <strong>Aluno:</strong>&nbsp;{{dialogData.student.name}} (ID: {{dialogData.student.id}})
+    </mat-list-item>
+    <mat-list-item>
+      <strong>Psicólogo:</strong>&nbsp;{{dialogData.psychologist.name}} (ID: {{dialogData.psychologist.id}})
+    </mat-list-item>
+    <mat-list-item>
+      <strong>Data:</strong>&nbsp;{{dialogData.appointment.date}}
+    </mat-list-item>
+    <mat-list-item>
+      <strong>Hora:</strong>&nbsp;{{dialogData.appointment.time}}
+    </mat-list-item>
+    <mat-list-item>
+      <strong>Observações:</strong>&nbsp;{{dialogData.appointment.notes || '—'}}
+    </mat-list-item>
+  </mat-list>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="fechar()">Fechar</button>
+</mat-dialog-actions>

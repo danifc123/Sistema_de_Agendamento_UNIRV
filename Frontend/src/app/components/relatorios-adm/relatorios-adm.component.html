@@ -1,0 +1,54 @@
+<div class="relatorio-container">
+  <div class="relatorio-card">
+    <div class="filtros">
+      <mat-form-field appearance="outline">
+        <mat-label>Mês</mat-label>
+        <mat-select [value]="selectedMonth" (selectionChange)="onMonthChange($event.value)">
+          <mat-option *ngFor="let m of monthOptions" [value]="m.value">{{ m.label }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Ano</mat-label>
+        <mat-select [value]="selectedYear" (selectionChange)="onYearChange($event.value)">
+          <mat-option *ngFor="let y of yearOptions" [value]="y">{{ y }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="exportToPdf()">
+        Exportar PDF
+      </button>
+    </div>
+
+    <table mat-table [dataSource]="filteredAppointments" class="mat-elevation-z2">
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> Data </th>
+        <td mat-cell *matCellDef="let a"> {{ a.date | date:'dd/MM/yyyy' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="time">
+        <th mat-header-cell *matHeaderCellDef> Hora </th>
+        <td mat-cell *matCellDef="let a"> {{ a.time }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="student">
+        <th mat-header-cell *matHeaderCellDef> Aluno </th>
+        <td mat-cell *matCellDef="let a"> {{ a.studentName }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="psychologist">
+        <th mat-header-cell *matHeaderCellDef> Psicólogo(a) </th>
+        <td mat-cell *matCellDef="let a"> {{ a.psychologistName }} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+      <tr class="mat-row" *ngIf="filteredAppointments.length === 0">
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          Nenhum agendamento encontrado para o período selecionado.
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

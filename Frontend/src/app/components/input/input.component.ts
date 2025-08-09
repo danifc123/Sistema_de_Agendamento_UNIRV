@@ -1,4 +1,4 @@
-import {Component, Input } from '@angular/core';
+import {Component, Input, Output, EventEmitter } from '@angular/core';
 import {
   FormControl,
   FormGroupDirective,
@@ -21,6 +21,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 
 @Component({
   selector: 'app-input',
+  standalone: true,
   imports: [FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss'
@@ -30,11 +31,14 @@ export class InputComponent {
   matcher = new ErrorStateMatcher();
 
 
-  passwordFormControl = new FormControl('', [Validators.required, Validators.email]);
+  passwordFormControl = new FormControl('', [Validators.required]);
   match = new MyErrorStateMatcher();
 
   @Input({required: true}) label!: string;
-  // @Input() type: 'password' | 'email' | 'text' = 'text';
-  // @Input({required: true}) controll!: FormControl<any>;
+  @Input() type: 'text' | 'email' | 'password' | 'date' | 'time' | 'textarea' = 'text';
+  @Input() placeholder: string = '';
+  @Input() rows: number = 4;
 
+  @Input() value: any;
+  @Output() valueChange = new EventEmitter<any>();
 }

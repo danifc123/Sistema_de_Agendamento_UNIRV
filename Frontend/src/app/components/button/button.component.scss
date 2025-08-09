@@ -26,23 +26,34 @@
 }
 .button-agendamento{
   background-color: var(--primary-color-light);
-  border: none;
+  border: 2px solid transparent;
   border-radius: 8px;
   cursor: pointer;
   color: white;
   &:hover{
     color: var(--primary-color);
-    border: solid var(--primary-color) 2px;
+    border-color: var(--primary-color);
   }
 }
 .button-editar{
    background-color: var(--primary-color-light);
-  border: none;
+  border: 2px solid transparent;
   border-radius: 8px;
   cursor: pointer;
   color: white;
   &:hover{
     color: var(--primary-color);
-    border: solid var(--primary-color) 2px;
+    border-color: var(--primary-color);
+  }
+}
+.button-info{
+  background-color: var(--primary-color-light);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  &:hover{
+    color: var(--primary-color);
+    border-color: var(--primary-color);
   }
 }
