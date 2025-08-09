@@ -1,0 +1,40 @@
+.relatorio-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 960px;
+  margin: 24px auto; /* centraliza horizontalmente */
+  padding: 0 16px; /* respiro lateral no mobile */
+}
+
+.relatorio-card {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.filtros {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center; /* centraliza a barra de filtros */
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+mat-form-field {
+  width: 160px;
+}
+
+table {
+  width: 100%;
+}
+
+/* Centraliza cabeçalho e linhas da tabela em telas estreitas */
+@media (max-width: 600px) {
+  th.mat-header-cell, td.mat-cell {
+    padding: 8px 6px;
+  }
+}
