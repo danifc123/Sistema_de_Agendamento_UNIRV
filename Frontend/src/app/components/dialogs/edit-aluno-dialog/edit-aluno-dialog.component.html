@@ -1,0 +1,34 @@
+<h2 mat-dialog-title>Editar Agendamento</h2>
+<mat-dialog-content>
+  <form class="dialog-form">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Nome do Aluno</mat-label>
+      <input matInput [(ngModel)]="alunoNome" name="alunoNome" placeholder="Nome completo" title="Nome do aluno">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Psicólogo</mat-label>
+      <input matInput [(ngModel)]="psicologoNome" name="psicologoNome" placeholder="Nome do psicólogo" title="Nome do psicólogo">
+    </mat-form-field>
+
+    <div class="row-2">
+      <mat-form-field appearance="fill" class="flex-1">
+        <mat-label>Data</mat-label>
+        <input matInput [(ngModel)]="data" name="data" placeholder="dd/mm/aaaa">
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="flex-1">
+        <mat-label>Hora</mat-label>
+        <input matInput [(ngModel)]="hora" name="hora" placeholder="hh:mm">
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Observações</mat-label>
+      <textarea matInput rows="4" [(ngModel)]="observacoes" name="observacoes" placeholder="Observações do agendamento" title="Observações do agendamento"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="fechar()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="salvar()">Salvar</button>
+</mat-dialog-actions>
