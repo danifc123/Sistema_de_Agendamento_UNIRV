@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { CalendarioComponent } from "../../components/calendario/calendario.component";
 
 @Component({
   selector: 'app-agendamentos',
-  imports: [],
+  imports: [CalendarioComponent],
   templateUrl: './agendamentos.component.html',
   styleUrl: './agendamentos.component.scss'
 })
