@@ -1,31 +1,16 @@
 <h2 mat-dialog-title>Editar Agendamento</h2>
 <mat-dialog-content>
   <form class="dialog-form">
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Nome do Aluno</mat-label>
-      <input matInput [(ngModel)]="alunoNome" name="alunoNome" placeholder="Nome completo" title="Nome do aluno">
-    </mat-form-field>
+        <app-input class="full-width" label="Nome do Aluno" [type]="'text'" placeholder="Nome completo" [value]="alunoNome" (valueChange)="alunoNome = $event"></app-input>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Psicólogo</mat-label>
-      <input matInput [(ngModel)]="psicologoNome" name="psicologoNome" placeholder="Nome do psicólogo" title="Nome do psicólogo">
-    </mat-form-field>
+    <app-input class="full-width" label="Psicólogo" [type]="'text'" placeholder="Nome do psicólogo" [value]="psicologoNome" (valueChange)="psicologoNome = $event"></app-input>
 
     <div class="row-2">
-      <mat-form-field appearance="fill" class="flex-1">
-        <mat-label>Data</mat-label>
-        <input matInput [(ngModel)]="data" name="data" placeholder="dd/mm/aaaa">
-      </mat-form-field>
-      <mat-form-field appearance="fill" class="flex-1">
-        <mat-label>Hora</mat-label>
-        <input matInput [(ngModel)]="hora" name="hora" placeholder="hh:mm">
-      </mat-form-field>
+      <app-input class="flex-1" label="Data" [type]="'text'" placeholder="dd/mm/aaaa" [value]="data" (valueChange)="data = $event"></app-input>
+      <app-input class="flex-1" label="Hora" [type]="'text'" placeholder="hh:mm" [value]="hora" (valueChange)="hora = $event"></app-input>
     </div>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Observações</mat-label>
-      <textarea matInput rows="4" [(ngModel)]="observacoes" name="observacoes" placeholder="Observações do agendamento" title="Observações do agendamento"></textarea>
-    </mat-form-field>
+    <app-input class="full-width" label="Observações" [type]="'textarea'" [rows]="4" placeholder="Observações do agendamento" [value]="observacoes" (valueChange)="observacoes = $event"></app-input>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

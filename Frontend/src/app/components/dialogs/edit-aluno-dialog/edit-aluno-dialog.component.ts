@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { InputComponent } from '../../input/input.component';
 
 export interface EditAlunoDialogData {
   student: { id: string; name: string };
@@ -14,7 +15,7 @@ export interface EditAlunoDialogData {
 @Component({
   selector: 'app-edit-aluno-dialog',
   standalone: true,
-  imports: [MatDialogModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [MatDialogModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, InputComponent],
   templateUrl: './edit-aluno-dialog.component.html',
   styleUrl: './edit-aluno-dialog.component.scss'
 })
