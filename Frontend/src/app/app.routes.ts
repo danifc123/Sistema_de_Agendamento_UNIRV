@@ -8,6 +8,8 @@ import { CalendarioComponent } from './components/calendario/calendario.componen
 import { HomeComponent } from './models/home/home.component';
 import { AgendamentosComponent } from './models/agendamentos/agendamentos.component';
 import { RelatorioComponent } from './models/relatorio/relatorio.component';
+import { CadastrarAlunoComponent } from './models/cadastrar-aluno/cadastrar-aluno.component';
+import { CadastrarPsicologoComponent } from './models/cadastrar-psicologo/cadastrar-psicologo.component';
 
 export const routes: Routes = [
   {
@@ -46,6 +48,14 @@ export const routes: Routes = [
       {
         path: 'relatorio',
         component: RelatorioComponent,
+      },
+      {
+        path: 'cadastrar-aluno',
+        component: CadastrarAlunoComponent,
+      },
+      {
+        path: 'cadastrar-psicologo',
+        component: CadastrarPsicologoComponent,
       }
     ]
   },

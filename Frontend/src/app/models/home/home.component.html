@@ -1,13 +1,51 @@
 <div class="home-page">
   <div class="form-section">
-    <app-calendario tipo="Calendario" />
-    <div class="home-inputs">
-      <app-input label="email" />
-      <app-input label="email" />
-      <app-input label="password" />
-      <app-input label="password" />
+    <app-calendario tipo="Calendario" (dataSelecionada)="onDataSelecionada($event)" />
+
+    <div class="agendamento-form">
+      <p class="form-instructions">Selecione uma data no calendário acima e preencha os dados abaixo: {{ dataSelecionada || 'Nenhuma data selecionada' }}</p>
+
+      <div class="form-row">
+        <div class="form-column">
+          <app-input
+            label="Matrícula do Aluno"
+            placeholder="Digite a matrícula"
+            [value]="matricula"
+            (valueChange)="matricula = $event">
+          </app-input>
+
+          <app-input
+            label="Nome do Aluno"
+            placeholder="Digite o nome do aluno"
+            [value]="nomeAluno"
+            (valueChange)="nomeAluno = $event">
+          </app-input>
+        </div>
+
+        <div class="form-column">
+          <app-input
+            label="Nome do Psicólogo"
+            placeholder="Digite o nome do psicólogo"
+            [value]="nomePsicologo"
+            (valueChange)="nomePsicologo = $event">
+          </app-input>
+
+          <app-input
+            label="Horário"
+            type="time"
+            placeholder="Selecione o horário"
+            [value]="horario"
+            (valueChange)="horario = $event">
+          </app-input>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <app-button button="Agendar" (click)="agendarConsulta()"></app-button>
+      </div>
     </div>
   </div>
+
   <div class="table-section">
     <app-tabela-agendamento />
   </div>

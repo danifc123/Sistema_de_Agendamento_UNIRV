@@ -20,3 +20,13 @@ edit
     <span class="material-symbols-outlined">info</span>
   </button>
 }
+@if(button === "Salvar" || button === "salvar"){
+<div class="button-container">
+  <button class="button" (click)="clicked.emit()">{{button}}</button>
+</div>
+}
+@if(button === "Agendar" || button === "agendar"){
+<div class="button-container">
+  <button class="button" (click)="clicked.emit()">{{button}}</button>
+</div>
+}

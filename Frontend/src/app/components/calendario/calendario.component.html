@@ -8,9 +8,6 @@
 
   <mwl-calendar-month-view tipo [viewDate]="viewDate" [weekStartsOn]="1" [events]="[]" [activeDayIsOpen]="false" [locale]="'pt-BR'" class="custom-calendar" (dayClicked)="onDayClicked($event.day.date)"></mwl-calendar-month-view>
 </div>
-<div *ngIf="selectedDate" class="selected-info">
-  Dia selecionado: {{ selectedDate | date: 'fullDate' }}
-</div>
 }
 @else if(tipo === "Agenda"){
 <div class="agenda-wrapper">

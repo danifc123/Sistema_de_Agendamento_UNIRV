@@ -2,19 +2,16 @@
 <mat-dialog-content>
   <mat-list>
     <mat-list-item>
-      <strong>Aluno:</strong>&nbsp;{{dialogData.student.name}} (ID: {{dialogData.student.id}})
+      <strong>Aluno:</strong>&nbsp;{{dialogData.student.name}}
     </mat-list-item>
     <mat-list-item>
-      <strong>Psicólogo:</strong>&nbsp;{{dialogData.psychologist.name}} (ID: {{dialogData.psychologist.id}})
+      <strong>Psicólogo:</strong>&nbsp;{{dialogData.psychologist.name}}
     </mat-list-item>
     <mat-list-item>
       <strong>Data:</strong>&nbsp;{{dialogData.appointment.date}}
     </mat-list-item>
     <mat-list-item>
       <strong>Hora:</strong>&nbsp;{{dialogData.appointment.time}}
-    </mat-list-item>
-    <mat-list-item>
-      <strong>Observações:</strong>&nbsp;{{dialogData.appointment.notes || '—'}}
     </mat-list-item>
   </mat-list>
 </mat-dialog-content>
