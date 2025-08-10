@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CalendarModule, CalendarView } from 'angular-calendar';
 import { registerLocaleData } from '@angular/common';
@@ -19,6 +19,7 @@ registerLocaleData(localePt);
 })
 export class CalendarioComponent{
 @Input ({required : true}) tipo: "Calendario"| "Agenda" = "Calendario";
+@Output() dataSelecionada = new EventEmitter<string>();
 
   public selectedDate: Date | null = null;
   protected view: CalendarView = CalendarView.Month;
@@ -151,8 +152,16 @@ export class CalendarioComponent{
   }
 
   onDayClicked(date: Date): void {
-  this.selectedDate = date;
-}
+    this.selectedDate = date;
+    // Emitir a data selecionada para o componente pai
+    const dataFormatada = date.toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    this.dataSelecionada.emit(dataFormatada);
+  }
 
   previousMonth(): void {
   this.viewDate = subMonths(this.viewDate, 1);
