@@ -11,13 +11,72 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  flex: 1;
+  max-width: 600px;
 }
 
-.home-inputs {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 5px 20px;
-  max-width: 600px;
+.agendamento-form {
+  background: white;
+  padding:15px;
+  border-radius: 10px;
+  width: 100%;
+
+  h3 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #004F9F;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .form-instructions {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #666;
+    font-size: 14px;
+
+    &.selected-date {
+      color: #004F9F;
+      font-weight: 600;
+      font-size: 16px;
+    }
+  }
+
+  .form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 5px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+
+  .form-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: center;
+
+    app-button {
+      width: 120px;
+      height: 40px;
+    }
+  }
+}
+
+.table-section {
+  flex: 1;
+  margin-left: 20px;
+
+  @media (max-width: 1024px) {
+    margin-left: 0;
+    margin-top: 20px;
+  }
 }
