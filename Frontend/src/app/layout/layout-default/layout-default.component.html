@@ -3,7 +3,7 @@
   <div class="user-menu-container">
     <img class="layout-defaul-photo" (click)="toggleMenu()" src="img/Ellipse.png" alt="fotousuario">
     @if(isMenuOpen){
-    <app-menu/>
+    <app-menu (menuItemClicked)="onMenuItemClicked()"/>
     }
   </div>
 </header>
