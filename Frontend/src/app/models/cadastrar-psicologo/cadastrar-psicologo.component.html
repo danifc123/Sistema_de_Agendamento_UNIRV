@@ -1,0 +1,68 @@
+<div class="cadastrar-psicologo-container">
+  <div class="form-container">
+    <h2>Cadastrar Novo Psicólogo</h2>
+
+    <div class="form-fields">
+      <div class="form-row">
+        <!-- Coluna Esquerda - Dados Pessoais -->
+        <div class="form-column">
+          <h3>Dados Pessoais</h3>
+
+          <app-input
+            label="Nome Completo"
+            placeholder="Digite o nome completo do psicólogo"
+            [value]="nome"
+            (valueChange)="nome = $event">
+          </app-input>
+
+          <app-input
+            label="Email"
+            type="email"
+            placeholder="Digite o email do psicólogo"
+            [value]="email"
+            (valueChange)="email = $event">
+          </app-input>
+
+          <app-input
+            label="Senha"
+            type="password"
+            placeholder="Digite a senha"
+            [value]="senha"
+            (valueChange)="senha = $event">
+          </app-input>
+
+          <app-input
+            label="Confirmar Senha"
+            type="password"
+            placeholder="Confirme a senha"
+            [value]="confirmarSenha"
+            (valueChange)="confirmarSenha = $event">
+          </app-input>
+        </div>
+
+        <!-- Coluna Direita - Dados Profissionais -->
+        <div class="form-column">
+          <h3>Dados Profissionais</h3>
+
+          <app-input
+            label="CRP"
+            placeholder="Digite o número do CRP"
+            [value]="crp"
+            (valueChange)="crp = $event">
+          </app-input>
+
+          <app-input
+            label="Especialidade"
+            placeholder="Digite a especialidade"
+            [value]="especialidade"
+            (valueChange)="especialidade = $event">
+          </app-input>
+
+          <div class="button-container">
+            <app-button button="Salvar" (click)="cadastrarPsicologo()"></app-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
