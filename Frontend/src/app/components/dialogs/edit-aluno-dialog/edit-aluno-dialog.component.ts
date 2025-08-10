@@ -24,7 +24,6 @@ export class EditAlunoDialogComponent {
   psicologoNome: string;
   data: string;
   hora: string;
-  observacoes: string;
 
   constructor(
     public dialogRef: MatDialogRef<EditAlunoDialogComponent>,
@@ -34,7 +33,6 @@ export class EditAlunoDialogComponent {
     this.psicologoNome = dialogData.psychologist.name;
     this.data = dialogData.appointment.date;
     this.hora = dialogData.appointment.time;
-    this.observacoes = dialogData.appointment.notes;
   }
 
   fechar(): void {
@@ -45,7 +43,7 @@ export class EditAlunoDialogComponent {
     this.dialogRef.close({
       student: { ...this.dialogData.student, name: this.alunoNome },
       psychologist: { ...this.dialogData.psychologist, name: this.psicologoNome },
-      appointment: { date: this.data, time: this.hora, notes: this.observacoes },
+      appointment: { date: this.data, time: this.hora },
     });
   }
 }

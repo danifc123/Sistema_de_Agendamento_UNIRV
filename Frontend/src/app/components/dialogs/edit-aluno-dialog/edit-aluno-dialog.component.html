@@ -9,8 +9,6 @@
       <app-input class="flex-1" label="Data" [type]="'text'" placeholder="dd/mm/aaaa" [value]="data" (valueChange)="data = $event"></app-input>
       <app-input class="flex-1" label="Hora" [type]="'text'" placeholder="hh:mm" [value]="hora" (valueChange)="hora = $event"></app-input>
     </div>
-
-    <app-input class="full-width" label="Observações" [type]="'textarea'" [rows]="4" placeholder="Observações do agendamento" [value]="observacoes" (valueChange)="observacoes = $event"></app-input>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
