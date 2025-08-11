@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using SeuProjeto.Data;
 using System.Text.Json.Serialization;
+using System.Text.Json;
+using SeuProjeto.Converters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,10 @@ builder.Services.AddControllers()
     {
         opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         opts.JsonSerializerOptions.PropertyNamingPolicy = null; // manter nomes conforme enviados
+        
+        // Configurar conversores para DateOnly e TimeOnly
+        opts.JsonSerializerOptions.Converters.Add(new DateOnlyConverter());
+        opts.JsonSerializerOptions.Converters.Add(new TimeOnlyConverter());
     });
 builder.Services.AddEndpointsApiExplorer();
 

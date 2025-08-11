@@ -4,9 +4,9 @@ import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import { ButtonComponent } from "../button/button.component";
-import { MatDialog } from '@angular/material/dialog';
-import { EditAlunoDialogComponent } from "../dialogs/edit-aluno-dialog/edit-aluno-dialog.component";
+import { EditarAlunoDialogComponent } from "../../models/editar-aluno/editar-aluno-dialog/editar-aluno-dialog.component";
 import { InfoAgendamentoDialogComponent } from "../dialogs/info-agendamento-dialog/info-agendamento-dialog.component";
 import { AgendamentosService, Agendamento } from '../../services/agendamentos.service';
 import { CommonModule } from '@angular/common';
@@ -18,11 +18,13 @@ export interface AgendamentoDisplay {
   AlunoNome: string;
   PsicologoNome: string;
   Status: string;
+  AlunoId: number;
+  PsicologoId: number;
 }
 
 @Component({
   selector: 'app-tabela-agendamento',
-  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, ButtonComponent],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatDialogModule, ButtonComponent],
   templateUrl: './tabela-agendamento.component.html',
   styleUrl: './tabela-agendamento.component.scss'
 })
@@ -64,7 +66,9 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
       Horario: this.formatarHorario(agendamento.Horario),
       AlunoNome: agendamento.Aluno?.Usuario?.Nome || `Aluno ${agendamento.AlunoId}`,
       PsicologoNome: agendamento.Psicologo?.Usuario?.Nome || `Psicólogo ${agendamento.PsicologoId}`,
-      Status: agendamento.Status
+      Status: agendamento.Status,
+      AlunoId: agendamento.AlunoId,
+      PsicologoId: agendamento.PsicologoId
     }));
   }
 
@@ -103,25 +107,71 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
   }
 
   onEdit(row: AgendamentoDisplay): void {
-    const dialogRef = this.dialog.open(EditAlunoDialogComponent, {
-      width: '560px',
-      data: {
-        student: { id: row.Id.toString(), name: row.AlunoNome },
-        psychologist: { id: row.Id.toString(), name: row.PsicologoNome },
-        appointment: { date: row.Data, time: row.Horario, notes: row.Status }
-      }
-    });
+    console.log('Botão editar clicado para:', row);
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        // TODO: Implementar atualização do agendamento
-        console.log('Dados atualizados:', result);
-        this.carregarAgendamentos(); // Recarregar dados
+    // Primeiro, buscar os dados completos do agendamento
+    this.agendamentosService.getAgendamento(row.Id).subscribe({
+      next: (agendamentoCompleto) => {
+        console.log('Dados completos do agendamento:', agendamentoCompleto);
+
+        const dialogRef = this.dialog.open(EditarAlunoDialogComponent, {
+          width: '560px',
+          data: {
+            agendamento: {
+              id: agendamentoCompleto.Id,
+              alunoId: agendamentoCompleto.AlunoId,
+              psicologoId: agendamentoCompleto.PsicologoId,
+              data: agendamentoCompleto.Data,
+              horario: agendamentoCompleto.Horario,
+              status: agendamentoCompleto.Status,
+              // Dados completos para pré-seleção
+              aluno: agendamentoCompleto.Aluno,
+              psicologo: agendamentoCompleto.Psicologo
+            }
+          }
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+          if (result) {
+            console.log('Dados para atualizar:', result);
+
+            // Preparar dados para a API (sem o ID, pois ele vai na URL)
+            const dadosAtualizados = {
+              Id: result.id, // ID é necessário para a validação no controller
+              AlunoId: result.alunoId,
+              PsicologoId: result.psicologoId,
+              Data: result.data, // Já está no formato ISO
+              Horario: result.horario,
+              Status: result.status
+            };
+
+            console.log('Dados que serão enviados para a API:', dadosAtualizados);
+
+            // Chamar o serviço para atualizar o agendamento
+            this.agendamentosService.updateAgendamento(result.id, dadosAtualizados).subscribe({
+              next: (response) => {
+                console.log('Agendamento atualizado com sucesso:', response);
+                alert('Agendamento atualizado com sucesso!');
+                this.carregarAgendamentos(); // Recarregar dados da tabela
+              },
+              error: (error) => {
+                console.error('Erro ao atualizar agendamento:', error);
+                alert('Erro ao atualizar agendamento. Tente novamente.');
+              }
+            });
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Erro ao buscar dados do agendamento:', error);
+        alert('Erro ao carregar dados do agendamento. Tente novamente.');
       }
     });
   }
 
   onInfo(row: AgendamentoDisplay): void {
+    console.log('Botão info clicado para:', row);
+
     this.dialog.open(InfoAgendamentoDialogComponent, {
       width: '520px',
       data: {
