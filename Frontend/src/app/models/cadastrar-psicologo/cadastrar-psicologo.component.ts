@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PsicologoFormData } from './psicologo.interface';
+import { UsuariosService } from '../../services/usuarios.service';
+import { PsicologosService } from '../../services/psicologos.service';
 
 @Component({
   selector: 'app-cadastrar-psicologo',
@@ -23,6 +25,11 @@ export class CadastrarPsicologoComponent {
   // Dados específicos do psicólogo
   crp: string = '';
   especialidade: string = '';
+
+  constructor(
+    private usuariosService: UsuariosService,
+    private psicologosService: PsicologosService
+  ) {}
 
   cadastrarPsicologo(): void {
     // Validar se todos os campos estão preenchidos
@@ -45,34 +52,48 @@ export class CadastrarPsicologoComponent {
       return;
     }
 
-    // Criar objeto com os dados do formulário
-    const psicologoData: PsicologoFormData = {
-      nome: this.nome,
-      email: this.email,
-      senha: this.senha,
-      crp: this.crp,
-      especialidade: this.especialidade
-    };
+    // Primeiro, criar o usuário
+    this.usuariosService.createUsuario({
+      Nome: this.nome,
+      Email: this.email,
+      Senha: this.senha,
+      Tipo: 'Psicologo'
+    }).subscribe({
+      next: (usuario) => {
+        console.log('Usuário criado:', usuario);
 
-    // Aqui você implementará a lógica para cadastrar o psicólogo na API
-    console.log('Cadastrando psicólogo:', psicologoData);
+        // Depois, criar o psicólogo com o mesmo ID
+        this.psicologosService.createPsicologoComId(usuario.Id, {
+          Crp: this.crp,
+          Especialidade: this.especialidade
+        }).subscribe({
+          next: (psicologo) => {
+            console.log('Psicólogo criado com sucesso:', psicologo);
+            this.limparFormulario();
+            alert('Psicólogo cadastrado com sucesso!');
+          },
+          error: (error) => {
+            console.error('Erro detalhado ao criar psicólogo:', error);
+            console.error('Status:', error.status);
+            console.error('Mensagem:', error.message);
+            console.error('Erro completo:', error.error);
 
-    // TODO: Implementar chamada para API
-    // this.psicologoService.cadastrarPsicologo(psicologoData).subscribe({
-    //   next: (response) => {
-    //     console.log('Psicólogo cadastrado com sucesso:', response);
-    //     this.limparFormulario();
-    //     alert('Psicólogo cadastrado com sucesso!');
-    //   },
-    //   error: (error) => {
-    //     console.error('Erro ao cadastrar psicólogo:', error);
-    //     alert('Erro ao cadastrar psicólogo. Tente novamente.');
-    //   }
-    // });
-
-    // Por enquanto, apenas limpar o formulário
-    this.limparFormulario();
-    alert('Psicólogo cadastrado com sucesso! (Simulação)');
+            // Verificar se é um erro de validação (400) ou erro interno (500)
+            if (error.status === 400) {
+              alert(`Erro de validação: ${error.error}`);
+            } else if (error.status === 500) {
+              alert(`Erro interno do servidor: ${error.error}`);
+            } else {
+              alert('Erro ao criar dados do psicólogo. Tente novamente.');
+            }
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Erro ao criar usuário:', error);
+        alert('Erro ao criar usuário. Tente novamente.');
+      }
+    });
   }
 
   private limparFormulario(): void {

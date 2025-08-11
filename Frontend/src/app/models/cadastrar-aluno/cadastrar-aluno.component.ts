@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Aluno, AlunoFormData } from './aluno.interface';
+import { UsuariosService } from '../../services/usuarios.service';
+import { AlunosService } from '../../services/alunos.service';
 
 @Component({
   selector: 'app-cadastrar-aluno',
@@ -25,6 +27,11 @@ export class CadastrarAlunoComponent {
   matricula: string = '';
   curso: string = '';
   semestre: string = '';
+
+  constructor(
+    private usuariosService: UsuariosService,
+    private alunosService: AlunosService
+  ) {}
 
   cadastrarAluno(): void {
     // Validar se todos os campos estão preenchidos
@@ -47,35 +54,57 @@ export class CadastrarAlunoComponent {
       return;
     }
 
-    // Criar objeto com os dados do formulário
-    const alunoData: AlunoFormData = {
-      nome: this.nome,
-      email: this.email,
-      senha: this.senha,
-      matricula: this.matricula,
-      curso: this.curso,
-      semestre: this.semestre
-    };
+    // Primeiro, criar o usuário
+    this.usuariosService.createUsuario({
+      Nome: this.nome,
+      Email: this.email,
+      Senha: this.senha,
+      Tipo: 'Aluno'
+    }).subscribe({
+      next: (usuario) => {
+        console.log('Usuário criado:', usuario);
 
-    // Aqui você implementará a lógica para cadastrar o aluno na API
-    console.log('Cadastrando aluno:', alunoData);
+        // Depois, criar o aluno com o mesmo ID
+        console.log('ID do usuário criado:', usuario.Id);
+        console.log('Dados do aluno a serem enviados:', {
+          Id: usuario.Id,
+          Matricula: this.matricula,
+          Curso: this.curso,
+          Semestre: parseInt(this.semestre)
+        });
 
-    // TODO: Implementar chamada para API
-    // this.alunoService.cadastrarAluno(alunoData).subscribe({
-    //   next: (response) => {
-    //     console.log('Aluno cadastrado com sucesso:', response);
-    //     this.limparFormulario();
-    //     alert('Aluno cadastrado com sucesso!');
-    //   },
-    //   error: (error) => {
-    //     console.error('Erro ao cadastrar aluno:', error);
-    //     alert('Erro ao cadastrar aluno. Tente novamente.');
-    //   }
-    // });
+        this.alunosService.createAlunoComId(usuario.Id, {
+          Matricula: this.matricula,
+          Curso: this.curso,
+          Semestre: parseInt(this.semestre)
+        }).subscribe({
+          next: (aluno) => {
+            console.log('Aluno criado com sucesso:', aluno);
+            this.limparFormulario();
+            alert('Aluno cadastrado com sucesso!');
+          },
+          error: (error) => {
+            console.error('Erro detalhado ao criar aluno:', error);
+            console.error('Status:', error.status);
+            console.error('Mensagem:', error.message);
+            console.error('Erro completo:', error.error);
 
-    // Por enquanto, apenas limpar o formulário
-    this.limparFormulario();
-    alert('Aluno cadastrado com sucesso! (Simulação)');
+            // Verificar se é um erro de validação (400) ou erro interno (500)
+            if (error.status === 400) {
+              alert(`Erro de validação: ${error.error}`);
+            } else if (error.status === 500) {
+              alert(`Erro interno do servidor: ${error.error}`);
+            } else {
+              alert('Erro ao criar dados do aluno. Tente novamente.');
+            }
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Erro ao criar usuário:', error);
+        alert('Erro ao criar usuário. Tente novamente.');
+      }
+    });
   }
 
   private limparFormulario(): void {

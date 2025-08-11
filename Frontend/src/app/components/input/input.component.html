@@ -2,7 +2,7 @@
   @if(label === 'Email' || (label === 'email')){
   <mat-form-field class="input-container-email">
     <mat-label>{{label}}</mat-label>
-    <input class="input-email" type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher" placeholder="email@email.com" title="Email">
+    <input class="input-email" type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher" [placeholder]="placeholder" title="Email" (input)="onValueChange($any($event.target).value)">
     @if (emailFormControl.hasError('email') && !emailFormControl.hasError('required')) {
     <mat-error>Please enter a valid email address</mat-error>
     }
@@ -11,10 +11,10 @@
     }
   </mat-form-field>
   }
-  @if(label === 'Password' || (label === 'password')){
+  @if(label === 'Senha' || label === 'Confirmar Senha' || label === 'Password' || label === 'password'){
   <mat-form-field class="example-full-width">
     <mat-label>{{label}}</mat-label>
-    <input type="password" matInput [formControl]="passwordFormControl" [errorStateMatcher]="match" title="Password" placeholder="********">
+    <input type="password" matInput [formControl]="passwordFormControl" [errorStateMatcher]="match" title="Password" [placeholder]="placeholder" (input)="onValueChange($any($event.target).value)">
     @if (passwordFormControl.hasError('password') && !passwordFormControl.hasError('required')) {
     <mat-error></mat-error>
     }
@@ -24,35 +24,14 @@
   </mat-form-field>
   }
 
-  @if(!(label === 'Email' || label === 'email' || label === 'Password' || label === 'password')){
+  @if(!(label === 'Email' || label === 'email' || label === 'Senha' || label === 'Confirmar Senha' || label === 'Password' || label === 'password')){
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>{{label}}</mat-label>
       @if(type === 'textarea'){
-        <textarea matInput [rows]="rows" [placeholder]="placeholder" title="{{label}}" [value]="value" (input)="valueChange.emit($any($event.target).value)"></textarea>
+        <textarea matInput [rows]="rows" [placeholder]="placeholder" title="{{label}}" [formControl]="textFormControl" (input)="onValueChange($any($event.target).value)"></textarea>
       } @else {
-        <input matInput [type]="type" [placeholder]="placeholder" title="{{label}}" [value]="value" (input)="valueChange.emit($any($event.target).value)">
+        <input matInput [type]="type" [placeholder]="placeholder" title="{{label}}" [formControl]="textFormControl" (input)="onValueChange($any($event.target).value)">
       }
     </mat-form-field>
   }
 </div>
-
-<!-- mantido bloco comentado -->
-<!-- <div>
-  <mat-form-field>
-    <mat-label>{{label}}</mat-label>
-    <input [type]="type" matInput [formControl]="controll" [errorStateMatcher]="match">
-    @if (controll.hasError('password')) {
-    @if (controll.hasError('required')) {
-    <mat-error>Password is <strong>required</strong></mat-error>
-    }@else {
-    <mat-error></mat-error>
-    }
-    } @else if (controll.hasError('email')) {
-    @if (controll.hasError('required')) {
-    <mat-error>Email is <strong>required</strong></mat-error>
-    }@else {
-    <mat-error></mat-error>
-    }
-    }
-  </mat-form-field>
-</div> -->

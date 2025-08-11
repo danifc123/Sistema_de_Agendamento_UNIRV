@@ -19,7 +19,7 @@ registerLocaleData(localePt);
 })
 export class CalendarioComponent{
 @Input ({required : true}) tipo: "Calendario"| "Agenda" = "Calendario";
-@Output() dataSelecionada = new EventEmitter<string>();
+@Output() dataSelecionada = new EventEmitter<{dataISO: string, dataExibicao: string}>();
 
   public selectedDate: Date | null = null;
   protected view: CalendarView = CalendarView.Month;
@@ -153,14 +153,23 @@ export class CalendarioComponent{
 
   onDayClicked(date: Date): void {
     this.selectedDate = date;
-    // Emitir a data selecionada para o componente pai
-    const dataFormatada = date.toLocaleDateString('pt-BR', {
+
+    // Data no formato ISO para a API
+    const dataISO = date.toISOString().split('T')[0];
+
+    // Data formatada para exibição ao usuário
+    const dataExibicao = date.toLocaleDateString('pt-BR', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
-    this.dataSelecionada.emit(dataFormatada);
+
+    // Emitir ambos os formatos
+    this.dataSelecionada.emit({
+      dataISO: dataISO,
+      dataExibicao: dataExibicao
+    });
   }
 
   previousMonth(): void {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { AgendamentosService, Agendamento } from '../../services/agendamentos.service';
 
 export interface Appointment {
   id: string;
@@ -31,7 +32,7 @@ export interface Appointment {
   templateUrl: './relatorios-adm.component.html',
   styleUrl: './relatorios-adm.component.scss'
 })
-export class RelatoriosADMComponent {
+export class RelatoriosADMComponent implements OnInit {
   public readonly monthOptions: Array<{ value: number; label: string }> = [
     { value: 1, label: 'Janeiro' },
     { value: 2, label: 'Fevereiro' },
@@ -52,13 +53,38 @@ export class RelatoriosADMComponent {
   public selectedMonth: number = new Date().getMonth() + 1; // 1-12
   public selectedYear: number = new Date().getFullYear();
 
-  public displayedColumns: string[] = ['date', 'time', 'student', 'psychologist'];
+  public displayedColumns: string[] = ['date', 'time', 'student', 'psychologist', 'status'];
   public filteredAppointments: Appointment[] = [];
+  public allAppointments: Appointment[] = [];
 
-  private readonly allAppointments: Appointment[] = this.generateMockAppointments();
+  constructor(private agendamentosService: AgendamentosService) {}
 
-  constructor() {
-    this.updateFilteredAppointments();
+  ngOnInit(): void {
+    this.carregarAgendamentos();
+  }
+
+  carregarAgendamentos(): void {
+    this.agendamentosService.getAgendamentos().subscribe({
+      next: (agendamentos) => {
+        this.allAppointments = this.converterAgendamentosParaAppointments(agendamentos);
+        this.updateFilteredAppointments();
+        console.log('Agendamentos carregados:', agendamentos);
+      },
+      error: (error) => {
+        console.error('Erro ao carregar agendamentos:', error);
+      }
+    });
+  }
+
+  private converterAgendamentosParaAppointments(agendamentos: Agendamento[]): Appointment[] {
+    return agendamentos.map(agendamento => ({
+      id: agendamento.Id.toString(),
+      studentName: `Aluno ${agendamento.AlunoId}`, // TODO: Buscar nome real do aluno
+      psychologistName: `Psicólogo ${agendamento.PsicologoId}`, // TODO: Buscar nome real do psicólogo
+      date: new Date(agendamento.Data),
+      time: agendamento.Horario,
+      notes: agendamento.Status
+    }));
   }
 
   public onMonthChange(month: number): void {
@@ -84,20 +110,22 @@ export class RelatoriosADMComponent {
       a.date.toLocaleDateString('pt-BR'),
       a.time,
       a.studentName,
-      a.psychologistName
+      a.psychologistName,
+      a.notes || ''
     ]);
 
     autoTable(doc, {
       startY: 60,
-      head: [[ 'Data', 'Hora', 'Aluno', 'Psicólogo' ]],
+      head: [[ 'Data', 'Hora', 'Aluno', 'Psicólogo', 'Status' ]],
       body: rows,
       styles: { fontSize: 10 },
       headStyles: { fillColor: [25, 118, 210] },
       columnStyles: {
         0: { cellWidth: 80 },
         1: { cellWidth: 60 },
-        2: { cellWidth: 200 },
-        3: { cellWidth: 'auto' },
+        2: { cellWidth: 150 },
+        3: { cellWidth: 150 },
+        4: { cellWidth: 'auto' },
       }
     });
 
@@ -120,21 +148,5 @@ export class RelatoriosADMComponent {
       range.push(year);
     }
     return range;
-  }
-
-  private generateMockAppointments(): Appointment[] {
-    const baseYear = new Date().getFullYear();
-    return [
-      { id: '1', studentName: 'Ana Silva', psychologistName: 'Dr(a). Paula Souza', date: new Date(baseYear, 0, 10), time: '09:00', notes: 'Retorno' },
-      { id: '2', studentName: 'Bruno Lima', psychologistName: 'Dr(a). Carlos Mendes', date: new Date(baseYear, 0, 15), time: '10:30' },
-      { id: '3', studentName: 'Carla Rocha', psychologistName: 'Dr(a). Paula Souza', date: new Date(baseYear, 1, 3), time: '14:00' },
-      { id: '4', studentName: 'Diego Santos', psychologistName: 'Dr(a). João Pereira', date: new Date(baseYear, 1, 21), time: '16:15', notes: 'Primeira consulta' },
-      { id: '5', studentName: 'Eduarda Melo', psychologistName: 'Dr(a). João Pereira', date: new Date(baseYear, 6, 7), time: '11:00' },
-      { id: '6', studentName: 'Fernanda Alves', psychologistName: 'Dr(a). Paula Souza', date: new Date(baseYear, 6, 18), time: '13:30', notes: 'Encaminhamento' },
-      { id: '7', studentName: 'Gustavo Nunes', psychologistName: 'Dr(a). Carlos Mendes', date: new Date(baseYear, 7, 1), time: '09:45' },
-      { id: '8', studentName: 'Helena Dias', psychologistName: 'Dr(a). Paula Souza', date: new Date(baseYear, 7, 22), time: '15:00' },
-      { id: '9', studentName: 'Igor Martins', psychologistName: 'Dr(a). João Pereira', date: new Date(baseYear, 10, 5), time: '10:00' },
-      { id: '10', studentName: 'Juliana Castro', psychologistName: 'Dr(a). Paula Souza', date: new Date(baseYear, 11, 12), time: '08:30', notes: 'Alta' },
-    ];
   }
 }

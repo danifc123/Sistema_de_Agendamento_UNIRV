@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ViewChild, OnInit} from '@angular/core';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
@@ -8,85 +8,87 @@ import { ButtonComponent } from "../button/button.component";
 import { MatDialog } from '@angular/material/dialog';
 import { EditAlunoDialogComponent } from "../dialogs/edit-aluno-dialog/edit-aluno-dialog.component";
 import { InfoAgendamentoDialogComponent } from "../dialogs/info-agendamento-dialog/info-agendamento-dialog.component";
+import { AgendamentosService, Agendamento } from '../../services/agendamentos.service';
+import { CommonModule } from '@angular/common';
 
-export interface Student {
-  id: string;
-  name: string;
+export interface AgendamentoDisplay {
+  Id: number;
+  Data: string;
+  Horario: string;
+  AlunoNome: string;
+  PsicologoNome: string;
+  Status: string;
 }
 
-/** Constants used to fill up our data base. */
-const NAMES: string[] = [
-  'Maia',
-  'Asher',
-  'Olivia',
-  'Atticus',
-  'Amelia',
-  'Jack',
-  'Charlotte',
-  'Theodore',
-  'Isla',
-  'Oliver',
-  'Isabella',
-  'Jasper',
-  'Cora',
-  'Levi',
-  'Violet',
-  'Arthur',
-  'Mia',
-  'Thomas',
-  'Elizabeth',
-];
-
-/**
- * @title Data table with sorting, pagination, and filtering.
- */
 @Component({
   selector: 'app-tabela-agendamento',
-  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, ButtonComponent],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, ButtonComponent],
   templateUrl: './tabela-agendamento.component.html',
   styleUrl: './tabela-agendamento.component.scss'
 })
-export class TabelaAgendamentoComponent implements AfterViewInit{
-  displayedColumns: string[] = ['id', 'name', 'edit', 'info'];
-  dataSource: MatTableDataSource<Student>;
+export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
+  displayedColumns: string[] = ['data', 'horario', 'aluno', 'psicologo', 'status', 'edit', 'info'];
+  dataSource: MatTableDataSource<AgendamentoDisplay>;
 
-@ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
-@ViewChild(MatSort, { static: false }) sort!: MatSort;
-   constructor(private dialog: MatDialog) {
-    // Create 100 students
-    const students = Array.from({length: 100}, (_, k) => createNewStudent(k + 1));
+  @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
+  @ViewChild(MatSort, { static: false }) sort!: MatSort;
 
-    // Assign the data to the data source for the table to render
-    this.dataSource = new MatTableDataSource(students);
-    // Custom sort para garantir ordenação correta
-    this.dataSource.sortingDataAccessor = (item: Student, property: string): string | number => {
-      switch (property) {
-        case 'id':
-          return Number(item.id);
-        case 'name':
-          return item.name;
-        default:
-          return '';
-      }
-    };
-
-    // Ordenação com locale PT-BR para nomes com acentos
-    const collator = new Intl.Collator('pt-BR', { sensitivity: 'base' });
-    this.dataSource.sortData = (data, sort) => {
-      if (!sort.active || sort.direction === '') return data;
-      const direction = sort.direction === 'asc' ? 1 : -1;
-      return data.slice().sort((a, b) => {
-        if (sort.active === 'name') {
-          return collator.compare(a.name, b.name) * direction;
-        }
-        if (sort.active === 'id') {
-          return (Number(a.id) - Number(b.id)) * direction;
-        }
-        return 0;
-      });
-    };
+  constructor(
+    private dialog: MatDialog,
+    private agendamentosService: AgendamentosService
+  ) {
+    this.dataSource = new MatTableDataSource<AgendamentoDisplay>([]);
   }
-ngAfterViewInit() {
+
+  ngOnInit(): void {
+    this.carregarAgendamentos();
+  }
+
+  carregarAgendamentos(): void {
+    this.agendamentosService.getAgendamentos().subscribe({
+      next: (agendamentos) => {
+        const agendamentosDisplay = this.converterParaDisplay(agendamentos);
+        this.dataSource.data = agendamentosDisplay;
+        console.log('Agendamentos carregados na tabela:', agendamentosDisplay);
+      },
+      error: (error) => {
+        console.error('Erro ao carregar agendamentos:', error);
+      }
+    });
+  }
+
+  private converterParaDisplay(agendamentos: Agendamento[]): AgendamentoDisplay[] {
+    return agendamentos.map(agendamento => ({
+      Id: agendamento.Id,
+      Data: this.formatarData(agendamento.Data),
+      Horario: this.formatarHorario(agendamento.Horario),
+      AlunoNome: agendamento.Aluno?.Usuario?.Nome || `Aluno ${agendamento.AlunoId}`,
+      PsicologoNome: agendamento.Psicologo?.Usuario?.Nome || `Psicólogo ${agendamento.PsicologoId}`,
+      Status: agendamento.Status
+    }));
+  }
+
+  private formatarData(dataISO: string): string {
+    const data = new Date(dataISO);
+    return data.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  }
+
+  private formatarHorario(horario: string): string {
+    // Se o horário já está no formato HH:MM, retorna como está
+    if (horario && horario.includes(':')) {
+      const partes = horario.split(':');
+      if (partes.length >= 2) {
+        return `${partes[0].padStart(2, '0')}:${partes[1].padStart(2, '0')}`;
+      }
+    }
+    return horario; // Retorna o horário original se não conseguir formatar
+  }
+
+  ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
@@ -100,46 +102,42 @@ ngAfterViewInit() {
     }
   }
 
-  onEdit(row: Student): void {
+  onEdit(row: AgendamentoDisplay): void {
     const dialogRef = this.dialog.open(EditAlunoDialogComponent, {
       width: '560px',
       data: {
-        student: { id: row.id, name: row.name },
-        psychologist: { id: 'P-' + row.id, name: 'Dr(a). ' + row.name.split(' ')[0] },
-        appointment: { date: '12/08/2025', time: '14:00', notes: '' }
+        student: { id: row.Id.toString(), name: row.AlunoNome },
+        psychologist: { id: row.Id.toString(), name: row.PsicologoNome },
+        appointment: { date: row.Data, time: row.Horario, notes: row.Status }
       }
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-      const updated = this.dataSource.data.map((s) =>
-        s.id === row.id ? { ...s, name: result.student?.name ?? s.name } : s
-      );
-      this.dataSource.data = updated;
-    });
-  }
-
-  onInfo(row: Student): void {
-    this.dialog.open(InfoAgendamentoDialogComponent, {
-      width: '520px',
-      data: {
-        student: { id: row.id, name: row.name },
-        psychologist: { id: 'P-' + row.id, name: 'Dr(a). ' + row.name.split(' ')[0] },
-        appointment: { date: '12/08/2025', time: '14:00', notes: 'Retorno de avaliação.' }
+      if (result) {
+        // TODO: Implementar atualização do agendamento
+        console.log('Dados atualizados:', result);
+        this.carregarAgendamentos(); // Recarregar dados
       }
     });
   }
-}
-/** Builds and returns a new Student. */
-function createNewStudent(id: number): Student {
-  const name =
-    NAMES[Math.round(Math.random() * (NAMES.length - 1))] +
-    ' ' +
-    NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) +
-    '.';
 
-  return {
-    id: id.toString(),
-    name: name,
-  };
+  onInfo(row: AgendamentoDisplay): void {
+    this.dialog.open(InfoAgendamentoDialogComponent, {
+      width: '520px',
+      data: {
+        student: { id: row.Id.toString(), name: row.AlunoNome },
+        psychologist: { id: row.Id.toString(), name: row.PsicologoNome },
+        appointment: {
+          date: row.Data,
+          time: row.Horario,
+          notes: `Status: ${row.Status}`
+        }
+      }
+    });
+  }
+
+  // Método público para recarregar dados (pode ser chamado pelo componente pai)
+  recarregarDados(): void {
+    this.carregarAgendamentos();
+  }
 }
