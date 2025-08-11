@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Editar Aluno</h2>
+<div mat-dialog-content class="dialog-content">
+  <app-input label="Nome" [value]="nome" (valueChange)="nome = $event"></app-input>
+  <app-input label="Email" type="email" [value]="email" (valueChange)="email = $event"></app-input>
+  <app-input label="Matrícula" [value]="matricula" (valueChange)="matricula = $event"></app-input>
+  <app-input label="Curso" [value]="curso" (valueChange)="curso = $event"></app-input>
+  <app-input label="Semestre" [value]="semestre" (valueChange)="semestre = $event"></app-input>
+</div>
+<div mat-dialog-actions class="dialog-actions">
+  <app-button button="Cancelar" (click)="cancelar()"></app-button>
+  <app-button button="Salvar" (click)="salvar()"></app-button>
+</div>
