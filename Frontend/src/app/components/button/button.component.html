@@ -25,7 +25,17 @@ edit
   <button class="button" (click)="clicked.emit()">{{button}}</button>
 </div>
 }
-@if(button === "Agendar" || button === "agendar"){
+@if(button === "Agendar" || button === "agendar" ){
+<div class="button-container">
+  <button class="button" (click)="clicked.emit()">{{button}}</button>
+</div>
+}
+@if(button === "Cancelar" || button === "cancelar"){
+<div class="button-container">
+  <button class="button cancelar" (click)="clicked.emit()">{{button}}</button>
+</div>
+}
+@if(button === "Atualizar" || button === "atualizar"){
 <div class="button-container">
   <button class="button" (click)="clicked.emit()">{{button}}</button>
 </div>
