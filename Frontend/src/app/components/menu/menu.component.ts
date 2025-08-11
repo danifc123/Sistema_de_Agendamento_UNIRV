@@ -18,8 +18,18 @@ export class MenuComponent {
     this.menuItemClicked.emit();
   }
 
+  editarAluno(): void {
+    this.router.navigate(['/editar-aluno']);
+    this.menuItemClicked.emit();
+  }
+
   cadastrarPsicologo(): void {
     this.router.navigate(['/cadastrar-psicologo']);
+    this.menuItemClicked.emit();
+  }
+
+  editarPsicologo(): void {
+    this.router.navigate(['/editar-psicologo']);
     this.menuItemClicked.emit();
   }
 
