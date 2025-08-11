@@ -10,6 +10,8 @@ import { AgendamentosComponent } from './models/agendamentos/agendamentos.compon
 import { RelatorioComponent } from './models/relatorio/relatorio.component';
 import { CadastrarAlunoComponent } from './models/cadastrar-aluno/cadastrar-aluno.component';
 import { CadastrarPsicologoComponent } from './models/cadastrar-psicologo/cadastrar-psicologo.component';
+import { EditarAlunoComponent } from './models/editar-aluno/editar-aluno.component';
+import { EditarPsicologoComponent } from './models/editar-psicologo/editar-psicologo.component';
 
 export const routes: Routes = [
   {
@@ -56,6 +58,14 @@ export const routes: Routes = [
       {
         path: 'cadastrar-psicologo',
         component: CadastrarPsicologoComponent,
+      },
+      {
+        path: 'editar-aluno',
+        component: EditarAlunoComponent,
+      },
+      {
+        path: 'editar-psicologo',
+        component: EditarPsicologoComponent,
       }
     ]
   },

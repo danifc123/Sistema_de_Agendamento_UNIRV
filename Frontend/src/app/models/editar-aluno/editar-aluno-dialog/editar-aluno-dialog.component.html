@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Editar Agendamento</h2>
+<div mat-dialog-content class="dialog-content">
+  <app-select
+    label="Aluno"
+    placeholder="Selecione um aluno"
+    [options]="opcoesAlunos"
+    [(ngModel)]="alunoSelecionado">
+  </app-select>
+
+  <app-select
+    label="Psicólogo"
+    placeholder="Selecione um psicólogo"
+    [options]="opcoesPsicologos"
+    [(ngModel)]="psicologoSelecionado">
+  </app-select>
+
+  <app-input
+    label="Data"
+    type="date"
+    [value]="dataAgendamento"
+    (valueChange)="dataAgendamento = $event">
+  </app-input>
+
+  <app-select-horario
+    label="Horário"
+    placeholder="Selecione o horário"
+    inicioExpediente="08:00"
+    fimExpediente="18:00"
+    [intervalo]="30"
+    [(ngModel)]="horario">
+  </app-select-horario>
+</div>
+<div mat-dialog-actions class="dialog-actions">
+  <app-button button="Cancelar" (click)="cancelar()"></app-button>
+  <app-button button="Salvar" (click)="salvar()"></app-button>
+</div>
