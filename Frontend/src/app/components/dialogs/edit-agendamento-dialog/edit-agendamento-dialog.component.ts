@@ -13,11 +13,11 @@ export interface EditAlunoDialogData {
 }
 
 @Component({
-  selector: 'app-edit-aluno-dialog',
+  selector: 'app-edit-agendamento-dialog',
   standalone: true,
   imports: [MatDialogModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, InputComponent],
   templateUrl: './edit-aluno-dialog.component.html',
-  styleUrl: './edit-aluno-dialog.component.scss'
+  styleUrl: './edit-agendamento-dialog.component.scss'
 })
 export class EditAlunoDialogComponent {
   alunoNome: string;
