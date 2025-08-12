@@ -30,7 +30,7 @@ export interface AgendamentoDisplay {
   styleUrl: './tabela-agendamento.component.scss'
 })
 export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
-  displayedColumns: string[] = ['data', 'horario', 'aluno', 'psicologo', 'status', 'edit', 'info'];
+  displayedColumns: string[] = ['data', 'horario', 'aluno', 'psicologo', 'status', 'edit', 'info', 'excluir'];
   dataSource: MatTableDataSource<AgendamentoDisplay>;
 
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
@@ -281,5 +281,21 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
     this.carregarAgendamentos();
   }
 
+  excluirAgendamento(agendamento: AgendamentoDisplay): void {
+    const confirmacao = confirm(`Tem certeza que deseja excluir o agendamento?\n\n📅 Data: ${agendamento.Data}\n⏰ Horário: ${agendamento.Horario}\n👤 Aluno: ${agendamento.AlunoNome}\n🧠 Psicólogo: ${agendamento.PsicologoNome}\n\nEsta ação não pode ser desfeita.`);
+
+    if (confirmacao) {
+      this.agendamentosService.deleteAgendamento(agendamento.Id).subscribe({
+        next: () => {
+          alert('Agendamento excluído com sucesso!');
+          this.carregarAgendamentos(); // Recarregar a tabela
+        },
+        error: (error) => {
+          console.error('Erro ao excluir agendamento:', error);
+          alert('Erro ao excluir agendamento. Tente novamente.');
+        }
+      });
+    }
+  }
 
 }

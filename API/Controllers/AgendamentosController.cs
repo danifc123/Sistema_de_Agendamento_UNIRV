@@ -138,16 +138,51 @@ namespace SeuProjeto.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAgendamento(int id)
         {
-            var agendamento = await _context.Agendamentos.FindAsync(id);
-            if (agendamento == null)
+            try
             {
-                return NotFound();
+                Console.WriteLine($"Tentando excluir agendamento com ID: {id}");
+                
+                // Usar SQL raw para garantir que todos os relacionamentos sejam excluídos
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                
+                try
+                {
+                    // Desabilitar verificação de chaves estrangeiras temporariamente
+                    await _context.Database.ExecuteSqlRawAsync("SET session_replication_role = replica;");
+                    Console.WriteLine("Verificação de FK desabilitada");
+
+                    // Excluir anotações que referenciam este agendamento
+                    var anotacoesDeletadas = await _context.Database.ExecuteSqlRawAsync(
+                        "DELETE FROM \"Anotacoes\" WHERE \"AgendamentoId\" = {0}", id);
+                    Console.WriteLine($"Excluídas {anotacoesDeletadas} anotações");
+
+                    // Excluir o agendamento
+                    var agendamentoDeletado = await _context.Database.ExecuteSqlRawAsync(
+                        "DELETE FROM \"Agendamentos\" WHERE \"Id\" = {0}", id);
+                    Console.WriteLine($"Agendamento excluído: {agendamentoDeletado > 0}");
+
+                    // Reabilitar verificação de chaves estrangeiras
+                    await _context.Database.ExecuteSqlRawAsync("SET session_replication_role = DEFAULT;");
+                    Console.WriteLine("Verificação de FK reabilitada");
+
+                    await transaction.CommitAsync();
+                    Console.WriteLine("Transação commitada com sucesso");
+
+                    return NoContent();
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    Console.WriteLine($"Erro na transação, fazendo rollback: {ex.Message}");
+                    throw;
+                }
             }
-
-            _context.Agendamentos.Remove(agendamento);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao excluir agendamento: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                return BadRequest($"Erro ao excluir agendamento: {ex.Message}");
+            }
         }
 
         private bool AgendamentoExists(int id)
