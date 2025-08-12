@@ -40,3 +40,8 @@ edit
   <button class="button" (click)="clicked.emit()">{{button}}</button>
 </div>
 }
+@if(button === "Excluir" || button === "excluir"){
+  <button class="button-excluir" (click)="clicked.emit()">
+    <span class="material-symbols-outlined">close</span>
+  </button>
+}

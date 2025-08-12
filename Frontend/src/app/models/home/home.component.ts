@@ -26,16 +26,10 @@ export class HomeComponent implements OnInit {
   horario: string = '';
   dataSelecionada: string = '';
   dataExibicao: string = '';
-  status: string = 'Pendente';
 
   // Opções para os selects
   opcoesAlunos: SelectOption[] = [];
   opcoesPsicologos: SelectOption[] = [];
-  opcoesStatus: SelectOption[] = [
-    { value: 'Pendente', label: 'Pendente' },
-    { value: 'Confirmado', label: 'Confirmado' },
-    { value: 'Cancelado', label: 'Cancelado' }
-  ];
 
   // Listas para carregar dados
   alunos: any[] = [];
@@ -108,7 +102,7 @@ export class HomeComponent implements OnInit {
       PsicologoId: parseInt(this.psicologoSelecionado),
       Data: this.data, // Já está no formato ISO (YYYY-MM-DD)
       Horario: this.horario,
-      Status: this.status as 'Pendente' | 'Confirmado' | 'Cancelado'
+      Status: 'Pendente' as 'Pendente' | 'Confirmado' | 'Cancelado' // Status sempre começa como Pendente
     };
 
     console.log('Dados do agendamento:', agendamentoData);
@@ -138,7 +132,6 @@ export class HomeComponent implements OnInit {
     this.horario = '';
     this.dataSelecionada = '';
     this.dataExibicao = '';
-    this.status = 'Pendente';
   }
 
   // Método para receber a data selecionada do calendário

@@ -1,20 +1,13 @@
-.dialog-form {
-  display: block;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.row-2 {
+.dialog-content {
   display: flex;
+  flex-direction: column;
   gap: 12px;
+  min-width: 380px;
 }
 
-.flex-1 {
-  flex: 1;
-}
-
-mat-form-field {
-  margin-bottom: 12px;
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
 }

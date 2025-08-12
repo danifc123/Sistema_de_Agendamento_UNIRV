@@ -99,7 +99,6 @@ namespace SeuProjeto.Controllers
             catch (Exception ex)
             {
                 // Log do erro para debug
-                Console.WriteLine($"Erro ao criar psicólogo: {ex.Message}");
                 return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
             }
         }

@@ -1,36 +1,19 @@
-<h2 mat-dialog-title>Editar Agendamento</h2>
-<div mat-dialog-content class="dialog-content">
-  <app-select
-    label="Aluno"
-    placeholder="Selecione um aluno"
-    [options]="opcoesAlunos"
-    [(ngModel)]="alunoSelecionado">
-  </app-select>
+<h2 mat-dialog-title>Editar Aluno</h2>
+<mat-dialog-content>
+  <form class="dialog-form">
+    <app-input class="full-width" label="Nome do Aluno" [type]="'text'" placeholder="Nome completo" [value]="alunoNome" (valueChange)="alunoNome = $event"></app-input>
 
-  <app-select
-    label="Psicólogo"
-    placeholder="Selecione um psicólogo"
-    [options]="opcoesPsicologos"
-    [(ngModel)]="psicologoSelecionado">
-  </app-select>
+    <app-input class="full-width" label="Email" [type]="'email'" placeholder="email@exemplo.com" [value]="email" (valueChange)="email = $event"></app-input>
 
-  <app-input
-    label="Data"
-    type="date"
-    [value]="dataAgendamento"
-    (valueChange)="dataAgendamento = $event">
-  </app-input>
+    <app-input class="full-width" label="Matrícula" [type]="'text'" placeholder="Número da matrícula" [value]="matricula" (valueChange)="matricula = $event"></app-input>
 
-  <app-select-horario
-    label="Horário"
-    placeholder="Selecione o horário"
-    inicioExpediente="08:00"
-    fimExpediente="18:00"
-    [intervalo]="30"
-    [(ngModel)]="horario">
-  </app-select-horario>
-</div>
-<div mat-dialog-actions class="dialog-actions">
-  <app-button button="Cancelar" (click)="cancelar()"></app-button>
-  <app-button button="Salvar" (click)="salvar()"></app-button>
-</div>
+    <div class="row-2">
+      <app-input class="flex-1" label="Curso" [type]="'text'" placeholder="Nome do curso" [value]="curso" (valueChange)="curso = $event"></app-input>
+      <app-input class="flex-1" label="Semestre" [type]="'text'" placeholder="Ex: 3º" [value]="semestre" (valueChange)="semestre = $event"></app-input>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="fechar()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="salvar()">Salvar</button>
+</mat-dialog-actions>

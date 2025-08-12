@@ -40,3 +40,26 @@
   font-weight: 500;
 }
 
+// Estilos para garantir que os cabeçalhos de sorting funcionem
+.mat-mdc-header-cell {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.mat-sort-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mat-sort-header-arrow {
+  color: #004F9F;
+}
+
