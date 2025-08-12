@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, OnInit } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -7,45 +7,85 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ButtonComponent } from "../../components/button/button.component";
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EditarPsicologoDialogComponent } from './editar-psicologo-dialog/editar-psicologo-dialog.component';
+import { PsicologosService, Psicologo } from '../../services/psicologos.service';
+import { CommonModule } from '@angular/common';
 
-export interface Psicologo {
-  id: string;
-  nome: string;
-  email: string;
-  crp: string;
-  especialidade: string;
+// Interface para exibição na tabela
+export interface PsicologoDisplay {
+  Id: number;
+  Nome: string;
+  Email: string;
+  Crp: string;
+  Especialidade: string;
 }
 
 @Component({
   selector: 'app-editar-psicologo',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatDialogModule, ButtonComponent],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatDialogModule, ButtonComponent],
   templateUrl: './editar-psicologo.component.html',
   styleUrl: './editar-psicologo.component.scss'
 })
-export class EditarPsicologoComponent implements AfterViewInit {
-  displayedColumns: string[] = ['id', 'nome', 'email', 'crp', 'especialidade', 'editar'];
-  dataSource: MatTableDataSource<Psicologo>;
+export class EditarPsicologoComponent implements AfterViewInit, OnInit {
+  displayedColumns: string[] = ['id', 'nome', 'email', 'crp', 'especialidade', 'editar', 'excluir'];
+  dataSource: MatTableDataSource<PsicologoDisplay>;
 
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort!: MatSort;
 
-  constructor(private dialog: MatDialog) {
-    // Dados simulados de psicólogos
-    const psicologos = [
-      { id: '1', nome: 'Dr. Carlos Silva', email: 'carlos.silva@email.com', crp: '06/123456', especialidade: 'Psicologia Clínica' },
-      { id: '2', nome: 'Dra. Ana Santos', email: 'ana.santos@email.com', crp: '06/234567', especialidade: 'Psicologia Escolar' },
-      { id: '3', nome: 'Dr. Pedro Costa', email: 'pedro.costa@email.com', crp: '06/345678', especialidade: 'Psicologia Organizacional' },
-      { id: '4', nome: 'Dra. Maria Oliveira', email: 'maria.oliveira@email.com', crp: '06/456789', especialidade: 'Psicologia Clínica' },
-      { id: '5', nome: 'Dr. João Ferreira', email: 'joao.ferreira@email.com', crp: '06/567890', especialidade: 'Psicologia do Esporte' },
-    ];
+  constructor(
+    private dialog: MatDialog,
+    private psicologosService: PsicologosService
+  ) {
+    this.dataSource = new MatTableDataSource<PsicologoDisplay>([]);
+  }
 
-    this.dataSource = new MatTableDataSource(psicologos);
+  ngOnInit(): void {
+    this.carregarPsicologos();
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+
+    // Configurar ordenação customizada
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'id':
+          return item.Id;
+        case 'nome':
+          return item.Nome.toLowerCase();
+        case 'email':
+          return item.Email.toLowerCase();
+        case 'crp':
+          return item.Crp.toLowerCase();
+        case 'especialidade':
+          return item.Especialidade.toLowerCase();
+        default:
+          return item[property as keyof PsicologoDisplay];
+      }
+    };
+  }
+
+  carregarPsicologos(): void {
+    this.psicologosService.getPsicologos().subscribe({
+      next: (psicologos) => {
+        const psicologosDisplay = this.converterParaDisplay(psicologos);
+        this.dataSource.data = psicologosDisplay;
+      },
+      error: (error) => {
+      }
+    });
+  }
+
+  private converterParaDisplay(psicologos: Psicologo[]): PsicologoDisplay[] {
+    return psicologos.map(psicologo => ({
+      Id: psicologo.Id,
+      Nome: psicologo.Usuario?.Nome || 'Nome não disponível',
+      Email: psicologo.Usuario?.Email || 'Email não disponível',
+      Crp: psicologo.Crp,
+      Especialidade: psicologo.Especialidade
+    }));
   }
 
   applyFilter(event: Event) {
@@ -57,20 +97,41 @@ export class EditarPsicologoComponent implements AfterViewInit {
     }
   }
 
-  editarPsicologo(psicologo: Psicologo): void {
+  editarPsicologo(psicologo: PsicologoDisplay): void {
     const dialogRef = this.dialog.open(EditarPsicologoDialogComponent, {
-      data: { psicologo },
+      width: '500px',
+      data: {
+        psicologo: {
+          id: psicologo.Id.toString(),
+          nome: psicologo.Nome,
+          email: psicologo.Email,
+          crp: psicologo.Crp,
+          especialidade: psicologo.Especialidade
+        }
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-      // Atualiza a linha com os dados retornados
-      const index = this.dataSource.data.findIndex(p => p.id === result.id);
-      if (index > -1) {
-        this.dataSource.data[index] = result;
-        // Força atualização do datasource
-        this.dataSource.data = [...this.dataSource.data];
+      if (result) {
+        // Recarregar dados da tabela para garantir sincronização com o banco
+        this.carregarPsicologos();
       }
     });
+  }
+
+  excluirPsicologo(psicologo: PsicologoDisplay): void {
+    const confirmacao = confirm(`Tem certeza que deseja excluir o psicólogo "${psicologo.Nome}"?\n\n⚠️ ATENÇÃO: Esta ação irá excluir:\n• Todos os agendamentos do psicólogo\n• Todas as anotações do psicólogo\n• Todas as disponibilidades do psicólogo\n• O cadastro completo do psicólogo\n\nEsta ação não pode ser desfeita.`);
+
+    if (confirmacao) {
+      this.psicologosService.deletePsicologo(psicologo.Id).subscribe({
+        next: () => {
+          alert('Psicólogo excluído com sucesso!\n\nTodos os dados relacionados foram removidos.');
+          this.carregarPsicologos(); // Recarregar a tabela
+        },
+        error: (error) => {
+          alert('Erro ao excluir psicólogo. Verifique se não há dados dependentes ou tente novamente.');
+        }
+      });
+    }
   }
 }

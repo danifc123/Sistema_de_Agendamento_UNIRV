@@ -1,11 +1,16 @@
 <h2 mat-dialog-title>Editar Psicólogo</h2>
-<div mat-dialog-content class="dialog-content">
-  <app-input label="Nome" [value]="nome" (valueChange)="nome = $event"></app-input>
-  <app-input label="Email" type="email" [value]="email" (valueChange)="email = $event"></app-input>
-  <app-input label="CRP" [value]="crp" (valueChange)="crp = $event"></app-input>
-  <app-input label="Especialidade" [value]="especialidade" (valueChange)="especialidade = $event"></app-input>
-</div>
-<div mat-dialog-actions class="dialog-actions">
-  <app-button button="Cancelar" (click)="cancelar()"></app-button>
-  <app-button button="Salvar" (click)="salvar()"></app-button>
-</div>
+<mat-dialog-content>
+  <form class="dialog-form">
+    <app-input class="full-width" label="Nome do Psicólogo" [type]="'text'" placeholder="Nome completo" [value]="nome" (valueChange)="nome = $event"></app-input>
+
+    <app-input class="full-width" label="Email" [type]="'email'" placeholder="email@exemplo.com" [value]="email" (valueChange)="email = $event"></app-input>
+
+    <app-input class="full-width" label="CRP" [type]="'text'" placeholder="Ex: 06/123456 ou 06-123456" [value]="crp" (valueChange)="crp = $event"></app-input>
+
+    <app-input class="full-width" label="Especialidade" [type]="'text'" placeholder="Ex: Psicologia Clínica" [value]="especialidade" (valueChange)="especialidade = $event"></app-input>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="fechar()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="salvar()">Salvar</button>
+</mat-dialog-actions>

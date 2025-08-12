@@ -60,7 +60,6 @@ export class CadastrarPsicologoComponent {
       Tipo: 'Psicologo'
     }).subscribe({
       next: (usuario) => {
-        console.log('Usuário criado:', usuario);
 
         // Depois, criar o psicólogo com o mesmo ID
         this.psicologosService.createPsicologoComId(usuario.Id, {
@@ -68,15 +67,10 @@ export class CadastrarPsicologoComponent {
           Especialidade: this.especialidade
         }).subscribe({
           next: (psicologo) => {
-            console.log('Psicólogo criado com sucesso:', psicologo);
             this.limparFormulario();
             alert('Psicólogo cadastrado com sucesso!');
           },
           error: (error) => {
-            console.error('Erro detalhado ao criar psicólogo:', error);
-            console.error('Status:', error.status);
-            console.error('Mensagem:', error.message);
-            console.error('Erro completo:', error.error);
 
             // Verificar se é um erro de validação (400) ou erro interno (500)
             if (error.status === 400) {
@@ -90,7 +84,6 @@ export class CadastrarPsicologoComponent {
         });
       },
       error: (error) => {
-        console.error('Erro ao criar usuário:', error);
         alert('Erro ao criar usuário. Tente novamente.');
       }
     });
