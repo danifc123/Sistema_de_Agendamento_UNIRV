@@ -81,6 +81,16 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
   }
 
   private formatarData(dataISO: string): string {
+    // Verificar se a data já está no formato correto
+    if (dataISO && dataISO.includes('-')) {
+      const partes = dataISO.split('-');
+      if (partes.length === 3) {
+        // Formatar diretamente sem criar objeto Date para evitar problemas de fuso horário
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+      }
+    }
+    
+    // Fallback para o método anterior se a data não estiver no formato esperado
     const data = new Date(dataISO);
     return data.toLocaleDateString('pt-BR', {
       day: '2-digit',

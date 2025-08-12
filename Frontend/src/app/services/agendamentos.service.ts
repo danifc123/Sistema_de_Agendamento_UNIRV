@@ -82,4 +82,16 @@ export class AgendamentosService {
   deleteAgendamento(id: number): Observable<Agendamento> {
     return this.apiService.delete<Agendamento>('agendamentos', id);
   }
+
+  // Método para verificar se existe conflito de agendamento
+  verificarDisponibilidade(alunoId: number, psicologoId: number, data: string, horario: string): Observable<{disponivel: boolean, message: string, tipo?: string}> {
+    const params = new URLSearchParams({
+      alunoId: alunoId.toString(),
+      psicologoId: psicologoId.toString(),
+      data: data,
+      horario: horario
+    });
+    
+    return this.http.get<{disponivel: boolean, message: string, tipo?: string}>(`${this.baseUrl}/agendamentos/verificar-disponibilidade?${params}`);
+  }
 }
