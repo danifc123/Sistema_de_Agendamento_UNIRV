@@ -47,4 +47,40 @@
   mat-paginator {
     margin-top: 20px;
   }
+
+  // Estilos para cabeçalhos de sorting
+  .mat-mdc-header-cell {
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  .mat-sort-header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .mat-sort-header-arrow {
+    color: white;
+  }
+
+  // Estilos para o campo de filtro
+  .table-input-seach {
+    display: flex;
+    margin-bottom: 20px;
+
+    .material-symbols-outlined {
+      font-weight: 900;
+    }
+  }
+
+  // Estilos para botões de ação
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
 }

@@ -26,16 +26,10 @@ export class HomeComponent implements OnInit {
   horario: string = '';
   dataSelecionada: string = '';
   dataExibicao: string = '';
-  status: string = 'Pendente';
 
   // Opções para os selects
   opcoesAlunos: SelectOption[] = [];
   opcoesPsicologos: SelectOption[] = [];
-  opcoesStatus: SelectOption[] = [
-    { value: 'Pendente', label: 'Pendente' },
-    { value: 'Confirmado', label: 'Confirmado' },
-    { value: 'Cancelado', label: 'Cancelado' }
-  ];
 
   // Listas para carregar dados
   alunos: any[] = [];
@@ -102,17 +96,49 @@ export class HomeComponent implements OnInit {
       return;
     }
 
+    console.log('Dados antes de criar agendamento:');
+    console.log('- Data selecionada:', this.data);
+    console.log('- Data de exibição:', this.dataExibicao);
+    console.log('- Aluno:', this.alunoSelecionado);
+    console.log('- Psicólogo:', this.psicologoSelecionado);
+    console.log('- Horário:', this.horario);
+
     // Criar o agendamento
     const agendamentoData = {
       AlunoId: parseInt(this.alunoSelecionado),
       PsicologoId: parseInt(this.psicologoSelecionado),
       Data: this.data, // Já está no formato ISO (YYYY-MM-DD)
       Horario: this.horario,
-      Status: this.status as 'Pendente' | 'Confirmado' | 'Cancelado'
+      Status: 'Pendente' as 'Pendente' | 'Confirmado' | 'Cancelado' // Status sempre começa como Pendente
     };
 
-    console.log('Dados do agendamento:', agendamentoData);
+    console.log('Dados do agendamento que serão enviados para a API:', agendamentoData);
 
+    // Verificar disponibilidade antes de criar o agendamento
+    this.agendamentosService.verificarDisponibilidade(
+      agendamentoData.AlunoId, 
+      agendamentoData.PsicologoId, 
+      agendamentoData.Data, 
+      agendamentoData.Horario
+    ).subscribe({
+      next: (resultado) => {
+        if (!resultado.disponivel) {
+          alert(resultado.message);
+          return;
+        }
+
+        // Se está disponível, criar o agendamento
+        this.criarAgendamento(agendamentoData);
+      },
+      error: (error) => {
+        console.error('Erro ao verificar disponibilidade:', error);
+        // Em caso de erro na verificação, tentar criar mesmo assim (o backend fará a validação final)
+        this.criarAgendamento(agendamentoData);
+      }
+    });
+  }
+
+  private criarAgendamento(agendamentoData: any): void {
     this.agendamentosService.createAgendamento(agendamentoData).subscribe({
       next: (response) => {
         console.log('Agendamento criado com sucesso:', response);
@@ -126,7 +152,13 @@ export class HomeComponent implements OnInit {
       error: (error) => {
         console.error('Erro ao criar agendamento:', error);
         console.error('Detalhes do erro:', error.error);
-        alert('Erro ao criar agendamento. Tente novamente.');
+        
+        // Verificar se é um erro de validação do backend
+        if (error.error && error.error.message) {
+          alert(`Erro: ${error.error.message}`);
+        } else {
+          alert('Erro ao criar agendamento. Tente novamente.');
+        }
       }
     });
   }
@@ -138,13 +170,50 @@ export class HomeComponent implements OnInit {
     this.horario = '';
     this.dataSelecionada = '';
     this.dataExibicao = '';
-    this.status = 'Pendente';
   }
 
   // Método para receber a data selecionada do calendário
   onDataSelecionada(dadosData: {dataISO: string, dataExibicao: string}): void {
+    console.log('Data recebida do calendário:', dadosData);
     this.data = dadosData.dataISO; // Para a API
     this.dataExibicao = dadosData.dataExibicao; // Para exibição
     this.dataSelecionada = dadosData.dataExibicao; // Para mostrar no template
+    console.log('Data armazenada para API:', this.data);
+    
+    // Teste: verificar se a data está correta
+    const dataTeste = new Date(dadosData.dataISO);
+    console.log('Data convertida de volta para teste:', dataTeste.toLocaleDateString('pt-BR'));
+  }
+
+  // Método para verificar disponibilidade quando o usuário seleciona um horário
+  verificarDisponibilidadeHorario(): void {
+    if (!this.alunoSelecionado || !this.psicologoSelecionado || !this.horario || !this.data) {
+      return; // Não verificar se não temos todos os dados
+    }
+
+    this.agendamentosService.verificarDisponibilidade(
+      parseInt(this.alunoSelecionado),
+      parseInt(this.psicologoSelecionado),
+      this.data,
+      this.horario
+    ).subscribe({
+      next: (resultado) => {
+        if (!resultado.disponivel) {
+          // Mostrar aviso visual
+          const mensagem = resultado.message;
+          console.log('Horário indisponível:', mensagem);
+          
+          // Você pode implementar uma notificação visual aqui
+          // Por exemplo, mudar a cor do botão ou mostrar um toast
+          alert(`⚠️ ${mensagem}\n\nPor favor, escolha outro horário.`);
+          
+          // Limpar o horário selecionado
+          this.horario = '';
+        }
+      },
+      error: (error) => {
+        console.error('Erro ao verificar disponibilidade:', error);
+      }
+    });
   }
 }

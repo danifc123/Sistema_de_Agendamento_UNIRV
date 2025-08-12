@@ -57,3 +57,14 @@
     border-color: var(--primary-color);
   }
 }
+.button-excluir{
+  background-color: #dc3545;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  &:hover{
+    background-color: #c82333;
+    border-color: #c82333;
+  }
+}

@@ -1,10 +1,7 @@
 .home-page {
   display: flex;
   width: 100%;
-  margin-top: 20px;
   justify-content: space-between;
-  align-items: flex-start;
-  padding: 0 2rem;
 }
 
 .form-section {
@@ -17,10 +14,11 @@
 
 .agendamento-form {
   background: white;
+  width: 100%;
+  max-height: 50vh; // Altura máxima de 70% da viewport
+  overflow-y: auto; // Scroll vertical quando necessário
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 100%;
 
   h3 {
     text-align: center;

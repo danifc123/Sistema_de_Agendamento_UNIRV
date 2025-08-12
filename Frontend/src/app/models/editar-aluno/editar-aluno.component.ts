@@ -1,52 +1,97 @@
-import { Component, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, OnInit } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
 import { ButtonComponent } from "../../components/button/button.component";
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EditarAlunoDialogComponent } from './editar-aluno-dialog/editar-aluno-dialog.component';
+import { AlunosService, Aluno } from '../../services/alunos.service';
+import { CommonModule } from '@angular/common';
 
-export interface Aluno {
-  id: string;
-  nome: string;
-  email: string;
-  matricula: string;
-  curso: string;
-  semestre: string;
+// Interface para exibição na tabela
+export interface AlunoDisplay {
+  Id: number;
+  Nome: string;
+  Email: string;
+  Matricula: string;
+  Curso: string;
+  Semestre: string;
 }
 
 @Component({
   selector: 'app-editar-aluno',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatDialogModule, ButtonComponent],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatDialogModule, MatButtonModule, ButtonComponent],
   templateUrl: './editar-aluno.component.html',
   styleUrl: './editar-aluno.component.scss'
 })
-export class EditarAlunoComponent implements AfterViewInit {
-  displayedColumns: string[] = ['id', 'nome', 'email', 'matricula', 'curso', 'semestre', 'editar'];
-  dataSource: MatTableDataSource<Aluno>;
+export class EditarAlunoComponent implements AfterViewInit, OnInit {
+  displayedColumns: string[] = ['id', 'nome', 'email', 'matricula', 'curso', 'semestre', 'editar', 'excluir'];
+  dataSource: MatTableDataSource<AlunoDisplay>;
 
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort!: MatSort;
 
-  constructor(private dialog: MatDialog) {
-    // Dados simulados de alunos
-    const alunos = [
-      { id: '1', nome: 'João Silva', email: 'joao.silva@email.com', matricula: '2024001', curso: 'Engenharia de Software', semestre: '3º' },
-      { id: '2', nome: 'Maria Santos', email: 'maria.santos@email.com', matricula: '2024002', curso: 'Ciência da Computação', semestre: '5º' },
-      { id: '3', nome: 'Pedro Costa', email: 'pedro.costa@email.com', matricula: '2024003', curso: 'Sistemas de Informação', semestre: '7º' },
-      { id: '4', nome: 'Ana Oliveira', email: 'ana.oliveira@email.com', matricula: '2024004', curso: 'Engenharia de Software', semestre: '1º' },
-      { id: '5', nome: 'Carlos Ferreira', email: 'carlos.ferreira@email.com', matricula: '2024005', curso: 'Ciência da Computação', semestre: '9º' },
-    ];
+  constructor(
+    private dialog: MatDialog,
+    private alunosService: AlunosService
+  ) {
+    this.dataSource = new MatTableDataSource<AlunoDisplay>([]);
+  }
 
-    this.dataSource = new MatTableDataSource(alunos);
+  ngOnInit(): void {
+    this.carregarAlunos();
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+
+    // Configurar ordenação customizada
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'id':
+          return item.Id;
+        case 'nome':
+          return item.Nome.toLowerCase();
+        case 'email':
+          return item.Email.toLowerCase();
+        case 'matricula':
+          return item.Matricula.toLowerCase();
+        case 'curso':
+          return item.Curso.toLowerCase();
+        case 'semestre':
+          return item.Semestre.toLowerCase();
+        default:
+          return item[property as keyof AlunoDisplay];
+      }
+    };
+  }
+
+  carregarAlunos(): void {
+    this.alunosService.getAlunos().subscribe({
+      next: (alunos) => {
+        const alunosDisplay = this.converterParaDisplay(alunos);
+        this.dataSource.data = alunosDisplay;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar alunos:', error);
+      }
+    });
+  }
+
+  private converterParaDisplay(alunos: Aluno[]): AlunoDisplay[] {
+    return alunos.map(aluno => ({
+      Id: aluno.Id,
+      Nome: aluno.Usuario?.Nome || 'Nome não disponível',
+      Email: aluno.Usuario?.Email || 'Email não disponível',
+      Matricula: aluno.Matricula,
+      Curso: aluno.Curso,
+      Semestre: aluno.Semestre.toString()
+    }));
   }
 
   applyFilter(event: Event) {
@@ -58,20 +103,44 @@ export class EditarAlunoComponent implements AfterViewInit {
     }
   }
 
-  editarAluno(aluno: Aluno): void {
+  editarAluno(aluno: AlunoDisplay): void {
+
     const dialogRef = this.dialog.open(EditarAlunoDialogComponent, {
-      data: { aluno },
+      width: '500px',
+      data: {
+        aluno: {
+          id: aluno.Id.toString(),
+          nome: aluno.Nome,
+          email: aluno.Email,
+          matricula: aluno.Matricula,
+          curso: aluno.Curso,
+          semestre: aluno.Semestre
+        }
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-      // Atualiza a linha com os dados retornados
-      const index = this.dataSource.data.findIndex(a => a.id === result.id);
-      if (index > -1) {
-        this.dataSource.data[index] = result;
-        // Força atualização do datasource
-        this.dataSource.data = [...this.dataSource.data];
+      if (result) {
+        // Recarregar dados da tabela para garantir sincronização com o banco
+        this.carregarAlunos();
       }
     });
+  }
+
+    excluirAluno(aluno: AlunoDisplay): void {
+    const confirmacao = confirm(`Tem certeza que deseja excluir o aluno "${aluno.Nome}"?\n\n⚠️ ATENÇÃO: Esta ação irá excluir:\n• Todos os agendamentos do aluno\n• Todas as anotações do aluno\n• Todos os formulários de solicitação do aluno\n• O cadastro completo do aluno\n\nEsta ação não pode ser desfeita.`);
+
+    if (confirmacao) {
+      this.alunosService.deleteAluno(aluno.Id).subscribe({
+        next: () => {
+          alert('Aluno excluído com sucesso!\n\nTodos os dados relacionados foram removidos.');
+          this.carregarAlunos(); // Recarregar a tabela
+        },
+        error: (error) => {
+          console.error('Erro ao excluir aluno:', error);
+          alert('Erro ao excluir aluno. Verifique se não há dados dependentes ou tente novamente.');
+        }
+      });
+    }
   }
 }

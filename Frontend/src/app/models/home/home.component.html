@@ -30,15 +30,9 @@
             inicioExpediente="08:00"
             fimExpediente="18:00"
             [intervalo]="30"
-            [(ngModel)]="horario">
+            [(ngModel)]="horario"
+            (ngModelChange)="verificarDisponibilidadeHorario()">
           </app-select-horario>
-
-          <app-select
-            label="Status"
-            placeholder="Selecione o status"
-            [options]="opcoesStatus"
-            [(ngModel)]="status">
-          </app-select>
         </div>
       </div>
 

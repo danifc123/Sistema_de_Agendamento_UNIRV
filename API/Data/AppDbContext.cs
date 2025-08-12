@@ -67,6 +67,13 @@ namespace SeuProjeto.Data
                 .HasForeignKey(a => a.PsicologoId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Índices para melhorar performance das consultas de validação
+            model.Entity<Agendamento>()
+                .HasIndex(a => new { a.AlunoId, a.Data, a.Horario });
+
+            model.Entity<Agendamento>()
+                .HasIndex(a => new { a.PsicologoId, a.Data, a.Horario });
+
             model.Entity<Disponibilidade>()
                 .HasOne(d => d.Psicologo)
                 .WithMany(p => p.Disponibilidades)

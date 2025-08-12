@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SeuProjeto.Data;
 using SeuProjeto.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace SeuProjeto.Controllers
 {
@@ -49,32 +50,76 @@ namespace SeuProjeto.Controllers
 
         // PUT: api/usuarios/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
+        public async Task<IActionResult> PutUsuario(int id, [FromBody] object updateData)
         {
-            if (id != usuario.Id)
+            
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(usuario).State = EntityState.Modified;
 
             try
             {
+                // Converter o objeto dinâmico para um dicionário
+                var data = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(
+                    System.Text.Json.JsonSerializer.Serialize(updateData));
+
+
+                // Atualizar apenas os campos fornecidos
+                if (data.ContainsKey("Nome"))
+                {
+                    usuario.Nome = data["Nome"].ToString();
+                }
+                if (data.ContainsKey("Email"))
+                {
+                    usuario.Email = data["Email"].ToString();
+                }
+                if (data.ContainsKey("Senha"))
+                {
+                    usuario.Senha = data["Senha"].ToString();
+                }
+                if (data.ContainsKey("Tipo"))
+                {
+                    if (Enum.TryParse<TipoUsuario>(data["Tipo"].ToString(), out var tipo))
+                    {
+                        usuario.Tipo = tipo;
+                    }
+                }
+
                 await _context.SaveChangesAsync();
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!UsuarioExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest($"Erro ao atualizar usuário: {ex.Message}");
+            }
+        }
+
+        // PATCH: api/usuarios/5/update-info
+        [HttpPatch("{id}/update-info")]
+        public async Task<IActionResult> UpdateUsuarioInfo(int id, [FromBody] UpdateUsuarioInfoRequest request)
+        {
+            
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null)
+            {
+                return NotFound();
             }
 
-            return NoContent();
+            try
+            {
+                usuario.Nome = request.Nome;
+                usuario.Email = request.Email;
+
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erro ao atualizar usuário: {ex.Message}");
+            }
         }
 
         // DELETE: api/usuarios/5
@@ -97,5 +142,17 @@ namespace SeuProjeto.Controllers
         {
             return _context.Usuarios.Any(e => e.Id == id);
         }
+    }
+
+    public class UpdateUsuarioInfoRequest
+    {
+        [Required]
+        [MaxLength(100)]
+        public string Nome { get; set; }
+
+        [Required]
+        [MaxLength(150)]
+        [EmailAddress]
+        public string Email { get; set; }
     }
 } 

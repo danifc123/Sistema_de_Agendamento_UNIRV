@@ -1,159 +1,131 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 import { InputComponent } from '../../../components/input/input.component';
-import { ButtonComponent } from '../../../components/button/button.component';
-import { SelectComponent, SelectOption } from '../../../components/select/select.component';
-import { SelectHorarioComponent } from '../../../components/select-horario/select-horario.component';
 import { AlunosService } from '../../../services/alunos.service';
-import { PsicologosService } from '../../../services/psicologos.service';
+import { UsuariosService } from '../../../services/usuarios.service';
+import { HttpClient } from '@angular/common/http';
 
-export interface EditarAgendamentoDialogData {
-  agendamento: {
-    id: number;
-    alunoId: number;
-    psicologoId: number;
-    data: string;
-    horario: string;
-    status: string;
-    aluno?: any; // Dados completos do aluno
-    psicologo?: any; // Dados completos do psicólogo
+export interface EditarAlunoDialogData {
+  aluno: {
+    id: string;
+    nome: string;
+    email: string;
+    matricula: string;
+    curso: string;
+    semestre: string;
   };
 }
 
 @Component({
   selector: 'app-editar-aluno-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule, InputComponent, ButtonComponent, SelectComponent, SelectHorarioComponent],
+  imports: [MatDialogModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, InputComponent],
   templateUrl: './editar-aluno-dialog.component.html',
   styleUrl: './editar-aluno-dialog.component.scss'
 })
-export class EditarAlunoDialogComponent implements OnInit {
-  alunoSelecionado: string = '';
-  psicologoSelecionado: string = '';
-  dataAgendamento: string = '';
-  horario: string = '';
-
-  opcoesAlunos: SelectOption[] = [];
-  opcoesPsicologos: SelectOption[] = [];
+export class EditarAlunoDialogComponent {
+  alunoNome: string;
+  email: string;
+  matricula: string;
+  curso: string;
+  semestre: string;
 
   constructor(
     public dialogRef: MatDialogRef<EditarAlunoDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: EditarAgendamentoDialogData,
+    @Inject(MAT_DIALOG_DATA) public dialogData: EditarAlunoDialogData,
     private alunosService: AlunosService,
-    private psicologosService: PsicologosService
+    private usuariosService: UsuariosService,
+    private http: HttpClient
   ) {
-    // Inicializar com os valores atuais do agendamento
-    this.alunoSelecionado = data.agendamento.alunoId.toString();
-    this.psicologoSelecionado = data.agendamento.psicologoId.toString();
-
-    // Converter a data para formato ISO se necessário (para o input type="date")
-    console.log('Data recebida no dialog:', data.agendamento.data);
-
-    let dataParaInput = data.agendamento.data;
-    if (data.agendamento.data && data.agendamento.data.includes('/')) {
-      // Se a data está no formato DD/MM/AAAA, converter para YYYY-MM-DD
-      const partes = data.agendamento.data.split('/');
-      console.log('Partes da data:', partes);
-      if (partes.length === 3) {
-        dataParaInput = `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
-      }
-    }
-    console.log('Data convertida para input:', dataParaInput);
-    this.dataAgendamento = dataParaInput;
-
-    this.horario = data.agendamento.horario;
-
-    // Log dos dados completos recebidos
-    console.log('Dados completos do aluno:', data.agendamento.aluno);
-    console.log('Dados completos do psicólogo:', data.agendamento.psicologo);
+    this.alunoNome = dialogData.aluno.nome;
+    this.email = dialogData.aluno.email;
+    this.matricula = dialogData.aluno.matricula;
+    this.curso = dialogData.aluno.curso;
+    this.semestre = dialogData.aluno.semestre;
   }
 
-  ngOnInit(): void {
-    console.log('ngOnInit - Valores iniciais:');
-    console.log('alunoSelecionado:', this.alunoSelecionado);
-    console.log('psicologoSelecionado:', this.psicologoSelecionado);
-    console.log('dataAgendamento:', this.dataAgendamento);
-    console.log('horario:', this.horario);
-
-    this.carregarDados();
-  }
-
-  carregarDados(): void {
-    // Carregar alunos
-    this.alunosService.getAlunos().subscribe({
-      next: (alunos) => {
-        this.opcoesAlunos = alunos.map(aluno => ({
-          value: aluno.Id.toString(),
-          label: aluno.Usuario?.Nome || 'Nome não disponível'
-        }));
-
-        // Pré-selecionar o aluno atual
-        const alunoAtual = alunos.find(a => a.Id === this.data.agendamento.alunoId);
-        if (alunoAtual) {
-          setTimeout(() => {
-            this.alunoSelecionado = alunoAtual.Id.toString();
-            console.log('Aluno pré-selecionado:', alunoAtual.Usuario?.Nome);
-          }, 0);
-        }
-      },
-      error: (error) => {
-        console.error('Erro ao carregar alunos:', error);
-      }
-    });
-
-    // Carregar psicólogos
-    this.psicologosService.getPsicologos().subscribe({
-      next: (psicologos) => {
-        this.opcoesPsicologos = psicologos.map(psicologo => ({
-          value: psicologo.Id.toString(),
-          label: psicologo.Usuario?.Nome || 'Nome não disponível'
-        }));
-
-        // Pré-selecionar o psicólogo atual
-        const psicologoAtual = psicologos.find(p => p.Id === this.data.agendamento.psicologoId);
-        if (psicologoAtual) {
-          setTimeout(() => {
-            this.psicologoSelecionado = psicologoAtual.Id.toString();
-            console.log('Psicólogo pré-selecionado:', psicologoAtual.Usuario?.Nome);
-          }, 0);
-        }
-      },
-      error: (error) => {
-        console.error('Erro ao carregar psicólogos:', error);
-      }
-    });
-  }
-
-  cancelar(): void {
+  fechar(): void {
     this.dialogRef.close();
   }
 
   salvar(): void {
-    console.log('Data original no dialog:', this.dataAgendamento);
-
-    // A data já deve estar no formato YYYY-MM-DD do input type="date"
-    let dataFormatada = this.dataAgendamento;
-
-    // Se por algum motivo não estiver no formato correto, tentar converter
-    if (this.dataAgendamento && this.dataAgendamento.includes('/')) {
-      const partes = this.dataAgendamento.split('/');
-      console.log('Partes da data:', partes);
-      if (partes.length === 3) {
-        dataFormatada = `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
-      }
+    // Validação básica
+    if (!this.alunoNome || !this.email || !this.matricula || !this.curso || !this.semestre) {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+      return;
     }
 
-    console.log('Data formatada:', dataFormatada);
+    // Validação de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.email)) {
+      alert('Por favor, insira um email válido.');
+      return;
+    }
 
-    this.dialogRef.close({
-      id: this.data.agendamento.id,
-      alunoId: parseInt(this.alunoSelecionado),
-      psicologoId: parseInt(this.psicologoSelecionado),
-      data: dataFormatada,
-      horario: this.horario,
-      status: this.data.agendamento.status
+    // Validação de semestre
+    const semestreNum = parseInt(this.semestre);
+    if (isNaN(semestreNum) || semestreNum < 1 || semestreNum > 10) {
+      alert('Por favor, insira um semestre válido (1-10).');
+      return;
+    }
+
+    const alunoId = parseInt(this.dialogData.aluno.id);
+
+    // Primeiro, buscar os dados atuais do usuário para manter a senha
+    this.usuariosService.getUsuario(alunoId).subscribe({
+      next: (usuarioAtual) => {
+
+        // Atualizar usuário usando o novo endpoint específico
+        const dadosUsuario = {
+          Nome: this.alunoNome,
+          Email: this.email
+        };
+
+
+
+        // Atualizar usuário usando o endpoint PATCH específico
+        this.http.patch(`http://localhost:5160/api/usuarios/${alunoId}/update-info`, dadosUsuario).subscribe({
+          next: (usuarioResponse) => {
+
+            // Depois, atualizar o aluno
+            const dadosAluno = {
+              Matricula: this.matricula,
+              Curso: this.curso,
+              Semestre: semestreNum
+            };
+
+
+            this.alunosService.updateAluno(alunoId, dadosAluno).subscribe({
+              next: (alunoResponse) => {
+                alert('Aluno atualizado com sucesso!');
+
+                // Retornar dados atualizados para o componente pai
+                this.dialogRef.close({
+                  id: this.dialogData.aluno.id,
+                  nome: this.alunoNome,
+                  email: this.email,
+                  matricula: this.matricula,
+                  curso: this.curso,
+                  semestre: this.semestre
+                });
+              },
+              error: (alunoError) => {
+                alert('Erro ao atualizar dados do aluno. Tente novamente.');
+              }
+            });
+          },
+          error: (usuarioError) => {
+            alert('Erro ao atualizar dados do usuário. Tente novamente.');
+          }
+        });
+      },
+      error: (error) => {
+        alert('Erro ao buscar dados do usuário. Tente novamente.');
+      }
     });
   }
 }

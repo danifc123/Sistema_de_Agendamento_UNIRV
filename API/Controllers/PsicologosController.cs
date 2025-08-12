@@ -99,44 +99,13 @@ namespace SeuProjeto.Controllers
             catch (Exception ex)
             {
                 // Log do erro para debug
-                Console.WriteLine($"Erro ao criar psicólogo: {ex.Message}");
                 return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
             }
         }
 
         // PUT: api/psicologos/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPsicologo(int id, Psicologo psicologo)
-        {
-            if (id != psicologo.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(psicologo).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PsicologoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // DELETE: api/psicologos/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePsicologo(int id)
+        public async Task<IActionResult> PutPsicologo(int id, [FromBody] object updateData)
         {
             var psicologo = await _context.Psicologos.FindAsync(id);
             if (psicologo == null)
@@ -144,10 +113,95 @@ namespace SeuProjeto.Controllers
                 return NotFound();
             }
 
-            _context.Psicologos.Remove(psicologo);
-            await _context.SaveChangesAsync();
+            // Converter o objeto dinâmico para um dicionário
+            var data = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(
+                System.Text.Json.JsonSerializer.Serialize(updateData));
 
-            return NoContent();
+            // Atualizar apenas os campos fornecidos
+            if (data.ContainsKey("Crp"))
+            {
+                psicologo.Crp = data["Crp"].ToString();
+            }
+            if (data.ContainsKey("Especialidade"))
+            {
+                psicologo.Especialidade = data["Especialidade"].ToString();
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Erro ao atualizar psicólogo: {ex.Message}");
+            }
+        }
+
+        // DELETE: api/psicologos/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePsicologo(int id)
+        {
+            try
+            {
+                Console.WriteLine($"Tentando excluir psicólogo com ID: {id}");
+                
+                // Usar SQL raw para garantir que todos os relacionamentos sejam excluídos
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                
+                try
+                {
+                    // Desabilitar verificação de chaves estrangeiras temporariamente
+                    await _context.Database.ExecuteSqlRawAsync("SET session_replication_role = replica;");
+                    Console.WriteLine("Verificação de FK desabilitada");
+
+                    // Excluir anotações que referenciam agendamentos do psicólogo
+                    var anotacoesDeletadas = await _context.Database.ExecuteSqlRawAsync(
+                        "DELETE FROM \"Anotacoes\" WHERE \"PsicologoId\" = {0} OR \"AgendamentoId\" IN (SELECT \"Id\" FROM \"Agendamentos\" WHERE \"PsicologoId\" = {0})", id);
+                    Console.WriteLine($"Excluídas {anotacoesDeletadas} anotações");
+
+                    // Excluir agendamentos
+                    var agendamentosDeletados = await _context.Database.ExecuteSqlRawAsync(
+                        "DELETE FROM \"Agendamentos\" WHERE \"PsicologoId\" = {0}", id);
+                    Console.WriteLine($"Excluídos {agendamentosDeletados} agendamentos");
+
+                    // Excluir disponibilidades
+                    var disponibilidadesDeletadas = await _context.Database.ExecuteSqlRawAsync(
+                        "DELETE FROM \"Disponibilidades\" WHERE \"PsicologoId\" = {0}", id);
+                    Console.WriteLine($"Excluídas {disponibilidadesDeletadas} disponibilidades");
+
+                    // Excluir o psicólogo
+                    var psicologoDeletado = await _context.Database.ExecuteSqlRawAsync(
+                        "DELETE FROM \"Psicologos\" WHERE \"Id\" = {0}", id);
+                    Console.WriteLine($"Psicólogo excluído: {psicologoDeletado > 0}");
+
+                    // Excluir o usuário associado
+                    var usuarioDeletado = await _context.Database.ExecuteSqlRawAsync(
+                        "DELETE FROM \"Usuarios\" WHERE \"Id\" = {0}", id);
+                    Console.WriteLine($"Usuário excluído: {usuarioDeletado > 0}");
+
+                    // Reabilitar verificação de chaves estrangeiras
+                    await _context.Database.ExecuteSqlRawAsync("SET session_replication_role = DEFAULT;");
+                    Console.WriteLine("Verificação de FK reabilitada");
+
+                    await transaction.CommitAsync();
+                    Console.WriteLine("Transação commitada com sucesso");
+
+                    return NoContent();
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    Console.WriteLine($"Erro na transação, fazendo rollback: {ex.Message}");
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao excluir psicólogo: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                return BadRequest($"Erro ao excluir psicólogo: {ex.Message}");
+            }
         }
 
         private bool PsicologoExists(int id)

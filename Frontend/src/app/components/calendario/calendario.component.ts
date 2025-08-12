@@ -154,8 +154,11 @@ export class CalendarioComponent{
   onDayClicked(date: Date): void {
     this.selectedDate = date;
 
-    // Data no formato ISO para a API
-    const dataISO = date.toISOString().split('T')[0];
+    // Data no formato ISO para a API - usando método que preserva o fuso horário local
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const dataISO = `${year}-${month}-${day}`;
 
     // Data formatada para exibição ao usuário
     const dataExibicao = date.toLocaleDateString('pt-BR', {
