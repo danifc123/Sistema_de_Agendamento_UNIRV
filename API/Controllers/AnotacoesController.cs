@@ -75,6 +75,23 @@ namespace SeuProjeto.Controllers
                 .ToListAsync();
         }
 
+        // GET: api/anotacoes/data/{data}/{alunoId}/{psicologoId}
+        [HttpGet("data/{data}/{alunoId}/{psicologoId}")]
+        public async Task<ActionResult<IEnumerable<Anotacao>>> GetAnotacoesPorData(string data, int alunoId, int psicologoId)
+        {
+            if (!DateOnly.TryParse(data, out DateOnly dataAnotacao))
+            {
+                return BadRequest("Formato de data inválido. Use YYYY-MM-DD");
+            }
+
+            return await _context.Anotacoes
+                .Where(a => a.Data == dataAnotacao && 
+                           a.AlunoId == alunoId && 
+                           a.PsicologoId == psicologoId)
+                .OrderByDescending(a => a.Id)
+                .ToListAsync();
+        }
+
         // POST: api/anotacoes
         [HttpPost]
         public async Task<ActionResult<Anotacao>> PostAnotacao(Anotacao anotacao)

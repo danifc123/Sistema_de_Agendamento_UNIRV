@@ -9,7 +9,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   box-shadow: 2px 2px 10px rgba(0,0,0,0.15);
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* removed full height to restore original layout */
@@ -148,11 +148,7 @@
 
 /* -------- Variação Agenda -------- */
 .agenda-wrapper {
-  display: grid;
-  grid-template-columns: 1.8fr minmax(240px, 300px);
-  gap: 16px;
-  align-items: center;
-  margin-left: 60px;
+  width: 100%;
 }
 
 
@@ -171,9 +167,10 @@
 
 .agenda-grid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(120px, 1fr));
+  grid-template-columns: repeat(7, 1fr);
   gap: 8px;
   padding: 10px;
+  width: auto;
 }
 
 .agenda-cell {
@@ -189,6 +186,7 @@
   color: #1f2937;
   -webkit-user-select: none;
   user-select: none;
+  cursor: pointer;
   transition: box-shadow 0.2s ease, transform 0.05s ease, border-color 0.2s ease;
 }
 
@@ -224,55 +222,15 @@
   background: #10b981; /* verde para indicar nota */
 }
 
-.agenda-panel {
-  position: sticky;
-  top: 0;
-  align-self: start;
-  height: 100%;
-  max-height: 520px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-  padding: 12px;
-  transform: translateX(8px);
-  opacity: 0.98;
-}
-
-.agenda-panel .panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.panel-title {
-  font-weight: 700;
-  color: #1f2937;
-}
-
-.close-btn {
-  background: transparent;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  color: #6b7280;
-}
-
-.panel-body textarea {
-  width: 90%;
-  resize: vertical;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  padding: 8px;
-  font-family: inherit;
-  color: #111827;
-}
-
-.panel-actions {
-  margin-top: 10px;
-  display: flex;
-  gap: 8px;
+.backend-note-dot {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #28a745; /* verde para indicar anotação salva */
+  box-shadow: 0 0 0 1px rgba(40, 167, 69, 0.3);
 }
 
 .btn {
@@ -283,23 +241,28 @@
   font-weight: 600;
 }
 
-.btn.save {
-  background: #2a73c0;
-  color: #fff;
-}
+// Responsividade para agenda
+@media (max-width: 768px) {
+  .agenda-wrapper {
+    margin-left: 0;
+  }
 
-.btn.save:hover {
-  filter: brightness(0.95);
-}
+  .agenda-grid {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    padding: 5px;
+  }
 
-.btn.delete {
-  background: #f9fafb;
-  color: #b91c1c;
-  border-color: #fecaca;
-}
+  .agenda-cell {
+    height: 60px;
+    min-height: 60px;
+    font-size: 12px;
+  }
 
-.btn.delete:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  .agenda-weekdays {
+    gap: 4px;
+    padding: 5px;
+    font-size: 12px;
+  }
 }
 

@@ -29,27 +29,15 @@
         [class.out-month]="!d.inCurrentMonth"
         [class.is-today]="d.isToday"
         [class.has-note]="hasNote(d.date)"
+        [class.has-backend-note]="hasBackendNote(d.date)"
         [class.is-selected]="isSameDate(d.date, selectedDate)"
-        (click)="openDayPanel(d)"
+        (click)="onDayClicked(d.date)"
         tabindex="0"
       >
         <span class="day-number">{{ d.date | date: 'd' }}</span>
         <span class="note-dot" *ngIf="hasNote(d.date)"></span>
+        <span class="backend-note-dot" *ngIf="hasBackendNote(d.date)"></span>
       </div>
-    </div>
-  </div>
-
-  <div class="agenda-panel" [class.open]="panelOpen">
-    <div class="panel-header">
-      <div class="panel-title">{{ selectedDate ? (selectedDate | date: 'fullDate') : 'Selecione um dia' }}</div>
-      <button class="close-btn" (click)="closePanel()">✕</button>
-    </div>
-    <div class="panel-body" *ngIf="selectedDate">
-      <textarea [(ngModel)]="noteText" rows="8" placeholder="Escreva suas anotações para o dia..."></textarea>
-    </div>
-    <div class="panel-actions" *ngIf="selectedDate">
-      <button class="btn save" (click)="saveNote()">Salvar</button>
-      <button class="btn delete" (click)="deleteNote()" [disabled]="!hasNote(selectedDate)">Excluir</button>
     </div>
   </div>
 </div>

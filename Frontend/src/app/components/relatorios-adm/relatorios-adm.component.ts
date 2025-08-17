@@ -77,14 +77,23 @@ export class RelatoriosADMComponent implements OnInit {
   }
 
   private converterAgendamentosParaAppointments(agendamentos: Agendamento[]): Appointment[] {
-    return agendamentos.map(agendamento => ({
-      id: agendamento.Id.toString(),
-      studentName: `Aluno ${agendamento.AlunoId}`, // TODO: Buscar nome real do aluno
-      psychologistName: `Psicólogo ${agendamento.PsicologoId}`, // TODO: Buscar nome real do psicólogo
-      date: new Date(agendamento.Data),
-      time: agendamento.Horario,
-      notes: agendamento.Status
-    }));
+    console.log('Convertendo agendamentos:', agendamentos);
+
+    return agendamentos.map(agendamento => {
+      const studentName = agendamento.Aluno?.Usuario?.Nome || `Aluno ${agendamento.AlunoId}`;
+      const psychologistName = agendamento.Psicologo?.Usuario?.Nome || `Psicólogo ${agendamento.PsicologoId}`;
+
+      console.log(`Agendamento ${agendamento.Id}: Aluno=${studentName}, Psicólogo=${psychologistName}`);
+
+      return {
+        id: agendamento.Id.toString(),
+        studentName: studentName,
+        psychologistName: psychologistName,
+        date: new Date(agendamento.Data),
+        time: agendamento.Horario,
+        notes: agendamento.Status
+      };
+    });
   }
 
   public onMonthChange(month: number): void {
@@ -103,34 +112,63 @@ export class RelatoriosADMComponent implements OnInit {
     const monthLabel = this.monthOptions.find(m => m.value === this.selectedMonth)?.label ?? '';
     const title = `Relatório de Agendamentos - ${monthLabel}/${this.selectedYear}`;
 
-    doc.setFontSize(14);
+    // Título principal
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
     doc.text(title, 40, 40);
 
-    const rows = this.filteredAppointments.map(a => [
-      a.date.toLocaleDateString('pt-BR'),
-      a.time,
-      a.studentName,
-      a.psychologistName,
-      a.notes || ''
-    ]);
+    // Informações do relatório
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Total de agendamentos: ${this.filteredAppointments.length}`, 40, 60);
+    doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, 40, 75);
 
-    autoTable(doc, {
-      startY: 60,
-      head: [[ 'Data', 'Hora', 'Aluno', 'Psicólogo', 'Status' ]],
-      body: rows,
-      styles: { fontSize: 10 },
-      headStyles: { fillColor: [25, 118, 210] },
-      columnStyles: {
-        0: { cellWidth: 80 },
-        1: { cellWidth: 60 },
-        2: { cellWidth: 150 },
-        3: { cellWidth: 150 },
-        4: { cellWidth: 'auto' },
-      }
-    });
+    if (this.filteredAppointments.length === 0) {
+      doc.setFontSize(12);
+      doc.text('Nenhum agendamento encontrado para o período selecionado.', 40, 100);
+    } else {
+      const rows = this.filteredAppointments.map(a => [
+        a.date.toLocaleDateString('pt-BR'),
+        a.time,
+        a.studentName,
+        a.psychologistName,
+        this.getStatusLabel(a.notes || '')
+      ]);
+
+      autoTable(doc, {
+        startY: 100,
+        head: [[ 'Data', 'Hora', 'Aluno', 'Psicólogo', 'Status' ]],
+        body: rows,
+        styles: { fontSize: 9 },
+        headStyles: {
+          fillColor: [25, 118, 210],
+          textColor: [255, 255, 255],
+          fontStyle: 'bold'
+        },
+        columnStyles: {
+          0: { cellWidth: 70 },
+          1: { cellWidth: 50 },
+          2: { cellWidth: 120 },
+          3: { cellWidth: 120 },
+          4: { cellWidth: 60 },
+        },
+        alternateRowStyles: {
+          fillColor: [248, 249, 250]
+        }
+      });
+    }
 
     const fileName = `relatorio-agendamentos-${this.selectedYear}-${String(this.selectedMonth).padStart(2, '0')}.pdf`;
     doc.save(fileName);
+  }
+
+  private getStatusLabel(status: string): string {
+    switch (status) {
+      case 'Pendente': return 'Pendente';
+      case 'Confirmado': return 'Confirmado';
+      case 'Cancelado': return 'Cancelado';
+      default: return status;
+    }
   }
 
   private updateFilteredAppointments(): void {
