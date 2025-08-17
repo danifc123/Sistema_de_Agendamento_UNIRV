@@ -130,3 +130,12 @@ D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\API.runtim
 D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\API.pdb
 D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\obj\Debug\net9.0\API.genruntimeconfig.cache
 D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\obj\Debug\net9.0\ref\API.dll
+D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\BCrypt.Net-Next.dll
+D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll

@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import {Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, forwardRef } from '@angular/core';
 import {
   FormControl,
   FormGroupDirective,
@@ -6,6 +6,8 @@ import {
   Validators,
   FormsModule,
   ReactiveFormsModule,
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR
 } from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
 import {MatInputModule} from '@angular/material/input';
@@ -23,9 +25,16 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   standalone: true,
   imports: [FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
   templateUrl: './input.component.html',
-  styleUrl: './input.component.scss'
+  styleUrl: './input.component.scss',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => InputComponent),
+      multi: true
+    }
+  ]
 })
-export class InputComponent implements OnInit, OnChanges {
+export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   @Input({required: true}) label!: string;
   @Input() type: 'text' | 'email' | 'password' | 'date' | 'time' | 'textarea' = 'text';
   @Input() placeholder: string = '';
@@ -33,7 +42,7 @@ export class InputComponent implements OnInit, OnChanges {
   @Input() value: any = '';
   @Output() valueChange = new EventEmitter<any>();
 
-  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
+  emailFormControl = new FormControl('', [Validators.required]);
   passwordFormControl = new FormControl('', [Validators.required]);
   textFormControl = new FormControl('');
 
@@ -63,5 +72,27 @@ export class InputComponent implements OnInit, OnChanges {
   onValueChange(newValue: any) {
     this.value = newValue;
     this.valueChange.emit(newValue);
+    this.onChange(newValue);
+  }
+
+  // ControlValueAccessor methods
+  private onChange = (value: any) => {};
+  private onTouched = () => {};
+
+  writeValue(value: any): void {
+    this.value = value;
+    this.updateFormControlValue();
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    // Implement if needed
   }
 }

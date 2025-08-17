@@ -1,6 +1,7 @@
-import { Component, HostListener } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { RouterModule, Router } from '@angular/router';
 import { MenuComponent } from '../../components/menu/menu.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-layout-default',
@@ -9,8 +10,21 @@ import { MenuComponent } from '../../components/menu/menu.component';
   templateUrl: './layout-default.component.html',
   styleUrl: './layout-default.component.scss'
 })
-export class LayoutDefaultComponent {
+export class LayoutDefaultComponent implements OnInit {
   isMenuOpen = false;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    // Verificar se o usuário está autenticado
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/auth']);
+      return;
+    }
+  }
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
