@@ -1,6 +1,31 @@
 <div class="login-container">
-  <app-input label="Email"></app-input>
-  <app-input label="Password"></app-input>
+  <app-input
+    label="Email"
+    type="email"
+    [(ngModel)]="loginData.email"
+    name="email"
+    required>
+  </app-input>
+
+  <app-input
+    label="Senha"
+    type="password"
+    [(ngModel)]="loginData.senha"
+    name="senha"
+    required>
+  </app-input>
+
+  @if (errorMessage) {
+    <div class="error-message">
+      {{ errorMessage }}
+    </div>
+  }
+
   <a routerLink="/auth/forgetpassword">Esqueceu sua senha?</a>
-  <app-button button="Login"></app-button>
+
+  <app-button
+    button="Login"
+    (click)="onLogin()"
+    [disabled]="loading">
+  </app-button>
 </div>

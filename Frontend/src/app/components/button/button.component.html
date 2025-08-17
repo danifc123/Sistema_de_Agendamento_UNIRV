@@ -1,6 +1,6 @@
 @if(button === "Login" || (button === "login") || (button === "Registrar") || (button === "registrar") || (button === "Enviar") || (button === "enviar")){
 <div class="button-container">
-  <button class="button" (click)="clicked.emit()">{{button}}</button>
+  <button class="button" (click)="clicked.emit()" [disabled]="disabled">{{button}}</button>
 </div>
 }
 @if(button === "Agendamento" || (button === "agendamento")){
@@ -22,22 +22,22 @@ edit
 }
 @if(button === "Salvar" || button === "salvar"){
 <div class="button-container">
-  <button class="button" (click)="clicked.emit()">{{button}}</button>
+  <button class="button" (click)="clicked.emit()" [disabled]="disabled">{{button}}</button>
 </div>
 }
 @if(button === "Agendar" || button === "agendar" ){
 <div class="button-container">
-  <button class="button" (click)="clicked.emit()">{{button}}</button>
+  <button class="button" (click)="clicked.emit()" [disabled]="disabled">{{button}}</button>
 </div>
 }
 @if(button === "Cancelar" || button === "cancelar"){
 <div class="button-container">
-  <button class="button cancelar" (click)="clicked.emit()">{{button}}</button>
+  <button class="button cancelar" (click)="clicked.emit()" [disabled]="disabled">{{button}}</button>
 </div>
 }
 @if(button === "Atualizar" || button === "atualizar"){
 <div class="button-container">
-  <button class="button" (click)="clicked.emit()">{{button}}</button>
+  <button class="button" (click)="clicked.emit()" [disabled]="disabled">{{button}}</button>
 </div>
 }
 @if(button === "Excluir" || button === "excluir"){

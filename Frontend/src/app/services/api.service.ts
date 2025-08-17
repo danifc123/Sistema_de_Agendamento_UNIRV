@@ -11,6 +11,7 @@ export class ApiService {
   constructor(private http: HttpClient) { }
 
   // Métodos genéricos para CRUD
+  // O interceptor AuthInterceptor adicionará automaticamente o token JWT
   get<T>(endpoint: string): Observable<T[]> {
     return this.http.get<T[]>(`${this.baseUrl}/${endpoint}`);
   }

@@ -3,9 +3,7 @@
   <mat-form-field class="input-container-email">
     <mat-label>{{label}}</mat-label>
     <input class="input-email" type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher" [placeholder]="placeholder" title="Email" (input)="onValueChange($any($event.target).value)">
-    @if (emailFormControl.hasError('email') && !emailFormControl.hasError('required')) {
-    <mat-error>Please enter a valid email address</mat-error>
-    }
+
     @if (emailFormControl.hasError('required')) {
     <mat-error>Email is <strong>required</strong></mat-error>
     }

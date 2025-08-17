@@ -1,0 +1,71 @@
+### Teste de Registro
+POST http://localhost:5160/api/auth/register
+Content-Type: application/json
+
+{
+  "nome": "Admin Teste",
+  "email": "admin@teste.com",
+  "senha": "123456",
+  "confirmarSenha": "123456",
+  "tipo": "Admin"
+}
+
+### Teste de Login Root
+POST http://localhost:5160/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "root",
+  "senha": "1234"
+}
+
+### Teste de Login Root (maiúsculo)
+POST http://localhost:5160/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "ROOT",
+  "senha": "1234"
+}
+
+### Teste de Login
+POST http://localhost:5160/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@teste.com",
+  "senha": "123456"
+}
+
+### Teste de Login Root com senha errada
+POST http://localhost:5160/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "root",
+  "senha": "senhaerrada"
+}
+
+### Teste de Login com credenciais inválidas
+POST http://localhost:5160/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@teste.com",
+  "senha": "senhaerrada"
+}
+
+### Teste de endpoint protegido (substitua TOKEN_AQUI pelo token retornado no login)
+GET http://localhost:5160/api/auth/me
+Authorization: Bearer TOKEN_AQUI
+
+### Teste de endpoint sem token
+GET http://localhost:5160/api/auth/me
+
+### Teste de refresh token (substitua REFRESH_TOKEN_AQUI pelo refresh token retornado no login)
+POST http://localhost:5160/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "REFRESH_TOKEN_AQUI"
+} 

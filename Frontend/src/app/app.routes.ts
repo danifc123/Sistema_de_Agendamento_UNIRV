@@ -12,6 +12,8 @@ import { CadastrarAlunoComponent } from './models/cadastrar-aluno/cadastrar-alun
 import { CadastrarPsicologoComponent } from './models/cadastrar-psicologo/cadastrar-psicologo.component';
 import { EditarAlunoComponent } from './models/editar-aluno/editar-aluno.component';
 import { EditarPsicologoComponent } from './models/editar-psicologo/editar-psicologo.component';
+import { AuthGuard } from './guards/auth.guard';
+import { RoleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -38,6 +40,7 @@ export const routes: Routes = [
   {
     path: '',
     component: LayoutDefaultComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -50,22 +53,32 @@ export const routes: Routes = [
       {
         path: 'relatorio',
         component: RelatorioComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['Admin', 'Psicologo'] }
       },
       {
         path: 'cadastrar-aluno',
         component: CadastrarAlunoComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['Admin'] }
       },
       {
         path: 'cadastrar-psicologo',
         component: CadastrarPsicologoComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['Admin'] }
       },
       {
         path: 'editar-aluno',
         component: EditarAlunoComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['Admin'] }
       },
       {
         path: 'editar-psicologo',
         component: EditarPsicologoComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['Admin'] }
       }
     ]
   },

@@ -15,7 +15,7 @@ namespace SeuProjeto.Models
         public string Email { get; set; }
 
         [Required]
-        public string Senha { get; set; }
+        public string Senha { get; set; } = string.Empty;
 
         [Required]
         public TipoUsuario Tipo { get; set; }

@@ -1,7 +1,8 @@
 import { ApplicationConfig, importProvidersFrom, LOCALE_ID } from '@angular/core';
 import { provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withInterceptors } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -22,7 +23,10 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimations(),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(
+      withInterceptorsFromDi(),
+      withInterceptors([AuthInterceptor])
+    ),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     importProvidersFrom(
       CalendarModule.forRoot({

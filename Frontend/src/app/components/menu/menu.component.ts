@@ -1,5 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-menu',
@@ -11,7 +12,10 @@ import { Router } from '@angular/router';
 export class MenuComponent {
   @Output() menuItemClicked = new EventEmitter<void>();
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   cadastrarAluno(): void {
     this.router.navigate(['/cadastrar-aluno']);
@@ -34,8 +38,8 @@ export class MenuComponent {
   }
 
   sair(): void {
-    // Implementar lógica de logout quando necessário
-    console.log('Sair - funcionalidade a ser implementada');
+    this.authService.logout();
+    this.router.navigate(['/auth']);
     this.menuItemClicked.emit();
   }
 }
