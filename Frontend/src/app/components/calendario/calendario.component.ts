@@ -19,6 +19,7 @@ registerLocaleData(localePt);
 })
 export class CalendarioComponent{
 @Input ({required : true}) tipo: "Calendario"| "Agenda" = "Calendario";
+@Input() anotacoesBackend: string[] = []; // Array de datas que têm anotações (localStorage)
 @Output() dataSelecionada = new EventEmitter<{dataISO: string, dataExibicao: string}>();
 
   public selectedDate: Date | null = null;
@@ -113,6 +114,13 @@ export class CalendarioComponent{
     return typeof this.notesMap[key] === 'string' && this.notesMap[key].trim().length > 0;
   }
 
+  // Verifica se há anotações salvas no localStorage para a data
+  public hasBackendNote(date: Date | null): boolean {
+    if (!date) return false;
+    const key = this.formatDateKey(date);
+    return this.anotacoesBackend.includes(key);
+  }
+
   protected getNote(date: Date | null): string | undefined {
     if (!date) return undefined;
     return this.notesMap[this.formatDateKey(date)];
@@ -152,6 +160,7 @@ export class CalendarioComponent{
   }
 
   onDayClicked(date: Date): void {
+    console.log('Dia clicado:', date);
     this.selectedDate = date;
 
     // Data no formato ISO para a API - usando método que preserva o fuso horário local
@@ -160,6 +169,8 @@ export class CalendarioComponent{
     const day = date.getDate().toString().padStart(2, '0');
     const dataISO = `${year}-${month}-${day}`;
 
+    console.log('Data ISO formatada:', dataISO);
+
     // Data formatada para exibição ao usuário
     const dataExibicao = date.toLocaleDateString('pt-BR', {
       weekday: 'long',
@@ -167,6 +178,8 @@ export class CalendarioComponent{
       month: 'long',
       day: 'numeric'
     });
+
+    console.log('Emitindo evento:', { dataISO, dataExibicao });
 
     // Emitir ambos os formatos
     this.dataSelecionada.emit({

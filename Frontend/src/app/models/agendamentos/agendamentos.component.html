@@ -1,1 +1,70 @@
-<app-calendario tipo ="Agenda"></app-calendario>
+<div class="agendamentos-container">
+  <div class="calendario-section">
+    <div class="header-section">
+      <h2>Minha Agenda</h2>
+    </div>
+
+    <app-calendario
+      tipo="Agenda"
+      [anotacoesBackend]="datasComAnotacoes"
+      (dataSelecionada)="onDataSelecionada($event)">
+    </app-calendario>
+  </div>
+
+  <div class="anotacoes-section" *ngIf="dataSelecionada">
+    <div class="anotacao-header">
+      <h3>Anotações para {{ dataSelecionada | date:'dd/MM/yyyy' }}</h3>
+      <div class="anotacao-info" *ngIf="anotacaoAtual">
+        <small>
+          Criada em: {{ anotacaoAtual.dataCriacao | date:'dd/MM/yyyy HH:mm' }}
+          <span *ngIf="anotacaoAtual.dataModificacao !== anotacaoAtual.dataCriacao">
+            | Editada em: {{ anotacaoAtual.dataModificacao | date:'dd/MM/yyyy HH:mm' }}
+          </span>
+        </small>
+      </div>
+    </div>
+
+    <div class="anotacao-content">
+      <div class="form-group">
+        <label for="anotacao-texto">Sua anotação:</label>
+        <textarea
+          id="anotacao-texto"
+          [(ngModel)]="textoAnotacao"
+          placeholder="Escreva suas anotações para este dia..."
+          rows="8">
+        </textarea>
+      </div>
+
+      <div class="anotacao-actions">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="salvarAnotacao()"
+          [disabled]="!textoAnotacao.trim()">
+          💾 Salvar Anotação
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="deletarAnotacao()"
+          [disabled]="!anotacaoAtual">
+          🗑️ Excluir Anotação
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sem-data-selecionada" *ngIf="!dataSelecionada">
+    <div class="empty-state">
+      <div class="empty-icon">📅</div>
+      <h3>Selecione uma data</h3>
+      <p>Clique em qualquer data no calendário para adicionar ou editar anotações.</p>
+      <div class="stats" *ngIf="anotacoes.length > 0">
+        <small>Você tem {{ anotacoes.length }} anotação(ões) salva(s)</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+
