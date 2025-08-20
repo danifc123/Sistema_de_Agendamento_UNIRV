@@ -9,6 +9,7 @@ import { SelectHorarioComponent } from "../../components/select-horario/select-h
 import { AgendamentosService } from '../../services/agendamentos.service';
 import { AlunosService } from '../../services/alunos.service';
 import { PsicologosService } from '../../services/psicologos.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -39,7 +40,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private agendamentosService: AgendamentosService,
     private alunosService: AlunosService,
-    private psicologosService: PsicologosService
+    private psicologosService: PsicologosService,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -116,9 +118,9 @@ export class HomeComponent implements OnInit {
 
     // Verificar disponibilidade antes de criar o agendamento
     this.agendamentosService.verificarDisponibilidade(
-      agendamentoData.AlunoId, 
-      agendamentoData.PsicologoId, 
-      agendamentoData.Data, 
+      agendamentoData.AlunoId,
+      agendamentoData.PsicologoId,
+      agendamentoData.Data,
       agendamentoData.Horario
     ).subscribe({
       next: (resultado) => {
@@ -152,7 +154,7 @@ export class HomeComponent implements OnInit {
       error: (error) => {
         console.error('Erro ao criar agendamento:', error);
         console.error('Detalhes do erro:', error.error);
-        
+
         // Verificar se é um erro de validação do backend
         if (error.error && error.error.message) {
           alert(`Erro: ${error.error.message}`);
@@ -179,7 +181,7 @@ export class HomeComponent implements OnInit {
     this.dataExibicao = dadosData.dataExibicao; // Para exibição
     this.dataSelecionada = dadosData.dataExibicao; // Para mostrar no template
     console.log('Data armazenada para API:', this.data);
-    
+
     // Teste: verificar se a data está correta
     const dataTeste = new Date(dadosData.dataISO);
     console.log('Data convertida de volta para teste:', dataTeste.toLocaleDateString('pt-BR'));
@@ -202,11 +204,11 @@ export class HomeComponent implements OnInit {
           // Mostrar aviso visual
           const mensagem = resultado.message;
           console.log('Horário indisponível:', mensagem);
-          
+
           // Você pode implementar uma notificação visual aqui
           // Por exemplo, mudar a cor do botão ou mostrar um toast
           alert(`⚠️ ${mensagem}\n\nPor favor, escolha outro horário.`);
-          
+
           // Limpar o horário selecionado
           this.horario = '';
         }
