@@ -33,41 +33,35 @@ export class LoginComponent {
       return;
     }
 
-    // Verificar se é o usuário root
-    if (this.loginData.email.toLowerCase() === 'root' && this.loginData.senha === '1234') {
-      this.loading = true;
-      this.errorMessage = '';
+    this.loading = true;
+    this.errorMessage = '';
 
-      // Simular login do usuário root
-      const rootLoginData: LoginRequest = {
-        email: 'root',
-        senha: '1234'
-      };
+    const credentials: LoginRequest = {
+      email: this.loginData.email,
+      senha: this.loginData.senha
+    };
 
-      console.log('Tentando login com:', rootLoginData);
+    console.log('Tentando login com:', credentials);
 
-      this.authService.login(rootLoginData).subscribe({
-                next: (response) => {
-          this.loading = false;
-          console.log('Resposta do login:', response);
+    this.authService.login(credentials).subscribe({
+      next: (response) => {
+        this.loading = false;
+        console.log('Resposta do login:', response);
 
-          if (response.Success) {
-            console.log('Login bem-sucedido, redirecionando...');
-            const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-            console.log('URL de retorno:', returnUrl);
-            this.router.navigate([returnUrl]);
-          } else {
-            this.errorMessage = response.Message;
-          }
-        },
-        error: (error) => {
-          this.loading = false;
-          console.error('Erro no login:', error);
-          this.errorMessage = 'Erro ao fazer login. Tente novamente.';
+        if (response.Success) {
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+          this.router.navigate([returnUrl]);
+        } else {
+          this.errorMessage = response.Message || 'Credenciais inválidas.';
         }
-      });
-    } else {
-      this.errorMessage = 'Credenciais inválidas. Use root/1234 para acesso de desenvolvedor.';
-    }
+      },
+      error: (error) => {
+        this.loading = false;
+        console.error('Erro no login:', error);
+        // Tentar mostrar mensagem vinda do backend se existir
+        const backendMsg = error?.error?.Message || error?.error?.message;
+        this.errorMessage = backendMsg || 'Erro ao fazer login. Tente novamente.';
+      }
+    });
   }
 }

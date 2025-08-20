@@ -93,6 +93,21 @@ app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Re-hash de senhas em texto puro (fallback):
+using (var scope = app.Services.CreateScope())
+{
+    var ctx = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var usuariosTextoClaro = ctx.Usuarios.Where(u => !u.Senha.StartsWith("$2"));
+    foreach (var u in usuariosTextoClaro)
+    {
+        u.Senha = BCrypt.Net.BCrypt.HashPassword(u.Senha);
+    }
+    if (usuariosTextoClaro.Any())
+    {
+        ctx.SaveChanges();
+    }
+}
+
 app.MapControllers();
 
 app.Run();

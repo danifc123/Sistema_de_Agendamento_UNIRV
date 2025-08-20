@@ -42,6 +42,10 @@ namespace SeuProjeto.Controllers
         [HttpPost]
         public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
         {
+            // Normalizar email e hash da senha
+            usuario.Email = usuario.Email?.Trim().ToLower();
+            usuario.Senha = BCrypt.Net.BCrypt.HashPassword(usuario.Senha);
+
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 
@@ -74,11 +78,16 @@ namespace SeuProjeto.Controllers
                 }
                 if (data.ContainsKey("Email"))
                 {
-                    usuario.Email = data["Email"].ToString();
+                    usuario.Email = data["Email"].ToString()?.Trim().ToLower();
                 }
                 if (data.ContainsKey("Senha"))
                 {
-                    usuario.Senha = data["Senha"].ToString();
+                    var senhaNova = data["Senha"].ToString();
+                    if (!string.IsNullOrWhiteSpace(senhaNova))
+                    {
+                        // Re-hash somente se um novo texto de senha for fornecido
+                        usuario.Senha = BCrypt.Net.BCrypt.HashPassword(senhaNova);
+                    }
                 }
                 if (data.ContainsKey("Tipo"))
                 {

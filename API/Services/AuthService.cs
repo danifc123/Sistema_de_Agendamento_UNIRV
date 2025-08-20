@@ -50,7 +50,7 @@ namespace SeuProjeto.Services
                 var usuario = await _context.Usuarios
                     .Include(u => u.Aluno)
                     .Include(u => u.Psicologo)
-                    .FirstOrDefaultAsync(u => u.Email == request.Email);
+                    .FirstOrDefaultAsync(u => u.Email.ToLower() == request.Email.Trim().ToLower());
 
                 if (usuario == null)
                 {
@@ -101,7 +101,7 @@ namespace SeuProjeto.Services
             {
                 // Verificar se email já existe
                 var existingUser = await _context.Usuarios
-                    .FirstOrDefaultAsync(u => u.Email == request.Email);
+                    .FirstOrDefaultAsync(u => u.Email.ToLower() == request.Email.Trim().ToLower());
 
                 if (existingUser != null)
                 {
@@ -159,7 +159,7 @@ namespace SeuProjeto.Services
             return await _context.Usuarios
                 .Include(u => u.Aluno)
                 .Include(u => u.Psicologo)
-                .FirstOrDefaultAsync(u => u.Email == email);
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == email.Trim().ToLower());
         }
 
         public async Task<bool> ValidateUserAsync(string email, string senha)
