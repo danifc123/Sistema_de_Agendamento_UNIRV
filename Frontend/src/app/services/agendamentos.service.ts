@@ -79,6 +79,12 @@ export class AgendamentosService {
     return this.apiService.patch<Agendamento>('agendamentos', id, { Status: status });
   }
 
+  // Aceitar (confirmar) um agendamento: usa o endpoint PATCH /agendamentos/{id}/status
+  aceitarAgendamento(id: number): Observable<void> {
+    // Enviar objeto com Status para o backend
+    return this.http.patch<void>(`${this.baseUrl}/agendamentos/${id}/status`, { Status: 'Confirmado' });
+  }
+
   deleteAgendamento(id: number): Observable<Agendamento> {
     return this.apiService.delete<Agendamento>('agendamentos', id);
   }
@@ -91,7 +97,7 @@ export class AgendamentosService {
       data: data,
       horario: horario
     });
-    
+
     return this.http.get<{disponivel: boolean, message: string, tipo?: string}>(`${this.baseUrl}/agendamentos/verificar-disponibilidade?${params}`);
   }
 }

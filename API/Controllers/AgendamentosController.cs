@@ -225,27 +225,40 @@ namespace SeuProjeto.Controllers
 
         // PATCH: api/agendamentos/5/status
         [HttpPatch("{id}/status")]
-        public async Task<IActionResult> UpdateStatus(int id, [FromBody] StatusAgendamento status)
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] AgendamentoStatusUpdate update)
         {
-            var agendamento = await _context.Agendamentos.FindAsync(id);
-            if (agendamento == null)
+            try
             {
-                return NotFound();
-            }
+                if (update == null)
+                {
+                    return BadRequest(new { message = "Corpo da requisição inválido" });
+                }
 
-            agendamento.Status = status;
-            
-            if (status == StatusAgendamento.Confirmado)
-            {
-                agendamento.DataConfirmacao = DateTime.Now;
-            }
-            else if (status == StatusAgendamento.Cancelado)
-            {
-                agendamento.DataCancelamento = DateTime.Now;
-            }
+                var agendamento = await _context.Agendamentos.FindAsync(id);
+                if (agendamento == null)
+                {
+                    return NotFound(new { message = $"Agendamento {id} não encontrado" });
+                }
 
-            await _context.SaveChangesAsync();
-            return NoContent();
+                var status = update.Status;
+                agendamento.Status = status;
+                
+                if (status == StatusAgendamento.Confirmado)
+                {
+                    agendamento.DataConfirmacao = DateTime.UtcNow;
+                }
+                else if (status == StatusAgendamento.Cancelado)
+                {
+                    agendamento.DataCancelamento = DateTime.UtcNow;
+                }
+
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro ao atualizar status do agendamento", detail = ex.Message });
+            }
         }
 
         // DELETE: api/agendamentos/5
