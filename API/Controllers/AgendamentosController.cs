@@ -2,11 +2,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SeuProjeto.Data;
 using SeuProjeto.Models;
+using System.Security.Claims;
+
+using SeuProjeto.Attributes;
 
 namespace SeuProjeto.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class AgendamentosController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -16,16 +20,42 @@ namespace SeuProjeto.Controllers
             _context = context;
         }
 
+        private int? GetCurrentUserId()
+        {
+            var idClaim = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(idClaim, out var userId)) return userId;
+            return null;
+        }
+
+        private bool IsAluno() => string.Equals(User?.FindFirst(ClaimTypes.Role)?.Value, TipoUsuario.Aluno.ToString(), StringComparison.OrdinalIgnoreCase);
+        private bool IsPsicologo() => string.Equals(User?.FindFirst(ClaimTypes.Role)?.Value, TipoUsuario.Psicologo.ToString(), StringComparison.OrdinalIgnoreCase);
+        private bool IsAdmin() => string.Equals(User?.FindFirst(ClaimTypes.Role)?.Value, TipoUsuario.Admin.ToString(), StringComparison.OrdinalIgnoreCase);
+
         // GET: api/agendamentos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Agendamento>>> GetAgendamentos()
         {
-            var agendamentos = await _context.Agendamentos
+            var query = _context.Agendamentos
                 .Include(a => a.Aluno)
                     .ThenInclude(al => al.Usuario)
                 .Include(a => a.Psicologo)
                     .ThenInclude(p => p.Usuario)
-                .ToListAsync();
+                .AsQueryable();
+
+            var userId = GetCurrentUserId();
+            if (IsAluno() && userId.HasValue)
+            {
+                // Aluno só enxerga seus próprios registros (AlunoId == UsuarioId)
+                query = query.Where(a => a.AlunoId == userId.Value);
+            }
+            else if (IsPsicologo() && userId.HasValue)
+            {
+                // Psicólogo vê apenas seus atendimentos
+                query = query.Where(a => a.PsicologoId == userId.Value);
+            }
+            // Admin vê tudo
+
+            var agendamentos = await query.ToListAsync();
 
             Console.WriteLine($"Retornando {agendamentos.Count} agendamentos");
             foreach (var agendamento in agendamentos)
@@ -52,6 +82,16 @@ namespace SeuProjeto.Controllers
                 return NotFound();
             }
 
+            var userId = GetCurrentUserId();
+            if (IsAluno() && userId.HasValue && agendamento.AlunoId != userId.Value)
+            {
+                return Forbid();
+            }
+            if (IsPsicologo() && userId.HasValue && agendamento.PsicologoId != userId.Value)
+            {
+                return Forbid();
+            }
+
             return agendamento;
         }
 
@@ -59,22 +99,50 @@ namespace SeuProjeto.Controllers
         [HttpGet("aluno/{alunoId}")]
         public async Task<ActionResult<IEnumerable<Agendamento>>> GetAgendamentosPorAluno(int alunoId)
         {
-            return await _context.Agendamentos
+            var userId = GetCurrentUserId();
+            if (IsAluno())
+            {
+                // Aluno só pode consultar o próprio ID
+                if (!userId.HasValue || alunoId != userId.Value) return Forbid();
+            }
+
+            var query = _context.Agendamentos
                 .Include(a => a.Psicologo)
                     .ThenInclude(p => p.Usuario)
-                .Where(a => a.AlunoId == alunoId)
-                .ToListAsync();
+                .Where(a => a.AlunoId == alunoId);
+
+            if (IsPsicologo() && userId.HasValue)
+            {
+                // Psicólogo só vê seus próprios atendimentos deste aluno
+                query = query.Where(a => a.PsicologoId == userId.Value);
+            }
+
+            return await query.ToListAsync();
         }
 
         // GET: api/agendamentos/psicologo/5
         [HttpGet("psicologo/{psicologoId}")]
         public async Task<ActionResult<IEnumerable<Agendamento>>> GetAgendamentosPorPsicologo(int psicologoId)
         {
-            return await _context.Agendamentos
+            var userId = GetCurrentUserId();
+            if (IsPsicologo())
+            {
+                // Psicólogo só pode consultar o próprio ID
+                if (!userId.HasValue || psicologoId != userId.Value) return Forbid();
+            }
+
+            var query = _context.Agendamentos
                 .Include(a => a.Aluno)
                     .ThenInclude(al => al.Usuario)
-                .Where(a => a.PsicologoId == psicologoId)
-                .ToListAsync();
+                .Where(a => a.PsicologoId == psicologoId);
+
+            if (IsAluno() && userId.HasValue)
+            {
+                // Aluno só vê seus próprios registros com esse psicólogo
+                query = query.Where(a => a.AlunoId == userId.Value);
+            }
+
+            return await query.ToListAsync();
         }
 
         // GET: api/agendamentos/verificar-disponibilidade
@@ -94,6 +162,16 @@ namespace SeuProjeto.Controllers
             if (!TimeOnly.TryParse(horario, out var horarioParsed))
             {
                 return BadRequest(new { message = "Horário inválido" });
+            }
+
+            var userId = GetCurrentUserId();
+            if (IsAluno() && userId.HasValue && alunoId != userId.Value)
+            {
+                return Forbid();
+            }
+            if (IsPsicologo() && userId.HasValue && psicologoId != userId.Value)
+            {
+                return Forbid();
             }
 
             // Verificar se o aluno já tem agendamento na mesma data e horário
@@ -147,6 +225,16 @@ namespace SeuProjeto.Controllers
         {
             Console.WriteLine($"Recebido agendamento - Data: {agendamento.Data}, Horário: {agendamento.Horario}");
             Console.WriteLine($"AlunoId: {agendamento.AlunoId}, PsicologoId: {agendamento.PsicologoId}");
+            
+            var userId = GetCurrentUserId();
+            if (IsAluno() && userId.HasValue && agendamento.AlunoId != userId.Value)
+            {
+                return Forbid();
+            }
+            if (IsPsicologo() && userId.HasValue && agendamento.PsicologoId != userId.Value)
+            {
+                return Forbid();
+            }
             
             // Validar se o aluno já tem agendamento na mesma data e horário
             var agendamentoExistenteAluno = await _context.Agendamentos
@@ -202,6 +290,16 @@ namespace SeuProjeto.Controllers
                 return BadRequest();
             }
 
+            var userId = GetCurrentUserId();
+            if (IsAluno() && userId.HasValue && agendamento.AlunoId != userId.Value)
+            {
+                return Forbid();
+            }
+            if (IsPsicologo() && userId.HasValue && agendamento.PsicologoId != userId.Value)
+            {
+                return Forbid();
+            }
+
             _context.Entry(agendamento).State = EntityState.Modified;
 
             try
@@ -240,6 +338,16 @@ namespace SeuProjeto.Controllers
                     return NotFound(new { message = $"Agendamento {id} não encontrado" });
                 }
 
+                var userId = GetCurrentUserId();
+                if (IsAluno() && userId.HasValue && agendamento.AlunoId != userId.Value)
+                {
+                    return Forbid();
+                }
+                if (IsPsicologo() && userId.HasValue && agendamento.PsicologoId != userId.Value)
+                {
+                    return Forbid();
+                }
+
                 var status = update.Status;
                 agendamento.Status = status;
                 
@@ -267,8 +375,22 @@ namespace SeuProjeto.Controllers
         {
             try
             {
-                Console.WriteLine($"Tentando excluir agendamento com ID: {id}");
-                
+                var agendamento = await _context.Agendamentos.FindAsync(id);
+                if (agendamento == null)
+                {
+                    return NotFound();
+                }
+
+                var userId = GetCurrentUserId();
+                if (IsAluno() && userId.HasValue && agendamento.AlunoId != userId.Value)
+                {
+                    return Forbid();
+                }
+                if (IsPsicologo() && userId.HasValue && agendamento.PsicologoId != userId.Value)
+                {
+                    return Forbid();
+                }
+
                 // Usar SQL raw para garantir que todos os relacionamentos sejam excluídos
                 using var transaction = await _context.Database.BeginTransactionAsync();
                 
@@ -299,16 +421,14 @@ namespace SeuProjeto.Controllers
                 }
                 catch (Exception ex)
                 {
+                    await _context.Database.ExecuteSqlRawAsync("SET session_replication_role = DEFAULT;");
                     await transaction.RollbackAsync();
-                    Console.WriteLine($"Erro na transação, fazendo rollback: {ex.Message}");
-                    throw;
+                    return StatusCode(500, new { message = "Erro ao excluir agendamento", detail = ex.Message });
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro ao excluir agendamento: {ex.Message}");
-                Console.WriteLine($"StackTrace: {ex.StackTrace}");
-                return BadRequest($"Erro ao excluir agendamento: {ex.Message}");
+                return StatusCode(500, new { message = "Erro ao processar a exclusão", detail = ex.Message });
             }
         }
 

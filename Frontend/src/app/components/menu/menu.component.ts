@@ -1,11 +1,12 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss'
 })
@@ -16,6 +17,10 @@ export class MenuComponent {
     private router: Router,
     private authService: AuthService
   ) {}
+
+  isAdmin(): boolean { return this.authService.isAdmin(); }
+  isPsicologo(): boolean { return this.authService.isPsicologo(); }
+  isAluno(): boolean { return this.authService.isAluno(); }
 
   cadastrarAluno(): void {
     this.router.navigate(['/cadastrar-aluno']);

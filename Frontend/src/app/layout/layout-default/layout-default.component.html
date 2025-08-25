@@ -2,16 +2,14 @@
   <img class="layout-defaul-logo" src="logo/Logo.png" alt="logoUnirv">
   <div class="user-menu-container">
     <img class="layout-defaul-photo" (click)="toggleMenu()" src="img/Ellipse.png" alt="fotousuario">
-    @if(isMenuOpen){
-    <app-menu (menuItemClicked)="onMenuItemClicked()"/>
-    }
+    <app-menu *ngIf="isMenuOpen" (menuItemClicked)="onMenuItemClicked()"></app-menu>
   </div>
 </header>
 <nav class="layout-defaul-nav">
   <ul class="layout-defaul-list">
     <li><a routerLink="/">Agendar</a></li>
     <li><a routerLink="/agendamentos">Calendários</a></li>
-    <li><a routerLink="/relatorio">Relatórios</a></li>
+    <li *ngIf="!isAluno()"><a routerLink="/relatorio">Relatórios</a></li>
   </ul>
 </nav>
 <div class="layout-default-contain">
