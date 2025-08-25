@@ -1,9 +1,14 @@
 <div class="menu-container">
   <div class="menu-content">
-    <button class="menu-buttons" (click)="cadastrarAluno()">Cadastrar Aluno</button>
-    <button class="menu-buttons" (click)="editarAluno()">Editar Aluno</button>
-    <button class="menu-buttons" (click)="cadastrarPsicologo()">Cadastrar Psicólogo</button>
-    <button class="menu-buttons" (click)="editarPsicologo()">Editar Psicólogo</button>
-    <button class="menu-buttons" (click)="sair()">Sair</button>
+    <ng-container *ngIf="!isAluno(); else alunoMenu">
+      <button class="menu-buttons" *ngIf="isAdmin()" (click)="cadastrarAluno()">Cadastrar Aluno</button>
+      <button class="menu-buttons" *ngIf="isAdmin()" (click)="editarAluno()">Editar Aluno</button>
+      <button class="menu-buttons" *ngIf="isAdmin()" (click)="cadastrarPsicologo()">Cadastrar Psicólogo</button>
+      <button class="menu-buttons" *ngIf="isAdmin()" (click)="editarPsicologo()">Editar Psicólogo</button>
+      <button class="menu-buttons" (click)="sair()">Sair</button>
+    </ng-container>
+    <ng-template #alunoMenu>
+      <button class="menu-buttons" (click)="sair()">Sair</button>
+    </ng-template>
   </div>
 </div>

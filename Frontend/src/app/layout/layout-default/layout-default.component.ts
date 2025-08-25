@@ -2,11 +2,12 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { MenuComponent } from '../../components/menu/menu.component';
 import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-layout-default',
   standalone: true,
-  imports: [RouterModule, MenuComponent],
+  imports: [RouterModule, MenuComponent, CommonModule],
   templateUrl: './layout-default.component.html',
   styleUrl: './layout-default.component.scss'
 })
@@ -24,6 +25,10 @@ export class LayoutDefaultComponent implements OnInit {
       this.router.navigate(['/auth']);
       return;
     }
+  }
+
+  isAluno(): boolean {
+    return this.authService.isAluno();
   }
 
   toggleMenu() {

@@ -40,7 +40,15 @@
         </td>
       </ng-container>
 
-      <!-- Edit Column -->
+      <!-- Aceitar Column (Aluno) -->
+      <ng-container matColumnDef="aceitar">
+        <th mat-header-cell *matHeaderCellDef> Aceitar </th>
+        <td mat-cell *matCellDef="let row">
+          <app-button button="Aceitar" (clicked)="onAceitar(row)" [disabled]="row.Status.toLowerCase() !== 'pendente'"></app-button>
+        </td>
+      </ng-container>
+
+      <!-- Edit Column (demais papéis) -->
       <ng-container matColumnDef="edit">
         <th mat-header-cell *matHeaderCellDef> Editar </th>
         <td mat-cell *matCellDef="let row">
@@ -56,7 +64,7 @@
         </td>
       </ng-container>
 
-      <!-- Excluir Column -->
+      <!-- Excluir Column (demais papéis) -->
       <ng-container matColumnDef="excluir">
         <th mat-header-cell *matHeaderCellDef> Excluir </th>
         <td mat-cell *matCellDef="let row">

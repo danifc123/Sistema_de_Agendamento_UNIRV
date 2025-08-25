@@ -11,6 +11,7 @@ import { EditAgendamentoDialogComponent } from "../dialogs/edit-agendamento-dial
 import { InfoAgendamentoDialogComponent } from "../dialogs/info-agendamento-dialog/info-agendamento-dialog.component";
 import { AgendamentosService, Agendamento } from '../../services/agendamentos.service';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 export interface AgendamentoDisplay {
   Id: number;
@@ -38,12 +39,22 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private agendamentosService: AgendamentosService
+    private agendamentosService: AgendamentosService,
+    private authService: AuthService
   ) {
     this.dataSource = new MatTableDataSource<AgendamentoDisplay>([]);
   }
 
   ngOnInit(): void {
+    // Ajustar colunas conforme o papel (reativo ao usuário atual)
+    this.authService.currentUser$.subscribe(user => {
+      const isAluno = user?.Tipo === 'Aluno' || this.authService.isAluno();
+      this.displayedColumns = isAluno
+        ? ['data', 'horario', 'aluno', 'psicologo', 'status', 'aceitar', 'info']
+        : ['data', 'horario', 'aluno', 'psicologo', 'status', 'edit', 'info', 'excluir'];
+      console.log('TabelaAgendamento - Colunas definidas:', this.displayedColumns, 'User:', user);
+    });
+
     this.carregarAgendamentos();
   }
 
@@ -81,16 +92,12 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
   }
 
   private formatarData(dataISO: string): string {
-    // Verificar se a data já está no formato correto
     if (dataISO && dataISO.includes('-')) {
       const partes = dataISO.split('-');
       if (partes.length === 3) {
-        // Formatar diretamente sem criar objeto Date para evitar problemas de fuso horário
         return `${partes[2]}/${partes[1]}/${partes[0]}`;
       }
     }
-    
-    // Fallback para o método anterior se a data não estiver no formato esperado
     const data = new Date(dataISO);
     return data.toLocaleDateString('pt-BR', {
       day: '2-digit',
@@ -100,80 +107,65 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
   }
 
   private formatarHorario(horario: string): string {
-    // Se o horário já está no formato HH:MM, retorna como está
     if (horario && horario.includes(':')) {
       const partes = horario.split(':');
       if (partes.length >= 2) {
         return `${partes[0].padStart(2, '0')}:${partes[1].padStart(2, '0')}`;
       }
     }
-    return horario; // Retorna o horário original se não conseguir formatar
+    return horario;
   }
 
   private converterDataParaISO(dataFormatada: string): string {
-    // Se a data já está no formato ISO (YYYY-MM-DD), retorna como está
     if (dataFormatada && dataFormatada.includes('-') && dataFormatada.length === 10) {
       return dataFormatada;
     }
-
-    // Se a data está no formato DD/MM/AAAA, converter para YYYY-MM-DD
     if (dataFormatada && dataFormatada.includes('/')) {
       const partes = dataFormatada.split('/');
       if (partes.length === 3) {
         return `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
       }
     }
-
-    return dataFormatada; // Retorna a data original se não conseguir converter
+    return dataFormatada;
   }
 
-      ngAfterViewInit() {
+  ngAfterViewInit() {
     console.log('ngAfterViewInit - Configurando paginator e sort');
 
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    // Configurar ordenação customizada
     this.dataSource.sortingDataAccessor = (item, property) => {
       console.log(`Sorting property: ${property}, value:`, item[property as keyof AgendamentoDisplay]);
 
       switch (property) {
         case 'data':
-          // Converter data para timestamp para ordenação numérica
           const dataParts = item.Data.split('/');
           if (dataParts.length === 3) {
             const timestamp = new Date(`${dataParts[2]}-${dataParts[1]}-${dataParts[0]}`).getTime();
             console.log(`Data convertida: ${item.Data} -> ${timestamp}`);
             return timestamp;
           }
-          return item.Data;
+          return item.Data as unknown as number;
         case 'horario':
-          // Converter horário para minutos para ordenação numérica
           const horarioParts = item.Horario.split(':');
           if (horarioParts.length === 2) {
             const minutos = parseInt(horarioParts[0]) * 60 + parseInt(horarioParts[1]);
             console.log(`Horário convertido: ${item.Horario} -> ${minutos} minutos`);
             return minutos;
           }
-          return item.Horario;
+          return item.Horario as unknown as number;
         case 'aluno':
-          const alunoLower = item.AlunoNome.toLowerCase();
-          console.log(`Aluno: ${item.AlunoNome} -> ${alunoLower}`);
-          return alunoLower;
+          return item.AlunoNome.toLowerCase();
         case 'psicologo':
-          const psicologoLower = item.PsicologoNome.toLowerCase();
-          console.log(`Psicólogo: ${item.PsicologoNome} -> ${psicologoLower}`);
-          return psicologoLower;
+          return item.PsicologoNome.toLowerCase();
         case 'status':
-          const statusLower = item.Status.toLowerCase();
-          console.log(`Status: ${item.Status} -> ${statusLower}`);
-          return statusLower;
+          return item.Status.toLowerCase();
         default:
-          return item[property as keyof AgendamentoDisplay];
+          return item[property as keyof AgendamentoDisplay] as unknown as number;
       }
     };
 
-    // Aguardar um tick para garantir que os sortables sejam registrados
     setTimeout(() => {
       console.log('Sortables registrados:', this.sort?.sortables.size);
       console.log('Sorting configurado com sucesso');
@@ -193,33 +185,18 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
     console.log('Botão editar clicado para:', row);
     console.log('Tentando abrir diálogo de edição...');
 
-    // Criar dados mock para teste
     const agendamentoMock = {
       Id: row.Id,
       AlunoId: row.AlunoId,
       PsicologoId: row.PsicologoId,
-      Data: this.converterDataParaISO(row.Data), // Converter para formato ISO
+      Data: this.converterDataParaISO(row.Data),
       Horario: row.Horario,
       Status: row.Status as 'Pendente' | 'Confirmado' | 'Cancelado',
       Aluno: { Id: row.AlunoId, Usuario: { Nome: row.AlunoNome } },
       Psicologo: { Id: row.PsicologoId, Usuario: { Nome: row.PsicologoNome } }
     };
 
-
     try {
-      console.log('Tentando abrir diálogo com dados:', {
-        agendamento: {
-          id: agendamentoMock.Id,
-          alunoId: agendamentoMock.AlunoId,
-          psicologoId: agendamentoMock.PsicologoId,
-          data: agendamentoMock.Data,
-          horario: agendamentoMock.Horario,
-          status: agendamentoMock.Status,
-          aluno: agendamentoMock.Aluno,
-          psicologo: agendamentoMock.Psicologo
-        }
-      });
-
       const dialogRef = this.dialog.open(EditAgendamentoDialogComponent, {
         width: '560px',
         data: {
@@ -238,8 +215,6 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
 
       dialogRef.afterClosed().subscribe((result) => {
         if (result) {
-
-          // Preparar dados para a API
           const dadosAtualizados = {
             Id: result.id,
             AlunoId: result.alunoId,
@@ -251,7 +226,6 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
 
           console.log('Dados que serão enviados para a API:', dadosAtualizados);
 
-          // Chamar o serviço para atualizar o agendamento
           this.agendamentosService.updateAgendamento(result.id, dadosAtualizados).subscribe({
             next: (response) => {
               console.log('Agendamento atualizado com sucesso:', response);
@@ -286,6 +260,25 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
     });
   }
 
+  // Aceitar consulta (Aluno): confirma o agendamento
+  onAceitar(row: AgendamentoDisplay): void {
+    if (row.Status.toLowerCase() === 'confirmado') {
+      alert('Este agendamento já está confirmado.');
+      return;
+    }
+
+    this.agendamentosService.aceitarAgendamento(row.Id).subscribe({
+      next: () => {
+        alert('Consulta aceita com sucesso!');
+        this.carregarAgendamentos();
+      },
+      error: (error) => {
+        console.error('Erro ao aceitar consulta:', error);
+        alert('Erro ao aceitar consulta. Tente novamente.');
+      }
+    });
+  }
+
   // Método público para recarregar dados (pode ser chamado pelo componente pai)
   recarregarDados(): void {
     this.carregarAgendamentos();
@@ -298,7 +291,7 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
       this.agendamentosService.deleteAgendamento(agendamento.Id).subscribe({
         next: () => {
           alert('Agendamento excluído com sucesso!');
-          this.carregarAgendamentos(); // Recarregar a tabela
+          this.carregarAgendamentos();
         },
         error: (error) => {
           console.error('Erro ao excluir agendamento:', error);

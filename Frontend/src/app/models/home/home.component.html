@@ -2,6 +2,7 @@
   <div class="form-section">
     <app-calendario tipo="Calendario" (dataSelecionada)="onDataSelecionada($event)" />
 
+    @if (!authService.isAluno()) {
     <div class="agendamento-form">
       <h3>Novo Agendamento</h3>
       <p class="form-instructions">Selecione uma data no calendário acima e preencha os dados abaixo: {{ dataExibicao || 'Nenhuma data selecionada' }}</p>
@@ -40,6 +41,7 @@
         <app-button button="Agendar" (click)="agendarConsulta()"></app-button>
       </div>
     </div>
+    }
   </div>
 
   <div class="table-section">
