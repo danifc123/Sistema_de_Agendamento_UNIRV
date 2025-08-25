@@ -10,6 +10,7 @@ import { AgendamentosService } from '../../services/agendamentos.service';
 import { AlunosService } from '../../services/alunos.service';
 import { PsicologosService } from '../../services/psicologos.service';
 import { AuthService } from '../../services/auth.service';
+import { DisponibilidadesService } from '../../services/disponibilidades.service';
 
 @Component({
   selector: 'app-home',
@@ -28,6 +29,13 @@ export class HomeComponent implements OnInit {
   dataSelecionada: string = '';
   dataExibicao: string = '';
 
+  // Bloqueio (psicólogo)
+  horaInicio: string = '';
+  horaFim: string = '';
+
+  // Bloqueios do dia selecionado
+  bloqueiosDia: { inicio: string, fim: string }[] = [];
+
   // Opções para os selects
   opcoesAlunos: SelectOption[] = [];
   opcoesPsicologos: SelectOption[] = [];
@@ -41,7 +49,8 @@ export class HomeComponent implements OnInit {
     private agendamentosService: AgendamentosService,
     private alunosService: AlunosService,
     private psicologosService: PsicologosService,
-    public authService: AuthService
+    public authService: AuthService,
+    private disponibilidadesService: DisponibilidadesService
   ) {}
 
   ngOnInit(): void {
@@ -182,6 +191,28 @@ export class HomeComponent implements OnInit {
     this.dataSelecionada = dadosData.dataExibicao; // Para mostrar no template
     console.log('Data armazenada para API:', this.data);
 
+    // Buscar bloqueios do psicólogo selecionado (ou do próprio, se for psicólogo)
+    const psicologoId = this.authService.isPsicologo()
+      ? this.authService.getCurrentUser()?.Id
+      : (this.psicologoSelecionado ? parseInt(this.psicologoSelecionado) : null);
+
+    if (psicologoId) {
+      this.disponibilidadesService.listarPorPsicologo(psicologoId).subscribe({
+        next: (lista) => {
+          // Filtrar apenas os bloqueios do dia selecionado
+          const doDia = lista.filter(x => x.Data === this.data);
+          this.bloqueiosDia = doDia.map((b: any) => ({ inicio: b.HoraInicio, fim: b.HoraFim }));
+          console.log('Bloqueios do dia:', this.bloqueiosDia);
+        },
+        error: (error) => {
+          console.error('Erro ao carregar bloqueios:', error);
+          this.bloqueiosDia = [];
+        }
+      });
+    } else {
+      this.bloqueiosDia = [];
+    }
+
     // Teste: verificar se a data está correta
     const dataTeste = new Date(dadosData.dataISO);
     console.log('Data convertida de volta para teste:', dataTeste.toLocaleDateString('pt-BR'));
@@ -201,15 +232,9 @@ export class HomeComponent implements OnInit {
     ).subscribe({
       next: (resultado) => {
         if (!resultado.disponivel) {
-          // Mostrar aviso visual
           const mensagem = resultado.message;
           console.log('Horário indisponível:', mensagem);
-
-          // Você pode implementar uma notificação visual aqui
-          // Por exemplo, mudar a cor do botão ou mostrar um toast
           alert(`⚠️ ${mensagem}\n\nPor favor, escolha outro horário.`);
-
-          // Limpar o horário selecionado
           this.horario = '';
         }
       },
@@ -217,5 +242,68 @@ export class HomeComponent implements OnInit {
         console.error('Erro ao verificar disponibilidade:', error);
       }
     });
+  }
+
+  // Bloquear horário (psicólogo)
+  bloquearHorario(): void {
+    if (!this.data || !this.horaInicio || !this.horaFim) {
+      alert('Selecione a data, o horário de início e o horário de fim.');
+      return;
+    }
+
+    if (this.horaFim <= this.horaInicio) {
+      alert('Hora fim deve ser maior que hora início.');
+      return;
+    }
+
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      alert('Usuário não autenticado.');
+      return;
+    }
+
+    const payload = {
+      PsicologoId: currentUser.Id,
+      Data: this.data, // yyyy-MM-dd
+      HoraInicio: this.horaInicio,
+      HoraFim: this.horaFim
+    };
+
+    this.disponibilidadesService.criarBloqueio(payload).subscribe({
+      next: () => {
+        alert('Horário bloqueado com sucesso!');
+        this.horaInicio = '';
+        this.horaFim = '';
+        // Recarregar bloqueios do dia
+        this.onDataSelecionada({ dataISO: this.data, dataExibicao: this.dataExibicao });
+      },
+      error: (error) => {
+        console.error('Erro ao bloquear horário:', error);
+        const msg = error?.error?.message || 'Erro ao bloquear horário. Tente novamente.';
+        alert(msg);
+      }
+    });
+  }
+
+  // Método chamado quando o admin troca o psicólogo
+  onPsicologoChange(psicologoIdStr: string): void {
+    if (!this.data) {
+      this.bloqueiosDia = [];
+      return;
+    }
+    const psicologoId = psicologoIdStr ? parseInt(psicologoIdStr) : null;
+    if (psicologoId) {
+      this.disponibilidadesService.listarPorPsicologo(psicologoId).subscribe({
+        next: (lista) => {
+          const doDia = lista.filter(x => x.Data === this.data);
+          this.bloqueiosDia = doDia.map((b: any) => ({ inicio: b.HoraInicio, fim: b.HoraFim }));
+        },
+        error: () => {
+          this.bloqueiosDia = [];
+        }
+      });
+    } else {
+      this.bloqueiosDia = [];
+    }
   }
 }

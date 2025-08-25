@@ -45,3 +45,8 @@ edit
     <span class="material-symbols-outlined">close</span>
   </button>
 }
+@if(button === "Bloquear" || button === "bloquear"){
+<div class="button-container">
+  <button class="button" (click)="clicked.emit()" [disabled]="disabled">{{button}}</button>
+</div>
+}

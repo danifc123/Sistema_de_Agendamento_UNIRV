@@ -2,11 +2,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SeuProjeto.Data;
 using SeuProjeto.Models;
+using SeuProjeto.Attributes;
+using System.Security.Claims;
 
 namespace SeuProjeto.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class DisponibilidadesController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -16,103 +19,103 @@ namespace SeuProjeto.Controllers
             _context = context;
         }
 
-        // GET: api/disponibilidades
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Disponibilidade>>> GetDisponibilidades()
+        private int? GetCurrentUserId()
         {
-            return await _context.Disponibilidades
-                .Include(d => d.Psicologo)
-                    .ThenInclude(p => p.Usuario)
-                .ToListAsync();
+            var idClaim = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(idClaim, out var userId)) return userId;
+            return null;
         }
 
-        // GET: api/disponibilidades/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Disponibilidade>> GetDisponibilidade(int id)
-        {
-            var disponibilidade = await _context.Disponibilidades
-                .Include(d => d.Psicologo)
-                    .ThenInclude(p => p.Usuario)
-                .FirstOrDefaultAsync(d => d.Id == id);
-
-            if (disponibilidade == null)
-            {
-                return NotFound();
-            }
-
-            return disponibilidade;
-        }
+        private bool IsPsicologo() => string.Equals(User?.FindFirst(ClaimTypes.Role)?.Value, TipoUsuario.Psicologo.ToString(), StringComparison.OrdinalIgnoreCase);
+        private bool IsAdmin() => string.Equals(User?.FindFirst(ClaimTypes.Role)?.Value, TipoUsuario.Admin.ToString(), StringComparison.OrdinalIgnoreCase);
 
         // GET: api/disponibilidades/psicologo/5
         [HttpGet("psicologo/{psicologoId}")]
-        public async Task<ActionResult<IEnumerable<Disponibilidade>>> GetDisponibilidadesPorPsicologo(int psicologoId)
+        public async Task<ActionResult<IEnumerable<Disponibilidade>>> GetPorPsicologo(int psicologoId)
         {
+            var userId = GetCurrentUserId();
+            if (IsPsicologo() && userId.HasValue && psicologoId != userId.Value)
+            {
+                return Forbid();
+            }
+
             return await _context.Disponibilidades
                 .Where(d => d.PsicologoId == psicologoId)
-                .OrderBy(d => d.Data)
+                .OrderByDescending(d => d.Data)
                 .ThenBy(d => d.HoraInicio)
                 .ToListAsync();
         }
 
-        // POST: api/disponibilidades
-        [HttpPost]
-        public async Task<ActionResult<Disponibilidade>> PostDisponibilidade(Disponibilidade disponibilidade)
+        public class CriarDisponibilidadeRequest
         {
-            _context.Disponibilidades.Add(disponibilidade);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetDisponibilidade), new { id = disponibilidade.Id }, disponibilidade);
+            public int PsicologoId { get; set; }
+            public DateOnly Data { get; set; }
+            public TimeOnly HoraInicio { get; set; }
+            public TimeOnly HoraFim { get; set; }
         }
 
-        // PUT: api/disponibilidades/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutDisponibilidade(int id, Disponibilidade disponibilidade)
+        // POST: api/disponibilidades
+        [HttpPost]
+        public async Task<ActionResult<Disponibilidade>> Post([FromBody] CriarDisponibilidadeRequest request)
         {
-            if (id != disponibilidade.Id)
+            if (request == null)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Requisição inválida" });
             }
 
-            _context.Entry(disponibilidade).State = EntityState.Modified;
-
-            try
+            var userId = GetCurrentUserId();
+            if (IsPsicologo() && userId.HasValue && request.PsicologoId != userId.Value)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DisponibilidadeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return Forbid();
             }
 
-            return NoContent();
+            if (request.HoraFim <= request.HoraInicio)
+            {
+                return BadRequest(new { message = "Hora fim deve ser maior que hora início" });
+            }
+
+            // Opcional: evitar sobreposição de bloqueios
+            var existeSobreposicao = await _context.Disponibilidades.AnyAsync(d =>
+                d.PsicologoId == request.PsicologoId &&
+                d.Data == request.Data &&
+                !(request.HoraFim <= d.HoraInicio || request.HoraInicio >= d.HoraFim)
+            );
+
+            if (existeSobreposicao)
+            {
+                return BadRequest(new { message = "Já existe um bloqueio para este período" });
+            }
+
+            var disp = new Disponibilidade
+            {
+                PsicologoId = request.PsicologoId,
+                Data = request.Data,
+                HoraInicio = request.HoraInicio,
+                HoraFim = request.HoraFim
+            };
+
+            _context.Disponibilidades.Add(disp);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetPorPsicologo), new { psicologoId = disp.PsicologoId }, disp);
         }
 
         // DELETE: api/disponibilidades/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDisponibilidade(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var disponibilidade = await _context.Disponibilidades.FindAsync(id);
-            if (disponibilidade == null)
+            var disp = await _context.Disponibilidades.FindAsync(id);
+            if (disp == null) return NotFound();
+
+            var userId = GetCurrentUserId();
+            if (IsPsicologo() && userId.HasValue && disp.PsicologoId != userId.Value)
             {
-                return NotFound();
+                return Forbid();
             }
 
-            _context.Disponibilidades.Remove(disponibilidade);
+            _context.Disponibilidades.Remove(disp);
             await _context.SaveChangesAsync();
-
             return NoContent();
-        }
-
-        private bool DisponibilidadeExists(int id)
-        {
-            return _context.Disponibilidades.Any(e => e.Id == id);
         }
     }
 } 
