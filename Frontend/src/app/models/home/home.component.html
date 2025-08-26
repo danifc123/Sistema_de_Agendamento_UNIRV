@@ -2,8 +2,7 @@
   <div class="form-section">
     <app-calendario tipo="Calendario" (dataSelecionada)="onDataSelecionada($event)" />
 
-    @if (!authService.isAluno()) {
-    <div class="agendamento-form">
+    <div class="agendamento-form" *ngIf="authService.isAdmin()">
       <h3>Novo Agendamento</h3>
       <p class="form-instructions">Selecione uma data no calendário acima e preencha os dados abaixo: {{ dataExibicao || 'Nenhuma data selecionada' }}</p>
 
@@ -20,7 +19,8 @@
             label="Psicólogo"
             placeholder="Selecione um psicólogo"
             [options]="opcoesPsicologos"
-            [(ngModel)]="psicologoSelecionado">
+            [(ngModel)]="psicologoSelecionado"
+            (ngModelChange)="onPsicologoChange($event)">
           </app-select>
         </div>
 
@@ -32,6 +32,7 @@
             fimExpediente="18:00"
             [intervalo]="30"
             [(ngModel)]="horario"
+            [bloqueios]="bloqueiosDia"
             (ngModelChange)="verificarDisponibilidadeHorario()">
           </app-select-horario>
         </div>
@@ -41,7 +42,38 @@
         <app-button button="Agendar" (click)="agendarConsulta()"></app-button>
       </div>
     </div>
-    }
+
+    <div class="agendamento-form" *ngIf="authService.isPsicologo()">
+      <h3>Bloquear Horário</h3>
+      <p class="form-instructions">Selecione a data e o intervalo que você não estará disponível: {{ dataExibicao || 'Nenhuma data selecionada' }}</p>
+
+      <div class="form-row">
+        <div class="form-column">
+          <app-select-horario
+            label="Início"
+            placeholder="Selecione o horário de início"
+            inicioExpediente="08:00"
+            fimExpediente="18:00"
+            [intervalo]="30"
+            [(ngModel)]="horaInicio">
+          </app-select-horario>
+        </div>
+        <div class="form-column">
+          <app-select-horario
+            label="Fim"
+            placeholder="Selecione o horário de fim"
+            inicioExpediente="08:00"
+            fimExpediente="18:00"
+            [intervalo]="30"
+            [(ngModel)]="horaFim">
+          </app-select-horario>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <app-button button="Bloquear" (click)="bloquearHorario()"></app-button>
+      </div>
+    </div>
   </div>
 
   <div class="table-section">

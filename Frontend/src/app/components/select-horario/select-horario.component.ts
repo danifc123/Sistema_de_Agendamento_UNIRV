@@ -7,6 +7,11 @@ export interface HorarioOption {
   label: string;
 }
 
+export interface BloqueioIntervalo {
+  inicio: string; // HH:mm
+  fim: string;    // HH:mm
+}
+
 @Component({
   selector: 'app-select-horario',
   standalone: true,
@@ -75,6 +80,7 @@ export class SelectHorarioComponent implements ControlValueAccessor {
   @Input() inicioExpediente: string = '08:00';
   @Input() fimExpediente: string = '18:00';
   @Input() intervalo: number = 30; // intervalo em minutos
+  @Input() bloqueios: BloqueioIntervalo[] = [];
 
   value: string = '';
   disabled: boolean = false;
@@ -96,11 +102,25 @@ export class SelectHorarioComponent implements ControlValueAccessor {
 
     for (let minuto = inicio; minuto <= fim; minuto += this.intervalo) {
       const horario = this.converterParaHorario(minuto);
+      if (this.estaBloqueado(horario)) {
+        continue; // pular horários bloqueados
+      }
       this.opcoesHorarios.push({
         value: horario,
         label: horario
       });
     }
+  }
+
+  private estaBloqueado(horario: string): boolean {
+    if (!this.bloqueios || this.bloqueios.length === 0) return false;
+    const minuto = this.converterParaMinutos(horario);
+    return this.bloqueios.some(b => {
+      const ini = this.converterParaMinutos(b.inicio);
+      const fim = this.converterParaMinutos(b.fim);
+      // Bloqueio considerado em [inicio, fim)
+      return minuto >= ini && minuto < fim;
+    });
   }
 
   private converterParaMinutos(horario: string): number {

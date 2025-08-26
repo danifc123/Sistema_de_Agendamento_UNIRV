@@ -174,7 +174,7 @@ namespace SeuProjeto.Controllers
                 return Forbid();
             }
 
-            // Verificar se o aluno já tem agendamento na mesma data e horário
+            // 1) Verificar se o aluno já tem agendamento na mesma data e horário
             var agendamentoExistenteAluno = await _context.Agendamentos
                 .Where(a => a.AlunoId == alunoId 
                            && a.Data == dataParsed 
@@ -195,7 +195,7 @@ namespace SeuProjeto.Controllers
                 });
             }
 
-            // Verificar se o psicólogo já tem agendamento na mesma data e horário
+            // 2) Verificar se o psicólogo já tem agendamento na mesma data e horário
             var agendamentoExistentePsicologo = await _context.Agendamentos
                 .Where(a => a.PsicologoId == psicologoId 
                            && a.Data == dataParsed 
@@ -213,6 +213,20 @@ namespace SeuProjeto.Controllers
                     disponivel = false, 
                     message = $"O psicólogo {psicologo?.Usuario?.Nome ?? "N/A"} já possui um agendamento para {dataParsed:dd/MM/yyyy} às {horario}.",
                     tipo = "psicologo"
+                });
+            }
+
+            // 3) Verificar bloqueios de disponibilidade do psicólogo (considerar como indisponível)
+            var bloqueado = await _context.Disponibilidades
+                .Where(d => d.PsicologoId == psicologoId && d.Data == dataParsed)
+                .AnyAsync(d => horarioParsed >= d.HoraInicio && horarioParsed < d.HoraFim);
+
+            if (bloqueado)
+            {
+                return Ok(new {
+                    disponivel = false,
+                    message = $"Horário indisponível para o psicólogo em {dataParsed:dd/MM/yyyy} às {horario}.",
+                    tipo = "bloqueio"
                 });
             }
 

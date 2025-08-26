@@ -14,8 +14,12 @@ import { EditarAlunoComponent } from './models/editar-aluno/editar-aluno.compone
 import { EditarPsicologoComponent } from './models/editar-psicologo/editar-psicologo.component';
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
+import { AnotacoesPsicologoComponent } from './models/anotacoes-psicologo/anotacoes-psicologo.component';
 
 export const routes: Routes = [
+  // Permitir acesso direto a /register redirecionando para /auth/register
+  { path: 'register', redirectTo: 'auth/register', pathMatch: 'full' },
+
   {
     path: 'auth',
     component: LayoutAuthComponent,
@@ -54,7 +58,13 @@ export const routes: Routes = [
         path: 'relatorio',
         component: RelatorioComponent,
         canActivate: [RoleGuard],
-        data: { roles: ['Admin', 'Psicologo'] }
+        data: { roles: ['Admin'] }
+      },
+      {
+        path: 'anotacoes',
+        component: AnotacoesPsicologoComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['Psicologo'] }
       },
       {
         path: 'cadastrar-aluno',

@@ -31,6 +31,14 @@ export class LayoutDefaultComponent implements OnInit {
     return this.authService.isAluno();
   }
 
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
+
+  isPsicologo(): boolean {
+    return this.authService.isPsicologo();
+  }
+
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }

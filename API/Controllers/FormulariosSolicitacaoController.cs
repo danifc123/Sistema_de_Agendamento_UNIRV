@@ -2,11 +2,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SeuProjeto.Data;
 using SeuProjeto.Models;
+using SeuProjeto.Attributes;
+using System.Security.Claims;
 
 namespace SeuProjeto.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class FormulariosSolicitacaoController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -15,6 +18,8 @@ namespace SeuProjeto.Controllers
         {
             _context = context;
         }
+
+        private bool IsAdmin() => string.Equals(User?.FindFirst(ClaimTypes.Role)?.Value, TipoUsuario.Admin.ToString(), StringComparison.OrdinalIgnoreCase);
 
         // GET: api/formulariossolicitacao
         [HttpGet]

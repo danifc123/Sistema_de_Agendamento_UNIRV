@@ -49,9 +49,18 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
     // Ajustar colunas conforme o papel (reativo ao usuário atual)
     this.authService.currentUser$.subscribe(user => {
       const isAluno = user?.Tipo === 'Aluno' || this.authService.isAluno();
-      this.displayedColumns = isAluno
-        ? ['data', 'horario', 'aluno', 'psicologo', 'status', 'aceitar', 'info']
-        : ['data', 'horario', 'aluno', 'psicologo', 'status', 'edit', 'info', 'excluir'];
+      const isPsicologo = user?.Tipo === 'Psicologo' || this.authService.isPsicologo();
+
+      if (isAluno) {
+        this.displayedColumns = ['data', 'horario', 'aluno', 'psicologo', 'status', 'aceitar', 'info'];
+      } else if (isPsicologo) {
+        // Psicólogo: sem editar/excluir/aceitar
+        this.displayedColumns = ['data', 'horario', 'aluno', 'psicologo', 'status', 'info'];
+      } else {
+        // Admin (ou outros): total
+        this.displayedColumns = ['data', 'horario', 'aluno', 'psicologo', 'status', 'edit', 'info', 'excluir'];
+      }
+
       console.log('TabelaAgendamento - Colunas definidas:', this.displayedColumns, 'User:', user);
     });
 

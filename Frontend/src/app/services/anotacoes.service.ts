@@ -3,12 +3,12 @@ import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
 
 export interface Anotacao {
-  id?: number;
-  alunoId: number;
-  psicologoId: number;
-  descricao: string;
-  data: string; // formato YYYY-MM-DD
-  agendamentoId?: number;
+  Id?: number;
+  AlunoId: number;
+  PsicologoId: number;
+  Descricao: string;
+  Data: string; // formato YYYY-MM-DD
+  AgendamentoId?: number;
 }
 
 @Injectable({

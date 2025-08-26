@@ -5,6 +5,7 @@ import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { addMonths, subMonths } from 'date-fns'; // já vem com angular-calendar
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 
 registerLocaleData(localePt);
@@ -35,7 +36,11 @@ export class CalendarioComponent{
   private notesStoreKey: string = 'agendaNotes';
   private notesMap: Record<string, string> = {};
 
-  constructor() {
+  constructor(private authService: AuthService) {
+    // Escopo por usuário: cada usuário tem seu próprio storage de anotações
+    const userId = this.authService.getCurrentUser()?.Id ?? 'anon';
+    this.notesStoreKey = `agendaNotes:${userId}`;
+
     this.loadNotesFromStorage();
     this.buildMonthDays();
   }
