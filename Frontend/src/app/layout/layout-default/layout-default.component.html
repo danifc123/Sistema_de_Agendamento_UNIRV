@@ -9,7 +9,8 @@
   <ul class="layout-defaul-list">
     <li><a routerLink="/">Agendar</a></li>
     <li><a routerLink="/agendamentos">Calendários</a></li>
-    <li *ngIf="!isAluno()"><a routerLink="/relatorio">Relatórios</a></li>
+    <li *ngIf="!isAluno() && isAdmin()"><a routerLink="/relatorio">Relatórios</a></li>
+    <li *ngIf="!isAluno() && isPsicologo()"><a routerLink="/anotacoes">Anotações</a></li>
   </ul>
 </nav>
 <div class="layout-default-contain">
