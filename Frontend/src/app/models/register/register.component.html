@@ -1,6 +1,43 @@
-<div class="register-container">
-  <app-input label="Email"></app-input>
-  <app-input label="Password"></app-input>
-  <app-input label="Password"></app-input>
-  <app-button button="Registrar"></app-button>
+<div class="register-form">
+  <div class="form-fields">
+    <app-input
+      label="Nome Completo"
+      placeholder="Digite o nome completo do administrador"
+      [value]="nome"
+      (valueChange)="nome = $event">
+    </app-input>
+
+    <app-input
+      label="Email"
+      type="email"
+      placeholder="Digite o email do administrador"
+      [value]="email"
+      (valueChange)="email = $event">
+    </app-input>
+
+    <app-input
+      label="Senha"
+      type="password"
+      placeholder="Digite a senha (mín. 6 caracteres)"
+      [value]="senha"
+      (valueChange)="senha = $event">
+    </app-input>
+
+    <app-input
+      label="Confirmar Senha"
+      type="password"
+      placeholder="Confirme a senha"
+      [value]="confirmarSenha"
+      (valueChange)="confirmarSenha = $event">
+    </app-input>
+
+    <div class="form-actions">
+      <app-button button="Registrar" (click)="registrar()"></app-button>
+      <app-button button="Limpar" (click)="limparFormulario()"></app-button>
+    </div>
+
+    <div class="login-link">
+      <p>Já tem uma conta? <a routerLink="/auth">Faça login</a></p>
+    </div>
+  </div>
 </div>

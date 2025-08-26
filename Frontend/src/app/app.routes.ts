@@ -16,6 +16,9 @@ import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
+  // Permitir acesso direto a /register redirecionando para /auth/register
+  { path: 'register', redirectTo: 'auth/register', pathMatch: 'full' },
+
   {
     path: 'auth',
     component: LayoutAuthComponent,
