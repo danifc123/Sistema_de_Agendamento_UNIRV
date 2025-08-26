@@ -2,12 +2,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SeuProjeto.Data;
 using SeuProjeto.Models;
+using SeuProjeto.Attributes;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace SeuProjeto.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UsuariosController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -16,6 +19,8 @@ namespace SeuProjeto.Controllers
         {
             _context = context;
         }
+
+        private bool IsAdmin() => string.Equals(User?.FindFirst(ClaimTypes.Role)?.Value, TipoUsuario.Admin.ToString(), StringComparison.OrdinalIgnoreCase);
 
         // GET: api/usuarios
         [HttpGet]
@@ -106,31 +111,6 @@ namespace SeuProjeto.Controllers
             }
         }
 
-        // PATCH: api/usuarios/5/update-info
-        [HttpPatch("{id}/update-info")]
-        public async Task<IActionResult> UpdateUsuarioInfo(int id, [FromBody] UpdateUsuarioInfoRequest request)
-        {
-            
-            var usuario = await _context.Usuarios.FindAsync(id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-
-            try
-            {
-                usuario.Nome = request.Nome;
-                usuario.Email = request.Email;
-
-                await _context.SaveChangesAsync();
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Erro ao atualizar usuário: {ex.Message}");
-            }
-        }
-
         // DELETE: api/usuarios/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
@@ -151,17 +131,5 @@ namespace SeuProjeto.Controllers
         {
             return _context.Usuarios.Any(e => e.Id == id);
         }
-    }
-
-    public class UpdateUsuarioInfoRequest
-    {
-        [Required]
-        [MaxLength(100)]
-        public string Nome { get; set; }
-
-        [Required]
-        [MaxLength(150)]
-        [EmailAddress]
-        public string Email { get; set; }
     }
 } 

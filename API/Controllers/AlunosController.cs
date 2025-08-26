@@ -2,11 +2,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SeuProjeto.Data;
 using SeuProjeto.Models;
+using SeuProjeto.Attributes;
+using System.Security.Claims;
 
 namespace SeuProjeto.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class AlunosController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -15,6 +18,8 @@ namespace SeuProjeto.Controllers
         {
             _context = context;
         }
+
+        private bool IsAdmin() => string.Equals(User?.FindFirst(ClaimTypes.Role)?.Value, TipoUsuario.Admin.ToString(), StringComparison.OrdinalIgnoreCase);
 
         // GET: api/alunos
         [HttpGet]
@@ -65,13 +70,6 @@ namespace SeuProjeto.Controllers
         {
             try
             {
-                // Verificar se o usuário existe
-                var usuario = await _context.Usuarios.FindAsync(aluno.Id);
-                if (usuario == null)
-                {
-                    return BadRequest($"Usuário com ID {aluno.Id} não encontrado.");
-                }
-
                 // Verificar se já existe um aluno com este ID
                 var alunoExistente = await _context.Alunos.FindAsync(aluno.Id);
                 if (alunoExistente != null)
@@ -86,18 +84,31 @@ namespace SeuProjeto.Controllers
                     return BadRequest($"Matrícula {aluno.Matricula} já está em uso.");
                 }
 
+                // Verificar se o usuário existe (deve existir pois foi criado primeiro)
+                var usuario = await _context.Usuarios.FindAsync(aluno.Id);
+                if (usuario == null)
+                {
+                    return BadRequest($"Usuário com ID {aluno.Id} não encontrado. Certifique-se de criar o usuário primeiro.");
+                }
+
                 // Configurar o relacionamento
                 aluno.Usuario = usuario;
                 
                 _context.Alunos.Add(aluno);
                 await _context.SaveChangesAsync();
 
-                // Retornar apenas os dados do aluno sem o usuário incluído
-                return CreatedAtAction(nameof(GetAluno), new { id = aluno.Id }, aluno);
+                // Retornar o aluno criado com o usuário incluído
+                var alunoCriado = await _context.Alunos
+                    .Include(a => a.Usuario)
+                    .FirstOrDefaultAsync(a => a.Id == aluno.Id);
+
+                return CreatedAtAction(nameof(GetAluno), new { id = aluno.Id }, alunoCriado);
             }
             catch (Exception ex)
             {
                 // Log do erro para debug
+                Console.WriteLine($"Erro ao criar aluno: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
                 return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
             }
         }
