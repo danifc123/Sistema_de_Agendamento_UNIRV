@@ -4,12 +4,13 @@ using SeuProjeto.Data;
 using SeuProjeto.Models;
 using SeuProjeto.Attributes;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SeuProjeto.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [SeuProjeto.Attributes.Authorize]
     public class PsicologosController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -67,6 +68,7 @@ namespace SeuProjeto.Controllers
 
         // POST: api/psicologos
         [HttpPost]
+        [AllowAnonymous] // Permitir criação de psicólogos sem autenticação
         public async Task<ActionResult<Psicologo>> PostPsicologo(Psicologo psicologo)
         {
             try

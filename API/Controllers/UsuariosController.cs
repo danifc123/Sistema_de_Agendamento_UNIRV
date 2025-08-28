@@ -5,12 +5,13 @@ using SeuProjeto.Models;
 using SeuProjeto.Attributes;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SeuProjeto.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [SeuProjeto.Attributes.Authorize]
     public class UsuariosController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -45,6 +46,7 @@ namespace SeuProjeto.Controllers
 
         // POST: api/usuarios
         [HttpPost]
+        [AllowAnonymous] // Permitir criação de usuários sem autenticação
         public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
         {
             // Normalizar email e hash da senha

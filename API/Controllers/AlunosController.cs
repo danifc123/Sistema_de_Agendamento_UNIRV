@@ -4,12 +4,13 @@ using SeuProjeto.Data;
 using SeuProjeto.Models;
 using SeuProjeto.Attributes;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SeuProjeto.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [SeuProjeto.Attributes.Authorize]
     public class AlunosController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -66,6 +67,7 @@ namespace SeuProjeto.Controllers
 
         // POST: api/alunos
         [HttpPost]
+        [AllowAnonymous] // Permitir criação de alunos sem autenticação
         public async Task<ActionResult<Aluno>> PostAluno(Aluno aluno)
         {
             try
