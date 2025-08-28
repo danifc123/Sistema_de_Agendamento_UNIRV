@@ -79,16 +79,14 @@ export class EditarAlunoDialogComponent {
     this.usuariosService.getUsuario(alunoId).subscribe({
       next: (usuarioAtual) => {
 
-        // Atualizar usuário usando o novo endpoint específico
+        // Atualizar usuário usando o endpoint PUT correto
         const dadosUsuario = {
           Nome: this.alunoNome,
           Email: this.email
         };
 
-
-
-        // Atualizar usuário usando o endpoint PATCH específico
-        this.http.patch(`http://localhost:5160/api/usuarios/${alunoId}/update-info`, dadosUsuario).subscribe({
+        // Atualizar usuário usando o endpoint PUT
+        this.usuariosService.updateUsuario(alunoId, dadosUsuario).subscribe({
           next: (usuarioResponse) => {
 
             // Depois, atualizar o aluno
@@ -97,7 +95,6 @@ export class EditarAlunoDialogComponent {
               Curso: this.curso,
               Semestre: semestreNum
             };
-
 
             this.alunosService.updateAluno(alunoId, dadosAluno).subscribe({
               next: (alunoResponse) => {

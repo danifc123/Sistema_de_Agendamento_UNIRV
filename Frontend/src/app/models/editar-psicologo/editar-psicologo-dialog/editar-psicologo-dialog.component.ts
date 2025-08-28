@@ -84,7 +84,7 @@ export class EditarPsicologoDialogComponent {
 
 
         // Atualizar usuário usando o endpoint PUT
-        this.http.put(`http://localhost:5160/api/usuarios/${psicologoId}`, dadosUsuario).subscribe({
+        this.usuariosService.updateUsuario(psicologoId, dadosUsuario).subscribe({
           next: (usuarioResponse) => {
 
             // Depois, atualizar o psicólogo
