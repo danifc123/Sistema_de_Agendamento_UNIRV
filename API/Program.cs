@@ -37,6 +37,7 @@ builder.Services.AddCors(options =>
 
 // Configurar JWT Settings
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
 
 // DbContext
 builder.Services.AddDbContext<AppDbContext>(opt =>
@@ -71,6 +72,7 @@ builder.Services.AddAuthentication(x =>
 // Registrar serviços
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddHttpClient<IEmailService, EmailService>();
 
 // OpenAPI
 builder.Services.AddOpenApi();
