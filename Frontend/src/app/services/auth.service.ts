@@ -76,6 +76,14 @@ export class AuthService {
     return this.http.post<{ message: string }>(`${this.baseUrl}/forgot-password`, { email });
   }
 
+  resetPassword(token: string, novaSenha: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/reset-password`, {
+      token,
+      novaSenha,
+      confirmarSenha: novaSenha
+    });
+  }
+
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
