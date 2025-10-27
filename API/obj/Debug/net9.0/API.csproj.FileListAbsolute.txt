@@ -139,3 +139,4 @@ D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\Microsoft.
 D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
 D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
+D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\appsettings.Production.json
