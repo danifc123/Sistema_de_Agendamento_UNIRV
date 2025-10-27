@@ -29,22 +29,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
-        var allowedOrigins = new List<string>
-        {
-            "http://localhost:4200" // Desenvolvimento local
-        };
-        
-        // Adicionar origem do frontend se definida em variável de ambiente
-        var frontendUrl = builder.Configuration["FRONTEND_URL"];
-        if (!string.IsNullOrEmpty(frontendUrl))
-        {
-            allowedOrigins.Add(frontendUrl);
-        }
-        
-        policy.WithOrigins(allowedOrigins.ToArray())
+        policy.WithOrigins("http://localhost:4200") // Porta padrão do Angular
               .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+              .AllowAnyMethod();
     });
 });
 
@@ -124,13 +111,5 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapControllers();
-
-// Health check endpoint
-app.MapGet("/health", () => new { 
-    Status = "OK", 
-    Timestamp = DateTime.UtcNow,
-    Environment = app.Environment.EnvironmentName,
-    Version = "1.0.0"
-});
 
 app.Run();
