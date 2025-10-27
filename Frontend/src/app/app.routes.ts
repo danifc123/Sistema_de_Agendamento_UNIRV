@@ -4,6 +4,7 @@ import { LayoutDefaultComponent } from './layout/layout-default/layout-default.c
 import { LoginComponent } from './models/login/login.component';
 import { RegisterComponent } from './models/register/register.component';
 import { ForgetPasswordComponent } from './models/forget-password/forget-password.component';
+import { ResetPasswordComponent } from './models/reset-password/reset-password.component';
 import { CalendarioComponent } from './components/calendario/calendario.component';
 import { HomeComponent } from './models/home/home.component';
 import { AgendamentosComponent } from './models/agendamentos/agendamentos.component';
@@ -38,6 +39,11 @@ export const routes: Routes = [
         path: 'forgetpassword',
         component: ForgetPasswordComponent,
         data: { title: 'Esqueceu Senha' }
+      },
+      {
+        path: 'resetpassword',
+        component: ResetPasswordComponent,
+        data: { title: 'Redefinir Senha' }
       }
     ]
   },

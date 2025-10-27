@@ -5,12 +5,13 @@ using SeuProjeto.Models;
 using SeuProjeto.Attributes;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SeuProjeto.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [SeuProjeto.Attributes.Authorize]
     public class UsuariosController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -45,6 +46,7 @@ namespace SeuProjeto.Controllers
 
         // POST: api/usuarios
         [HttpPost]
+        [AllowAnonymous] // Permitir criação de usuários sem autenticação
         public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
         {
             // Normalizar email e hash da senha
@@ -61,6 +63,11 @@ namespace SeuProjeto.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUsuario(int id, [FromBody] object updateData)
         {
+            // Verificar se o usuário é admin
+            if (!IsAdmin())
+            {
+                return Forbid();
+            }
             
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null)
@@ -68,13 +75,11 @@ namespace SeuProjeto.Controllers
                 return NotFound();
             }
 
-
             try
             {
                 // Converter o objeto dinâmico para um dicionário
                 var data = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(
                     System.Text.Json.JsonSerializer.Serialize(updateData));
-
 
                 // Atualizar apenas os campos fornecidos
                 if (data.ContainsKey("Nome"))
@@ -115,6 +120,12 @@ namespace SeuProjeto.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
         {
+            // Verificar se o usuário é admin
+            if (!IsAdmin())
+            {
+                return Forbid();
+            }
+
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null)
             {

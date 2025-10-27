@@ -9,7 +9,7 @@ namespace SeuProjeto.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [SeuProjeto.Attributes.Authorize]
     public class FormulariosSolicitacaoController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -25,6 +25,12 @@ namespace SeuProjeto.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FormularioSolicitacao>>> GetFormulariosSolicitacao()
         {
+            // Verificar se o usuário é admin
+            if (!IsAdmin())
+            {
+                return Forbid();
+            }
+
             return await _context.FormulariosSolicitacao
                 .Include(f => f.Aluno)
                     .ThenInclude(a => a.Usuario)
@@ -35,6 +41,12 @@ namespace SeuProjeto.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<FormularioSolicitacao>> GetFormularioSolicitacao(int id)
         {
+            // Verificar se o usuário é admin
+            if (!IsAdmin())
+            {
+                return Forbid();
+            }
+
             var formulario = await _context.FormulariosSolicitacao
                 .Include(f => f.Aluno)
                     .ThenInclude(a => a.Usuario)
@@ -52,6 +64,12 @@ namespace SeuProjeto.Controllers
         [HttpGet("aluno/{alunoId}")]
         public async Task<ActionResult<IEnumerable<FormularioSolicitacao>>> GetFormulariosPorAluno(int alunoId)
         {
+            // Verificar se o usuário é admin
+            if (!IsAdmin())
+            {
+                return Forbid();
+            }
+
             return await _context.FormulariosSolicitacao
                 .Where(f => f.AlunoId == alunoId)
                 .OrderByDescending(f => f.DataEnvio)
@@ -62,6 +80,12 @@ namespace SeuProjeto.Controllers
         [HttpPost]
         public async Task<ActionResult<FormularioSolicitacao>> PostFormularioSolicitacao(FormularioSolicitacao formulario)
         {
+            // Verificar se o usuário é admin
+            if (!IsAdmin())
+            {
+                return Forbid();
+            }
+
             _context.FormulariosSolicitacao.Add(formulario);
             await _context.SaveChangesAsync();
 
@@ -72,6 +96,12 @@ namespace SeuProjeto.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFormularioSolicitacao(int id, FormularioSolicitacao formulario)
         {
+            // Verificar se o usuário é admin
+            if (!IsAdmin())
+            {
+                return Forbid();
+            }
+
             if (id != formulario.Id)
             {
                 return BadRequest();
@@ -102,6 +132,12 @@ namespace SeuProjeto.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFormularioSolicitacao(int id)
         {
+            // Verificar se o usuário é admin
+            if (!IsAdmin())
+            {
+                return Forbid();
+            }
+
             var formulario = await _context.FormulariosSolicitacao.FindAsync(id);
             if (formulario == null)
             {

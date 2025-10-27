@@ -14,6 +14,8 @@ namespace SeuProjeto.Services
         string GenerateRefreshToken();
         ClaimsPrincipal? ValidateToken(string token);
         UserInfo CreateUserInfo(Usuario usuario);
+        string GeneratePasswordResetToken(string email, int expireMinutes = 30);
+        ClaimsPrincipal? ValidatePasswordResetToken(string token);
     }
 
     public class JwtService : IJwtService
@@ -102,6 +104,37 @@ namespace SeuProjeto.Services
                 Matricula = usuario.Aluno?.Matricula,
                 Crp = usuario.Psicologo?.Crp
             };
+        }
+
+        public string GeneratePasswordResetToken(string email, int expireMinutes = 30)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtSettings.SecretKey);
+
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.Email, email),
+                new("purpose", "password_reset")
+            };
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddMinutes(expireMinutes),
+                Issuer = _jwtSettings.Issuer,
+                Audience = _jwtSettings.Audience,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        public ClaimsPrincipal? ValidatePasswordResetToken(string token)
+        {
+            var principal = ValidateToken(token);
+            if (principal == null) return null;
+            return principal.FindFirst("purpose")?.Value == "password_reset" ? principal : null;
         }
     }
 } 

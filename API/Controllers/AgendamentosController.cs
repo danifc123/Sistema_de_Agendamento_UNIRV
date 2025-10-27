@@ -10,7 +10,7 @@ namespace SeuProjeto.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [SeuProjeto.Attributes.Authorize]
     public class AgendamentosController : ControllerBase
     {
         private readonly AppDbContext _context;

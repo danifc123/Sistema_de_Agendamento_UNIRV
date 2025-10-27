@@ -4,12 +4,13 @@ using SeuProjeto.Data;
 using SeuProjeto.Models;
 using SeuProjeto.Attributes;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SeuProjeto.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [SeuProjeto.Attributes.Authorize]
     public class PsicologosController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -67,6 +68,7 @@ namespace SeuProjeto.Controllers
 
         // POST: api/psicologos
         [HttpPost]
+        [AllowAnonymous] // Permitir criação de psicólogos sem autenticação
         public async Task<ActionResult<Psicologo>> PostPsicologo(Psicologo psicologo)
         {
             try
@@ -118,6 +120,11 @@ namespace SeuProjeto.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPsicologo(int id, [FromBody] object updateData)
         {
+            // Verificar se o usuário é admin
+            if (!IsAdmin())
+            {
+                return Forbid();
+            }
             
             var psicologo = await _context.Psicologos.FindAsync(id);
             if (psicologo == null)
@@ -125,13 +132,11 @@ namespace SeuProjeto.Controllers
                 return NotFound();
             }
 
-
             try
             {
                 // Converter o objeto dinâmico para um dicionário
                 var data = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(
                     System.Text.Json.JsonSerializer.Serialize(updateData));
-
 
                 // Atualizar apenas os campos fornecidos
                 if (data.ContainsKey("Crp"))
@@ -156,6 +161,12 @@ namespace SeuProjeto.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePsicologo(int id)
         {
+            // Verificar se o usuário é admin
+            if (!IsAdmin())
+            {
+                return Forbid();
+            }
+
             try
             {
                 Console.WriteLine($"Tentando excluir psicólogo com ID: {id}");
