@@ -11,7 +11,7 @@ export interface CriarBloqueioRequest {
 
 @Injectable({ providedIn: 'root' })
 export class DisponibilidadesService {
-  private baseUrl = 'http://localhost:5160/api/disponibilidades';
+  private baseUrl = 'https://backend-production-612b.up.railway.app/api/disponibilidades';
 
   constructor(private http: HttpClient) {}
 

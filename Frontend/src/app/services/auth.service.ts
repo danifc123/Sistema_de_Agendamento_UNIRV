@@ -37,7 +37,7 @@ export interface UserInfo {
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:5160/api/auth';
+  private baseUrl = 'https://backend-production-612b.up.railway.app/api/auth';
   private currentUserSubject = new BehaviorSubject<UserInfo | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 

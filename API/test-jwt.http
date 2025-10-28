@@ -1,5 +1,5 @@
 ### Teste de Registro
-POST http://localhost:5160/api/auth/register
+POST https://backend-production-612b.up.railway.app/api/auth/register
 Content-Type: application/json
 
 {
@@ -11,7 +11,7 @@ Content-Type: application/json
 }
 
 ### Teste de Login Root
-POST http://localhost:5160/api/auth/login
+POST https://backend-production-612b.up.railway.app/api/auth/login
 Content-Type: application/json
 
 {
@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 ### Teste de Login Root (maiúsculo)
-POST http://localhost:5160/api/auth/login
+POST https://backend-production-612b.up.railway.app/api/auth/login
 Content-Type: application/json
 
 {
@@ -29,7 +29,7 @@ Content-Type: application/json
 }
 
 ### Teste de Login
-POST http://localhost:5160/api/auth/login
+POST https://backend-production-612b.up.railway.app/api/auth/login
 Content-Type: application/json
 
 {
@@ -38,7 +38,7 @@ Content-Type: application/json
 }
 
 ### Teste de Login Root com senha errada
-POST http://localhost:5160/api/auth/login
+POST https://backend-production-612b.up.railway.app/api/auth/login
 Content-Type: application/json
 
 {
@@ -47,7 +47,7 @@ Content-Type: application/json
 }
 
 ### Teste de Login com credenciais inválidas
-POST http://localhost:5160/api/auth/login
+POST https://backend-production-612b.up.railway.app/api/auth/login
 Content-Type: application/json
 
 {
@@ -56,14 +56,14 @@ Content-Type: application/json
 }
 
 ### Teste de endpoint protegido (substitua TOKEN_AQUI pelo token retornado no login)
-GET http://localhost:5160/api/auth/me
+GET https://backend-production-612b.up.railway.app/api/auth/me
 Authorization: Bearer TOKEN_AQUI
 
 ### Teste de endpoint sem token
-GET http://localhost:5160/api/auth/me
+GET https://backend-production-612b.up.railway.app/api/auth/me
 
 ### Teste de refresh token (substitua REFRESH_TOKEN_AQUI pelo refresh token retornado no login)
-POST http://localhost:5160/api/auth/refresh
+POST https://backend-production-612b.up.railway.app/api/auth/refresh
 Content-Type: application/json
 
 {

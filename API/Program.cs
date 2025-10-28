@@ -29,7 +29,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
-        policy.WithOrigins("http://localhost:4200") // Porta padrão do Angular
+        // policy.WithOrigins("http://localhost:4200") // Porta padrão do Angular
+        //       .AllowAnyHeader()
+        //       .AllowAnyMethod();
+
+        policy.WithOrigins("https://frontend-production-25f9.up.railway.app") // Porta padrão do Angular
               .AllowAnyHeader()
               .AllowAnyMethod();
     });

@@ -1,7 +1,7 @@
 ### TESTE DO RESET DE SENHA - DEBUG
 
 ### 1. Primeiro - solicitar reset de senha
-POST http://localhost:5160/api/auth/forgot-password
+POST https://backend-production-612b.up.railway.app/api/auth/forgot-password
 Content-Type: application/json
 
 {
@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ### 2. Gerar um novo token para debug (TEMPORÁRIO)
-POST http://localhost:5160/api/auth/debug-generate-reset-token
+POST https://backend-production-612b.up.railway.app/api/auth/debug-generate-reset-token
 Content-Type: application/json
 
 {
@@ -17,7 +17,7 @@ Content-Type: application/json
 }
 
 ### 3. Testar reset com token válido (substitua TOKEN_AQUI pelo token do passo 2)
-POST http://localhost:5160/api/auth/reset-password
+POST https://backend-production-612b.up.railway.app/api/auth/reset-password
 Content-Type: application/json
 
 {
@@ -27,7 +27,7 @@ Content-Type: application/json
 }
 
 ### 4. Verificar se o login funciona com a nova senha
-POST http://localhost:5160/api/auth/login
+POST https://backend-production-612b.up.railway.app/api/auth/login
 Content-Type: application/json
 
 {

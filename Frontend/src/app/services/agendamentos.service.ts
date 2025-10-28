@@ -44,7 +44,7 @@ export interface Agendamento {
   providedIn: 'root'
 })
 export class AgendamentosService {
-  private baseUrl = 'http://localhost:5160/api';
+  private baseUrl = 'https://backend-production-612b.up.railway.app/api';
 
   constructor(
     private apiService: ApiService,
