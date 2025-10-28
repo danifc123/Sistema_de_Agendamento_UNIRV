@@ -2,9 +2,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
+# Limpar o cache do NuGet
+RUN dotnet nuget locals all --clear
+
 # Copiar arquivos de projeto e restaurar dependências
-COPY ["API.csproj", "."]
-RUN dotnet restore "API.csproj"
+COPY ["API.csproj", "./"]
+RUN dotnet restore "./API.csproj"
 
 # Copiar todo o código fonte
 COPY . .
