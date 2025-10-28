@@ -1,8 +1,14 @@
 <header class="layout-default-header">
-  <img class="layout-defaul-logo" src="logo/Logo.png" alt="logoUnirv">
+  <img class="layout-defaul-logo"
+       src="logo/Logo.png"
+       alt="logoUnirv">
   <div class="user-menu-container">
-    <img class="layout-defaul-photo" (click)="toggleMenu()" src="img/Ellipse.png" alt="fotousuario">
-    <app-menu *ngIf="isMenuOpen" (menuItemClicked)="onMenuItemClicked()"></app-menu>
+    <img class="layout-defaul-photo"
+         (click)="toggleMenu()"
+         src="img/empty.jpg"
+         alt="fotousuario">
+    <app-menu *ngIf="isMenuOpen"
+              (menuItemClicked)="onMenuItemClicked()"></app-menu>
   </div>
 </header>
 <nav class="layout-defaul-nav">
