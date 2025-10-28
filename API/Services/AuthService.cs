@@ -31,6 +31,7 @@ namespace SeuProjeto.Services
                 // Verificar se é o usuário root
                 if (IsRootUser(request.Email, request.Senha))
                 {
+                    Console.WriteLine("Login root realizado com sucesso");
                     var rootUser = CreateRootUser();
                     var rootToken = _jwtService.GenerateToken(rootUser);
                     var rootRefreshToken = _jwtService.GenerateRefreshToken();
@@ -87,6 +88,7 @@ namespace SeuProjeto.Services
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Erro interno: " + ex);
                 return new AuthResponse
                 {
                     Success = false,

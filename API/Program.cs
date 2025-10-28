@@ -50,7 +50,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 // Configurar JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
 var key = Encoding.ASCII.GetBytes(jwtSettings?.SecretKey ?? "sua_chave_secreta_muito_longa_e_segura_aqui_minimo_32_caracteres");
-Console.WriteLine("JwtSettings: " + jwtSettings);
+Console.WriteLine("SecretKey: " + jwtSettings?.SecretKey);
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

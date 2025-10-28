@@ -54,6 +54,7 @@ namespace SeuProjeto.Services
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
+            Console.WriteLine("Token: " + tokenHandler.WriteToken(token));
             return tokenHandler.WriteToken(token);
         }
 
@@ -62,6 +63,7 @@ namespace SeuProjeto.Services
             var randomNumber = new byte[64];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
+            Console.WriteLine("RefreshToken: " + Convert.ToBase64String(randomNumber));
             return Convert.ToBase64String(randomNumber);
         }
 
