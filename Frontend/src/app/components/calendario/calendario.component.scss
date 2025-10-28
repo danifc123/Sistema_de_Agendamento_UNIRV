@@ -4,12 +4,10 @@
 .calendar-container {
   height: auto;
   width: 100%;
-  max-width: 600px; /* Limita a largura máxima */
-  margin: 0 auto; /* Centraliza o calendário */
   border: 1px solid #2a73c0;
   border-radius: 8px;
   font-family: 'Inter', sans-serif;
-  font-size: 12px; /* Reduzido de 14px para 12px */
+  font-size: 14px;
   box-shadow: 2px 2px 10px rgba(0,0,0,0.15);
   overflow: visible;
 }
@@ -21,7 +19,7 @@
   color: white;
   font-weight: bold;
   text-align: center;
-  padding: 6px 0; /* Reduzido de 10px para 6px */
+  padding: 10px 0; /* Aumentar o padding para um cabeçalho mais robusto */
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   -webkit-user-select: none;
@@ -29,7 +27,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 6px; /* Reduzido de 8px para 6px */
+  gap: 8px; /* Espaçamento entre o ícone e o texto */
 }
 
 .custom-calendar .cal-month-view {
@@ -41,17 +39,17 @@
 .custom-calendar .cal-header {
   font-weight: bold;
   color: #555;
-  font-size: 10px; /* Reduzido de 12px para 10px */
+  font-size: 12px;
   text-align: center;
-  padding: 3px 0; /* Reduzido de 5px para 3px */
+  padding: 5px 0; /* Adiciona um pouco de padding */
   border-bottom: 1px solid #eee; /* Linha sutil abaixo dos dias da semana */
 }
 
 /* Estilos para cada célula do dia (onde os números ficam) */
 .custom-calendar .cal-day {
   width: calc(100% / 7) !important; /* Distribui a largura igualmente entre 7 dias */
-  height: 32px !important; /* Reduzido de 40px para 32px */
-  line-height: 32px !important; /* Reduzido de 40px para 32px */
+  height: 40px !important; /* Altura fixa para tornar os dias mais quadrados */
+  line-height: 40px !important; /* Centraliza o número verticalmente */
   text-align: center;
   font-weight: normal;
   cursor: pointer; /* Indica que os dias são clicáveis */
@@ -89,8 +87,8 @@
   display: inline-flex; /* Permite centralizar o texto dentro do círculo */
   justify-content: center;
   align-items: center;
-  width: 24px; /* Reduzido de 30px para 24px */
-  height: 24px; /* Reduzido de 30px para 24px */
+  width: 30px; /* Tamanho do círculo */
+  height: 30px; /* Tamanho do círculo */
 }
 
 /* Estilo para dias fora do mês atual */
@@ -114,8 +112,8 @@
 /* Ajustes para o layout da visualização de mês */
 .cal-month-view .cal-cell-row {
   display: flex; /* Usa flexbox para as linhas */
-  padding: 6px; /* Reduzido de 10px para 6px */
-  gap: 6px; /* Reduzido de 10px para 6px */
+  padding: 10px;
+  gap: 10px;
 }
 
 .cal-month-view .cal-cell {
@@ -158,7 +156,7 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 6px; /* Reduzido de 8px para 6px */
-  padding: 6px; /* Reduzido de 10px para 6px */
+  padding: 8px; /* Reduzido de 10px para 8px */
 }
 
 .weekday {
@@ -171,7 +169,7 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 6px; /* Reduzido de 8px para 6px */
-  padding: 6px; /* Reduzido de 10px para 6px */
+  padding: 8px; /* Reduzido de 10px para 8px */
   width: auto;
 }
 
