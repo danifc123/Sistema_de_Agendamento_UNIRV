@@ -16,6 +16,7 @@ import { EditarPsicologoComponent } from './models/editar-psicologo/editar-psico
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 import { AnotacoesPsicologoComponent } from './models/anotacoes-psicologo/anotacoes-psicologo.component';
+import { EditarPerfilComponent } from './models/editar-perfil/editar-perfil.component';
 
 export const routes: Routes = [
   // Permitir acesso direto a /register redirecionando para /auth/register
@@ -95,6 +96,10 @@ export const routes: Routes = [
         component: EditarPsicologoComponent,
         canActivate: [RoleGuard],
         data: { roles: ['Admin'] }
+      },
+      {
+        path: 'editar-perfil',
+        component: EditarPerfilComponent
       }
     ]
   },

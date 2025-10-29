@@ -21,6 +21,10 @@ export class MenuComponent {
   isAdmin(): boolean { return this.authService.isAdmin(); }
   isPsicologo(): boolean { return this.authService.isPsicologo(); }
   isAluno(): boolean { return this.authService.isAluno(); }
+  isRoot(): boolean {
+    const user = this.authService.getCurrentUser();
+    return user?.Id === -1;
+  }
 
   cadastrarAluno(): void {
     this.router.navigate(['/cadastrar-aluno']);
@@ -39,6 +43,11 @@ export class MenuComponent {
 
   editarPsicologo(): void {
     this.router.navigate(['/editar-psicologo']);
+    this.menuItemClicked.emit();
+  }
+
+  editarPerfil(): void {
+    this.router.navigate(['/editar-perfil']);
     this.menuItemClicked.emit();
   }
 

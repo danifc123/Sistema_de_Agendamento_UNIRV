@@ -5,9 +5,11 @@
       <button class="menu-buttons" *ngIf="isAdmin()" (click)="editarAluno()">Editar Aluno</button>
       <button class="menu-buttons" *ngIf="isAdmin()" (click)="cadastrarPsicologo()">Cadastrar Psicólogo</button>
       <button class="menu-buttons" *ngIf="isAdmin()" (click)="editarPsicologo()">Editar Psicólogo</button>
+      <button class="menu-buttons" *ngIf="!isRoot()" (click)="editarPerfil()">Editar Perfil</button>
       <button class="menu-buttons" (click)="sair()">Sair</button>
     </ng-container>
     <ng-template #alunoMenu>
+      <button class="menu-buttons" *ngIf="!isRoot()" (click)="editarPerfil()">Editar Perfil</button>
       <button class="menu-buttons" (click)="sair()">Sair</button>
     </ng-template>
   </div>
