@@ -6,7 +6,7 @@ import { AuthService, LoginRequest, RegisterRequest, AuthResponse, UserInfo } fr
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
-  const baseUrl = 'http://localhost:5160/api/auth';
+  const baseUrl = 'https://backend-production-612b.up.railway.app/api/auth';
 
   // Mock data
   const mockUser: UserInfo = {

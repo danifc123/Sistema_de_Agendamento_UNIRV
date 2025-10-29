@@ -5,7 +5,7 @@ import { ApiService } from './api.service';
 describe('ApiService', () => {
   let service: ApiService;
   let httpMock: HttpTestingController;
-  const baseUrl = 'http://localhost:5160/api';
+  const baseUrl = 'https://backend-production-612b.up.railway.app/api';
 
   // Mock data para testes
   const mockData = {

@@ -22,7 +22,7 @@ export interface Psicologo {
   providedIn: 'root'
 })
 export class PsicologosService {
-  private baseUrl = 'http://localhost:5160/api';
+  private baseUrl = 'https://backend-production-612b.up.railway.app/api';
 
   constructor(
     private apiService: ApiService,

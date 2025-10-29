@@ -79,7 +79,7 @@ namespace SeuProjeto.Controllers
             {
                 Console.WriteLine($"[FORGOT-PASSWORD] Usuário encontrado para e-mail: {usuario.Email}");
                 var token = _jwtService.GeneratePasswordResetToken(usuario.Email);
-                var resetLink = $"http://localhost:4200/auth/resetpassword?token={Uri.EscapeDataString(token)}";
+                var resetLink = $"https://frontend-production-25f9.up.railway.app/auth/resetpassword?token={Uri.EscapeDataString(token)}";
                 Console.WriteLine($"[FORGOT-PASSWORD] Reset link gerado: {resetLink}");
 
                 try
@@ -161,7 +161,7 @@ namespace SeuProjeto.Controllers
             if (usuario != null)
             {
                 var token = _jwtService.GeneratePasswordResetToken(usuario.Email);
-                var resetLink = $"http://localhost:4200/auth/resetpassword?token={Uri.EscapeDataString(token)}";
+                var resetLink = $"https://frontend-production-25f9.up.railway.app/auth/resetpassword?token={Uri.EscapeDataString(token)}";
                 Console.WriteLine($"[DEBUG] Token gerado para {usuario.Email}");
                 Console.WriteLine($"[DEBUG] Link completo: {resetLink}");
                 Console.WriteLine($"[DEBUG] Token puro: {token}");

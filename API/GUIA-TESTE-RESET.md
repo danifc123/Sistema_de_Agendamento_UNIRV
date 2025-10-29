@@ -20,7 +20,7 @@ ng serve
 Use este endpoint no Postman ou similar:
 
 ```http
-POST http://localhost:5160/api/auth/debug-generate-reset-token
+POST https://backend-production-612b.up.railway.app/api/auth/debug-generate-reset-token
 Content-Type: application/json
 
 {
@@ -83,12 +83,12 @@ Todas as validações passaram, enviando requisição...
 
 ```http
 ### 1. Gerar token
-POST http://localhost:5160/api/auth/debug-generate-reset-token
+POST https://backend-production-612b.up.railway.app/api/auth/debug-generate-reset-token
 Content-Type: application/json
 { "email": "seu@email.com" }
 
 ### 2. Resetar senha (substitua TOKEN_AQUI)
-POST http://localhost:5160/api/auth/reset-password
+POST https://backend-production-612b.up.railway.app/api/auth/reset-password
 Content-Type: application/json
 {
   "token": "TOKEN_AQUI",

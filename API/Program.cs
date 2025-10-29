@@ -29,7 +29,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
-        policy.WithOrigins("http://localhost:4200") // Porta padrão do Angular
+        // policy.WithOrigins("http://localhost:4200") // Porta padrão do Angular
+        //       .AllowAnyHeader()
+        //       .AllowAnyMethod();
+
+        policy.WithOrigins("https://frontend-production-25f9.up.railway.app") // Porta padrão do Angular
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -45,8 +49,8 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
 // Configurar JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
-var key = Encoding.ASCII.GetBytes(jwtSettings?.SecretKey ?? "default_key");
-
+var key = Encoding.ASCII.GetBytes(jwtSettings?.SecretKey ?? "sua_chave_secreta_muito_longa_e_segura_aqui_minimo_32_caracteres");
+Console.WriteLine("SecretKey: " + jwtSettings?.SecretKey);
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
