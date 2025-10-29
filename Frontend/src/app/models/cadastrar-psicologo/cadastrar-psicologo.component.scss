@@ -1,60 +1,53 @@
 .cadastrar-psicologo-container {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   min-height: calc(100vh - 200px);
-}
-
-.form-container {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 900px;
-  max-height: 500px;
-  overflow-y: auto;
-  margin: 20px 0;
+  max-width: 1000px;
+  margin: 0 auto;
 
   h2 {
     text-align: center;
-    margin-bottom: 30px;
-    color: #004F9F;
+    margin-bottom: 20px;
+    color: #004f9f;
     font-size: 24px;
     font-weight: 600;
   }
 
   .form-fields {
-    margin-bottom: 30px;
+    width: 100%;
 
     .form-row {
-      display: flex;
-      gap: 30px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      width: 100%;
 
       @media (max-width: 768px) {
-        flex-direction: column;
+        grid-template-columns: 1fr;
         gap: 20px;
       }
     }
 
     .form-column {
-      flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 15px;
 
       h3 {
-        color: #004F9F;
+        color: #004f9f;
         font-size: 18px;
         font-weight: 600;
         margin: 0 0 10px 0;
         padding-bottom: 5px;
-        border-bottom: 2px solid #52A8FF;
+        border-bottom: 2px solid #52a8ff;
       }
 
       .button-container {
         display: flex;
         justify-content: center;
+        margin-top: 10px;
       }
     }
   }

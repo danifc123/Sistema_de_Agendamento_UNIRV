@@ -155,8 +155,8 @@
 .agenda-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  padding: 10px;
+  gap: 6px; /* Reduzido de 8px para 6px */
+  padding: 8px; /* Reduzido de 10px para 8px */
 }
 
 .weekday {
@@ -168,14 +168,14 @@
 .agenda-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  padding: 10px;
+  gap: 6px; /* Reduzido de 8px para 6px */
+  padding: 8px; /* Reduzido de 10px para 8px */
   width: auto;
 }
 
 .agenda-cell {
-  height: 80px;
-  min-height: 80px;
+  height: 60px; /* Reduzido de 80px para 60px */
+  min-height: 60px; /* Reduzido de 80px para 60px */
   display: flex;
   align-items: center;
   justify-content: center;

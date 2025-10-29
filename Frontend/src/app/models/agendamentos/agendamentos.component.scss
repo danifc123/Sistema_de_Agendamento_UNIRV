@@ -4,7 +4,6 @@
   padding: 1rem;
   max-width: 1200px;
   margin: 0 auto;
-  min-height: 80vh;
   justify-content: flex-start;
 }
 
@@ -69,17 +68,18 @@
 }
 
 .anotacoes-section {
-  flex: 0 0 400px;
-  min-width: 400px;
-  max-width: 400px;
+  flex: 0 0 320px; /* Reduzido de 400px para 320px */
+  min-width: 320px; /* Reduzido de 400px para 320px */
+  height: 350px;
+  max-width: 320px; /* Reduzido de 400px para 320px */
   background: #f8f9fa;
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 1rem; /* Reduzido de 1.5rem para 1rem */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   .anotacao-header {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
+    margin-bottom: 1rem; /* Reduzido de 1.5rem para 1rem */
+    padding-bottom: 0.75rem; /* Reduzido de 1rem para 0.75rem */
     border-bottom: 1px solid #dee2e6;
 
     h3 {
@@ -97,7 +97,7 @@
 
   .anotacao-content {
     .form-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem; /* Reduzido de 1.5rem para 1rem */
 
       label {
         display: block;
@@ -108,7 +108,8 @@
       }
 
       textarea {
-        width: 350px;
+        width: 300px;
+        height: 100px;
         padding: 0.75rem;
         border: 1px solid #ced4da;
         border-radius: 4px;
@@ -116,7 +117,9 @@
         font-size: 0.875rem;
         line-height: 1.5;
         resize: vertical;
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        transition:
+          border-color 0.15s ease-in-out,
+          box-shadow 0.15s ease-in-out;
 
         &:focus {
           outline: none;
@@ -174,6 +177,8 @@
 
 .sem-data-selecionada {
   flex: 1;
+  width: 300px;
+  height: 350px;
   display: flex;
   align-items: center;
   justify-content: center;
