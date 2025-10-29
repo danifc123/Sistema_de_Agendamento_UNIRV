@@ -77,7 +77,7 @@ export class EditarAlunoDialogComponent {
 
     // Primeiro, buscar os dados atuais do usuário para manter a senha
     this.usuariosService.getUsuario(alunoId).subscribe({
-      next: (usuarioAtual) => {
+      next: () => {
 
         // Atualizar usuário usando o endpoint PUT correto
         const dadosUsuario = {
@@ -87,7 +87,7 @@ export class EditarAlunoDialogComponent {
 
         // Atualizar usuário usando o endpoint PUT
         this.usuariosService.updateUsuario(alunoId, dadosUsuario).subscribe({
-          next: (usuarioResponse) => {
+          next: () => {
 
             // Depois, atualizar o aluno
             const dadosAluno = {
@@ -97,7 +97,7 @@ export class EditarAlunoDialogComponent {
             };
 
             this.alunosService.updateAluno(alunoId, dadosAluno).subscribe({
-              next: (alunoResponse) => {
+              next: () => {
                 alert('Aluno atualizado com sucesso!');
 
                 // Retornar dados atualizados para o componente pai
@@ -111,16 +111,19 @@ export class EditarAlunoDialogComponent {
                 });
               },
               error: (alunoError) => {
+                console.error('Erro ao atualizar aluno:', alunoError);
                 alert('Erro ao atualizar dados do aluno. Tente novamente.');
               }
             });
           },
           error: (usuarioError) => {
+            console.error('Erro ao atualizar usuário:', usuarioError);
             alert('Erro ao atualizar dados do usuário. Tente novamente.');
           }
         });
       },
       error: (error) => {
+        console.error('Erro ao buscar dados do usuário:', error);
         alert('Erro ao buscar dados do usuário. Tente novamente.');
       }
     });

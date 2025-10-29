@@ -64,7 +64,7 @@ export class EditarPsicologoDialogComponent {
     }
 
     // Validação de CRP (mais flexível - permite diferentes formatos)
-    const crpRegex = /^\d{2}[\/\-\.]?\d{6}$/;
+    const crpRegex = /^\d{2}[/.-]?\d{6}$/;
     if (!crpRegex.test(this.crp.replace(/\s/g, ''))) {
       alert('Por favor, insira um CRP válido (ex: 06/123456, 06-123456, 06.123456).');
       return;
@@ -74,7 +74,7 @@ export class EditarPsicologoDialogComponent {
 
     // Primeiro, buscar os dados atuais do usuário para manter a senha
     this.usuariosService.getUsuario(psicologoId).subscribe({
-      next: (usuarioAtual) => {
+      next: () => {
 
         // Atualizar usuário
         const dadosUsuario = {
@@ -85,7 +85,7 @@ export class EditarPsicologoDialogComponent {
 
         // Atualizar usuário usando o endpoint PUT
         this.usuariosService.updateUsuario(psicologoId, dadosUsuario).subscribe({
-          next: (usuarioResponse) => {
+          next: () => {
 
             // Depois, atualizar o psicólogo
             const dadosPsicologo = {
@@ -95,7 +95,7 @@ export class EditarPsicologoDialogComponent {
 
 
             this.psicologosService.updatePsicologo(psicologoId, dadosPsicologo).subscribe({
-              next: (psicologoResponse) => {
+              next: () => {
                 alert('Psicólogo atualizado com sucesso!');
 
                 // Retornar dados atualizados para o componente pai
@@ -108,16 +108,19 @@ export class EditarPsicologoDialogComponent {
                 });
               },
               error: (psicologoError) => {
+                console.error('Erro ao atualizar psicólogo:', psicologoError);
                 alert('Erro ao atualizar dados do psicólogo. Tente novamente.');
               }
             });
           },
           error: (usuarioError) => {
+            console.error('Erro ao atualizar usuário:', usuarioError);
             alert('Erro ao atualizar dados do usuário. Tente novamente.');
           }
         });
       },
       error: (error) => {
+        console.error('Erro ao buscar dados do usuário:', error);
         alert('Erro ao buscar dados do usuário. Tente novamente.');
       }
     });

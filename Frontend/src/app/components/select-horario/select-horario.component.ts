@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -74,7 +74,7 @@ export interface BloqueioIntervalo {
     }
   ]
 })
-export class SelectHorarioComponent implements ControlValueAccessor {
+export class SelectHorarioComponent implements ControlValueAccessor, OnInit, OnChanges {
   @Input() label: string = '';
   @Input() placeholder: string = 'Selecione um horário';
   @Input() inicioExpediente: string = '08:00';
@@ -140,7 +140,7 @@ export class SelectHorarioComponent implements ControlValueAccessor {
     this.propagateChange(value);
   };
 
-  onTouched = () => {};
+  onTouched = () => { return; };
 
   writeValue(value: string): void {
     this.value = value;
@@ -158,5 +158,5 @@ export class SelectHorarioComponent implements ControlValueAccessor {
     this.disabled = isDisabled;
   }
 
-  private propagateChange = (_: any) => {};
+  private propagateChange: (value: any) => void = () => { return; };
 }

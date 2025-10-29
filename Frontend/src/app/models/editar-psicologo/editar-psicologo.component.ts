@@ -74,6 +74,7 @@ export class EditarPsicologoComponent implements AfterViewInit, OnInit {
         this.dataSource.data = psicologosDisplay;
       },
       error: (error) => {
+        console.error('Erro ao carregar psicólogos:', error);
       }
     });
   }
@@ -129,6 +130,7 @@ export class EditarPsicologoComponent implements AfterViewInit, OnInit {
           this.carregarPsicologos(); // Recarregar a tabela
         },
         error: (error) => {
+          console.error('Erro ao excluir psicólogo:', error);
           alert('Erro ao excluir psicólogo. Verifique se não há dados dependentes ou tente novamente.');
         }
       });

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, forwardRef, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -96,7 +96,7 @@ export class SelectComponent implements ControlValueAccessor {
     this.propagateChange(value);
   };
 
-  onTouched = () => {};
+  onTouched = () => { return; };
 
   writeValue(value: any): void {
     console.log('SelectComponent writeValue chamado com:', value);
@@ -120,5 +120,5 @@ export class SelectComponent implements ControlValueAccessor {
     this.disabled = isDisabled;
   }
 
-  private propagateChange = (_: any) => {};
+  private propagateChange: (value: any) => void = () => { return; };
 }

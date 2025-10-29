@@ -148,7 +148,7 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
       console.log(`Sorting property: ${property}, value:`, item[property as keyof AgendamentoDisplay]);
 
       switch (property) {
-        case 'data':
+        case 'data': {
           const dataParts = item.Data.split('/');
           if (dataParts.length === 3) {
             const timestamp = new Date(`${dataParts[2]}-${dataParts[1]}-${dataParts[0]}`).getTime();
@@ -156,7 +156,8 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
             return timestamp;
           }
           return item.Data as unknown as number;
-        case 'horario':
+        }
+        case 'horario': {
           const horarioParts = item.Horario.split(':');
           if (horarioParts.length === 2) {
             const minutos = parseInt(horarioParts[0]) * 60 + parseInt(horarioParts[1]);
@@ -164,6 +165,7 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
             return minutos;
           }
           return item.Horario as unknown as number;
+        }
         case 'aluno':
           return item.AlunoNome.toLowerCase();
         case 'psicologo':

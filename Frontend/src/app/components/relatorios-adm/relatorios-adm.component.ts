@@ -33,7 +33,7 @@ export interface Appointment {
   styleUrl: './relatorios-adm.component.scss'
 })
 export class RelatoriosADMComponent implements OnInit {
-  public readonly monthOptions: Array<{ value: number; label: string }> = [
+  public readonly monthOptions: { value: number; label: string }[] = [
     { value: 1, label: 'Janeiro' },
     { value: 2, label: 'Fevereiro' },
     { value: 3, label: 'Março' },

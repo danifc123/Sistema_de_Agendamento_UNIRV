@@ -4,7 +4,7 @@ import { ButtonComponent } from "../../components/button/button.component";
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { PsicologoFormData } from './psicologo.interface';
+// Tipagem local não utilizada removida
 import { UsuariosService } from '../../services/usuarios.service';
 import { PsicologosService } from '../../services/psicologos.service';
 
@@ -66,12 +66,12 @@ export class CadastrarPsicologoComponent {
           Crp: this.crp,
           Especialidade: this.especialidade
         }).subscribe({
-          next: (psicologo) => {
+          next: () => {
             this.limparFormulario();
             alert('Psicólogo cadastrado com sucesso!');
           },
           error: (error) => {
-
+            console.error('Erro ao criar psicólogo:', error);
             // Verificar se é um erro de validação (400) ou erro interno (500)
             if (error.status === 400) {
               alert(`Erro de validação: ${error.error}`);
@@ -84,6 +84,7 @@ export class CadastrarPsicologoComponent {
         });
       },
       error: (error) => {
+        console.error('Erro ao criar usuário:', error);
         alert('Erro ao criar usuário. Tente novamente.');
       }
     });

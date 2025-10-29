@@ -5,7 +5,6 @@ import { LoginComponent } from './models/login/login.component';
 import { RegisterComponent } from './models/register/register.component';
 import { ForgetPasswordComponent } from './models/forget-password/forget-password.component';
 import { ResetPasswordComponent } from './models/reset-password/reset-password.component';
-import { CalendarioComponent } from './components/calendario/calendario.component';
 import { HomeComponent } from './models/home/home.component';
 import { AgendamentosComponent } from './models/agendamentos/agendamentos.component';
 import { RelatorioComponent } from './models/relatorio/relatorio.component';

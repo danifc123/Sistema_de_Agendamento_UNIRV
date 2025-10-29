@@ -4,7 +4,7 @@ import { ButtonComponent } from "../../components/button/button.component";
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Aluno, AlunoFormData } from './aluno.interface';
+// Tipagens locais não utilizadas removidas
 import { UsuariosService } from '../../services/usuarios.service';
 import { AlunosService } from '../../services/alunos.service';
 

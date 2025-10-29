@@ -26,7 +26,7 @@ export class AgendamentosComponent implements OnInit {
 
   private readonly STORAGE_KEY = 'agenda_anotacoes';
 
-  constructor() {}
+  // Removido construtor vazio para evitar método vazio
 
   ngOnInit(): void {
     this.carregarAnotacoes();

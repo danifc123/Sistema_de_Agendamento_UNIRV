@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, forwardRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, forwardRef } from '@angular/core';
 import {
   FormControl,
   FormGroupDirective,
@@ -9,9 +9,9 @@ import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
-import {ErrorStateMatcher} from '@angular/material/core';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -35,7 +35,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   ]
 })
 export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
-  @Input({required: true}) label!: string;
+  @Input({ required: true }) label!: string;
   @Input() type: 'text' | 'email' | 'password' | 'date' | 'time' | 'textarea' = 'text';
   @Input() placeholder: string = '';
   @Input() rows: number = 4;
@@ -72,12 +72,12 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   onValueChange(newValue: any) {
     this.value = newValue;
     this.valueChange.emit(newValue);
-    this.onChange(newValue);
+    this.onChange();
   }
 
   // ControlValueAccessor methods
-  private onChange = (value: any) => {};
-  private onTouched = () => {};
+  private onChange = () => { return; };
+  private onTouched = () => { return; };
 
   writeValue(value: any): void {
     this.value = value;
@@ -93,6 +93,8 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    // Implement if needed
+    this.emailFormControl[isDisabled ? 'disable' : 'enable']();
+    this.passwordFormControl[isDisabled ? 'disable' : 'enable']();
+    this.textFormControl[isDisabled ? 'disable' : 'enable']();
   }
 }

@@ -29,7 +29,7 @@ export class CalendarioComponent{
 
   // --- Agenda (variação customizada) ---
   public weekDays: string[] = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
-  public monthDays: Array<{ date: Date; inCurrentMonth: boolean; isToday: boolean }>= [];
+  public monthDays: { date: Date; inCurrentMonth: boolean; isToday: boolean }[]= [];
   public panelOpen: boolean = false;
   public noteText: string = '';
 
@@ -68,7 +68,7 @@ export class CalendarioComponent{
 
     const today = this.stripTime(new Date());
 
-    const days: Array<{ date: Date; inCurrentMonth: boolean; isToday: boolean }> = [];
+    const days: { date: Date; inCurrentMonth: boolean; isToday: boolean }[] = [];
     for (let i = 0; i < totalCells; i++) {
       const date = new Date(firstDateInGrid);
       date.setDate(firstDateInGrid.getDate() + i);
