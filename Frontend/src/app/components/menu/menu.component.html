@@ -5,6 +5,7 @@
       <button class="menu-buttons" *ngIf="isAdmin()" (click)="editarAluno()">Editar Aluno</button>
       <button class="menu-buttons" *ngIf="isAdmin()" (click)="cadastrarPsicologo()">Cadastrar Psicólogo</button>
       <button class="menu-buttons" *ngIf="isAdmin()" (click)="editarPsicologo()">Editar Psicólogo</button>
+      <button class="menu-buttons" *ngIf="isPsicologo()" (click)="gerenciarBloqueios()">Meus Bloqueios</button>
       <button class="menu-buttons" (click)="sair()">Sair</button>
     </ng-container>
     <ng-template #alunoMenu>

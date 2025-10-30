@@ -24,11 +24,14 @@ interface AlunoOption {
 })
 export class AnotacoesPsicologoComponent implements OnInit, AfterViewInit {
   alunos: AlunoOption[] = [];
+  alunosFiltrados: AlunoOption[] = [];
   alunoSelecionadoId: string = '';
   alunoSelecionadoNome: string = '';
+  nomeAlunoBusca: string = '';
+  mostrarLista: boolean = false;
 
   dataSource = new MatTableDataSource<Anotacao>([]);
-  displayedColumns: string[] = ['data', 'aluno', 'info', 'editar', 'excluir'];
+  displayedColumns: string[] = ['data', 'diaSemana', 'aluno', 'info', 'editar', 'excluir'];
 
   descricaoNovaNota: string = '';
   dataNota: string = '';
@@ -80,10 +83,32 @@ export class AnotacoesPsicologoComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onAlunoChange(idStr: string): void {
-    this.alunoSelecionadoId = idStr;
-    const aluno = this.alunos.find(a => a.id === parseInt(idStr, 10));
-    this.alunoSelecionadoNome = aluno?.nome || '';
+  onBuscaAlunoChange(nome: string): void {
+    this.nomeAlunoBusca = nome;
+
+    if (!nome.trim()) {
+      this.alunosFiltrados = [];
+      this.mostrarLista = false;
+      this.alunoSelecionadoId = '';
+      this.alunoSelecionadoNome = '';
+      this.dataSource.data = [];
+      return;
+    }
+
+    // Filtrar alunos pelo nome
+    const nomeLower = nome.toLowerCase();
+    this.alunosFiltrados = this.alunos.filter(a =>
+      a.nome.toLowerCase().includes(nomeLower)
+    );
+    this.mostrarLista = this.alunosFiltrados.length > 0;
+  }
+
+  selecionarAluno(aluno: AlunoOption): void {
+    this.alunoSelecionadoId = aluno.id.toString();
+    this.alunoSelecionadoNome = aluno.nome;
+    this.nomeAlunoBusca = aluno.nome;
+    this.mostrarLista = false;
+    this.alunosFiltrados = [];
     this.carregarNotas();
   }
 
@@ -133,8 +158,31 @@ export class AnotacoesPsicologoComponent implements OnInit, AfterViewInit {
     });
   }
 
+  formatarData(dataStr: string): string {
+    if (!dataStr) return '';
+
+    // Se a data vem no formato YYYY-MM-DD
+    const partes = dataStr.split('-');
+    if (partes.length === 3) {
+      return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+    return dataStr;
+  }
+
+  obterDiaSemana(dataStr: string): string {
+    if (!dataStr) return '';
+
+    const data = new Date(dataStr + 'T00:00:00');
+    const diasSemana = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+
+    return diasSemana[data.getDay()];
+  }
+
   onInfo(nota: Anotacao): void {
-    alert(`Aluno: ${this.alunoSelecionadoNome}\nData: ${nota.Data}\n\n${nota.Descricao}`);
+    const dataFormatada = this.formatarData(nota.Data);
+    const diaSemana = this.obterDiaSemana(nota.Data);
+    alert(`Aluno: ${this.alunoSelecionadoNome}\nData: ${dataFormatada} (${diaSemana})\n\n${nota.Descricao}`);
   }
 
   onEditar(nota: Anotacao): void {

@@ -42,6 +42,11 @@ export class MenuComponent {
     this.menuItemClicked.emit();
   }
 
+  gerenciarBloqueios(): void {
+    this.router.navigate(['/gerenciar-bloqueios']);
+    this.menuItemClicked.emit();
+  }
+
   sair(): void {
     this.authService.logout();
     this.router.navigate(['/auth']);

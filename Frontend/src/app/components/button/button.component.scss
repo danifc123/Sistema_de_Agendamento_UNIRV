@@ -1,14 +1,12 @@
-.button-container{
+.button-container {
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 15px;
   height: 30px;
   width: 100px;
-  padding: 10px;
-  margin: 10px;
 
-  .button{
+  .button {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,51 +17,51 @@
     height: 100%;
     width: 100%;
     cursor: pointer;
-    &:hover{
+    &:hover {
       background-color: var(--secondary-color-light);
     }
   }
 }
-.button-agendamento{
+.button-agendamento {
   background-color: var(--primary-color-light);
   border: 2px solid transparent;
   border-radius: 8px;
   cursor: pointer;
   color: white;
-  &:hover{
+  &:hover {
     color: var(--primary-color);
     border-color: var(--primary-color);
   }
 }
-.button-editar{
-   background-color: var(--primary-color-light);
-  border: 2px solid transparent;
-  border-radius: 8px;
-  cursor: pointer;
-  color: white;
-  &:hover{
-    color: var(--primary-color);
-    border-color: var(--primary-color);
-  }
-}
-.button-info{
+.button-editar {
   background-color: var(--primary-color-light);
   border: 2px solid transparent;
   border-radius: 8px;
   cursor: pointer;
   color: white;
-  &:hover{
+  &:hover {
     color: var(--primary-color);
     border-color: var(--primary-color);
   }
 }
-.button-excluir{
+.button-info {
+  background-color: var(--primary-color-light);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  &:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+}
+.button-excluir {
   background-color: #dc3545;
   border: 2px solid transparent;
   border-radius: 8px;
   cursor: pointer;
   color: white;
-  &:hover{
+  &:hover {
     background-color: #c82333;
     border-color: #c82333;
   }

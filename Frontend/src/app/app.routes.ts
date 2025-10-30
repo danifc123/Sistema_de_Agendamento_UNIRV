@@ -15,6 +15,7 @@ import { EditarPsicologoComponent } from './models/editar-psicologo/editar-psico
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 import { AnotacoesPsicologoComponent } from './models/anotacoes-psicologo/anotacoes-psicologo.component';
+import { GerenciarBloqueiosComponent } from './models/gerenciar-bloqueios/gerenciar-bloqueios.component';
 
 export const routes: Routes = [
   // Permitir acesso direto a /register redirecionando para /auth/register
@@ -68,6 +69,12 @@ export const routes: Routes = [
       {
         path: 'anotacoes',
         component: AnotacoesPsicologoComponent,
+        canActivate: [RoleGuard],
+        data: { roles: ['Psicologo'] }
+      },
+      {
+        path: 'gerenciar-bloqueios',
+        component: GerenciarBloqueiosComponent,
         canActivate: [RoleGuard],
         data: { roles: ['Psicologo'] }
       },

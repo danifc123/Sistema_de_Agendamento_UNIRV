@@ -100,6 +100,54 @@ namespace SeuProjeto.Controllers
             return CreatedAtAction(nameof(GetPorPsicologo), new { psicologoId = disp.PsicologoId }, disp);
         }
 
+        // PUT: api/disponibilidades/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] CriarDisponibilidadeRequest request)
+        {
+            var disp = await _context.Disponibilidades.FindAsync(id);
+            if (disp == null) return NotFound();
+
+            var userId = GetCurrentUserId();
+            if (IsPsicologo() && userId.HasValue && disp.PsicologoId != userId.Value)
+            {
+                return Forbid();
+            }
+
+            // Validar se não é data/hora passada
+            var dataHoraInicio = request.Data.ToDateTime(request.HoraInicio);
+            if (dataHoraInicio < DateTime.Now)
+            {
+                return BadRequest(new { message = "Não é possível alterar bloqueio para data/horário que já passou." });
+            }
+
+            if (request.HoraFim <= request.HoraInicio)
+            {
+                return BadRequest(new { message = "Hora fim deve ser maior que hora início" });
+            }
+
+            // Verificar sobreposição (excluindo o próprio registro)
+            var existeSobreposicao = await _context.Disponibilidades.AnyAsync(d =>
+                d.Id != id &&
+                d.PsicologoId == request.PsicologoId &&
+                d.Data == request.Data &&
+                !(request.HoraFim <= d.HoraInicio || request.HoraInicio >= d.HoraFim)
+            );
+
+            if (existeSobreposicao)
+            {
+                return BadRequest(new { message = "Já existe um bloqueio para este período" });
+            }
+
+            disp.Data = request.Data;
+            disp.HoraInicio = request.HoraInicio;
+            disp.HoraFim = request.HoraFim;
+
+            _context.Entry(disp).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         // DELETE: api/disponibilidades/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -111,6 +159,13 @@ namespace SeuProjeto.Controllers
             if (IsPsicologo() && userId.HasValue && disp.PsicologoId != userId.Value)
             {
                 return Forbid();
+            }
+
+            // Validar se não é data/hora passada
+            var dataHoraInicio = disp.Data.ToDateTime(disp.HoraInicio);
+            if (dataHoraInicio < DateTime.Now)
+            {
+                return BadRequest(new { message = "Não é possível excluir bloqueio para data/horário que já passou." });
             }
 
             _context.Disponibilidades.Remove(disp);

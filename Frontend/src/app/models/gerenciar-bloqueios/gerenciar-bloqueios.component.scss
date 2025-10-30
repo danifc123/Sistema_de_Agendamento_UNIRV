@@ -1,0 +1,56 @@
+.gerenciar-bloqueios-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  padding: 16px;
+}
+
+h2 {
+  color: var(--primary-color);
+  margin-bottom: 8px;
+}
+
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+table {
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 600;
+}
+
+td,
+th {
+  padding: 12px;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+}
+
+mat-paginator {
+  background: white;
+  border-radius: 8px;
+}
+
+.mat-elevation-z1 {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+app-button {
+  min-width: 80px;
+}
+::ng-deep .mat-mdc-header-row {
+  background-color: var(--primary-color) !important;
+}
