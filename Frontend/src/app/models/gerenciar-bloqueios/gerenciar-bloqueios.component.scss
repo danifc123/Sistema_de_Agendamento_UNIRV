@@ -11,6 +11,16 @@ h2 {
   margin-bottom: 8px;
 }
 
+.filtro-container {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  app-select {
+    flex: 0 0 300px;
+  }
+}
+
 .conteudo {
   display: flex;
   flex-direction: column;

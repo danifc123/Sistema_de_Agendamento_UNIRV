@@ -1,6 +1,16 @@
 <div class="gerenciar-bloqueios-container">
   <h2>Meus Horários Bloqueados</h2>
 
+  <div class="filtro-container">
+    <app-select
+      label="Filtrar por Dia da Semana"
+      [options]="diasSemanaOpcoes"
+      [(ngModel)]="diaSemanaFiltro"
+      (ngModelChange)="onFiltrarDiaSemana()"
+      placeholder="Selecione o dia da semana">
+    </app-select>
+  </div>
+
   <div class="conteudo">
     <div *ngIf="isLoading">Carregando...</div>
     <div *ngIf="!isLoading && dataSource.data.length === 0">Nenhum horário bloqueado encontrado.</div>

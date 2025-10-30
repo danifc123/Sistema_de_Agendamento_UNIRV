@@ -8,6 +8,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DisponibilidadesService, Disponibilidade } from '../../services/disponibilidades.service';
 import { AuthService } from '../../services/auth.service';
 import { ButtonComponent } from '../../components/button/button.component';
+import { SelectComponent } from '../../components/select/select.component';
 
 @Component({
   selector: 'app-gerenciar-bloqueios',
@@ -19,7 +20,8 @@ import { ButtonComponent } from '../../components/button/button.component';
     MatPaginatorModule,
     MatSortModule,
     MatDialogModule,
-    ButtonComponent
+    ButtonComponent,
+    SelectComponent
   ],
   templateUrl: './gerenciar-bloqueios.component.html',
   styleUrl: './gerenciar-bloqueios.component.scss'
@@ -30,6 +32,20 @@ export class GerenciarBloqueiosComponent implements OnInit, AfterViewInit {
 
   isLoading: boolean = false;
   psicologoId: number | null = null;
+
+  // Filtro por dia da semana
+  diaSemanaFiltro: string = '';
+  todosBloqueios: Disponibilidade[] = [];
+  diasSemanaOpcoes = [
+    { value: '', label: 'Todos os dias' },
+    { value: 'Domingo', label: 'Domingo' },
+    { value: 'Segunda-feira', label: 'Segunda-feira' },
+    { value: 'Terça-feira', label: 'Terça-feira' },
+    { value: 'Quarta-feira', label: 'Quarta-feira' },
+    { value: 'Quinta-feira', label: 'Quinta-feira' },
+    { value: 'Sexta-feira', label: 'Sexta-feira' },
+    { value: 'Sábado', label: 'Sábado' }
+  ];
 
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort!: MatSort;
@@ -61,7 +77,8 @@ export class GerenciarBloqueiosComponent implements OnInit, AfterViewInit {
     this.isLoading = true;
     this.disponibilidadesService.listarPorPsicologo(this.psicologoId).subscribe({
       next: (bloqueios) => {
-        this.dataSource.data = bloqueios || [];
+        this.todosBloqueios = bloqueios || [];
+        this.aplicarFiltro();
         this.isLoading = false;
       },
       error: (err) => {
@@ -70,6 +87,20 @@ export class GerenciarBloqueiosComponent implements OnInit, AfterViewInit {
         alert(msg);
       }
     });
+  }
+
+  aplicarFiltro(): void {
+    if (!this.diaSemanaFiltro) {
+      this.dataSource.data = this.todosBloqueios;
+    } else {
+      this.dataSource.data = this.todosBloqueios.filter(bloqueio =>
+        this.obterDiaSemana(bloqueio.Data) === this.diaSemanaFiltro
+      );
+    }
+  }
+
+  onFiltrarDiaSemana(): void {
+    this.aplicarFiltro();
   }
 
   formatarData(dataStr: string): string {
