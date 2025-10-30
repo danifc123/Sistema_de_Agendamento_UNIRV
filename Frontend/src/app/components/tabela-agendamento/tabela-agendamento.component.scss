@@ -57,6 +57,79 @@
   font-weight: 500;
 }
 
+// Filtro de status no cabeçalho
+.status-header {
+  position: relative;
+  overflow: visible !important;
+}
+
+.status-header-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filtro-status-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .material-symbols-outlined {
+    font-size: 18px;
+    color: #666;
+  }
+}
+
+.menu-status {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  padding: 8px;
+  z-index: 9999;
+  min-width: 160px;
+  margin-top: 4px;
+}
+
+.status-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+
+  input[type="checkbox"] {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+  }
+
+  span {
+    font-size: 14px;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
 // Estilos para garantir que os cabeçalhos de sorting funcionem
 .mat-mdc-header-cell {
   cursor: pointer;

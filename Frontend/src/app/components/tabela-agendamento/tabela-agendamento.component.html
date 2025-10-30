@@ -46,7 +46,27 @@
 
       <!-- Status Column -->
       <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="status-header">
+          <div class="status-header-content">
+            <span>Status</span>
+            <button class="filtro-status-btn" (click)="toggleMenuStatus(); $event.stopPropagation()" title="Filtrar por status">
+              <span class="material-symbols-outlined">filter_list</span>
+            </button>
+          </div>
+          @if (mostrarMenuStatus) {
+            <div class="menu-status" (click)="$event.stopPropagation()">
+              @for (status of todosStatus; track status) {
+                <label class="status-checkbox">
+                  <input
+                    type="checkbox"
+                    [checked]="isStatusSelecionado(status)"
+                    (change)="toggleStatus(status)">
+                  <span>{{status}}</span>
+                </label>
+              }
+            </div>
+          }
+        </th>
         <td mat-cell *matCellDef="let row">
           <span [class]="'status-' + row.Status.toLowerCase()">{{row.Status}}</span>
         </td>

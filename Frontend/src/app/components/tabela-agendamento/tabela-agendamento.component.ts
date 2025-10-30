@@ -1,11 +1,11 @@
-import {AfterViewInit, Component, ViewChild, OnInit} from '@angular/core';
-import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
-import {MatSort, MatSortModule} from '@angular/material/sort';
-import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-import {MatButtonModule} from '@angular/material/button';
+import { AfterViewInit, Component, ViewChild, OnInit, HostListener } from '@angular/core';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { ButtonComponent } from "../button/button.component";
 import { EditAgendamentoDialogComponent } from "../dialogs/edit-agendamento-dialog/edit-agendamento-dialog.component";
 import { InfoAgendamentoDialogComponent } from "../dialogs/info-agendamento-dialog/info-agendamento-dialog.component";
@@ -44,6 +44,11 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
   filtroPsicologoId: number | null = null;
   opcoesPsicologos: { value: number | null, label: string }[] = [];
   isAdmin: boolean = false;
+
+  // Filtro de status
+  statusSelecionados: string[] = ['Pendente', 'Confirmado', 'Cancelado', 'Apresentado'];
+  todosStatus: string[] = ['Pendente', 'Confirmado', 'Cancelado', 'Apresentado'];
+  mostrarMenuStatus: boolean = false;
 
   constructor(
     private dialog: MatDialog,
@@ -100,27 +105,78 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
   }
 
   filtrarPorPsicologo(): void {
-    if (!this.filtroPsicologoId) {
-      // Se for null (Todos), carrega todos os agendamentos
-      this.carregarAgendamentos();
-      return;
+    this.aplicarFiltros();
+  }
+
+  toggleMenuStatus(): void {
+    this.mostrarMenuStatus = !this.mostrarMenuStatus;
+  }
+
+  toggleStatus(status: string): void {
+    const index = this.statusSelecionados.indexOf(status);
+    if (index > -1) {
+      this.statusSelecionados.splice(index, 1);
+    } else {
+      this.statusSelecionados.push(status);
     }
+    this.aplicarFiltros();
+  }
 
-    // Filtrar apenas pelo psicólogo selecionado
-    this.agendamentosService.filtrarAgendamentos(undefined, this.filtroPsicologoId).subscribe({
-      next: (agendamentos) => {
-        const agendamentosDisplay = this.converterParaDisplay(agendamentos);
-        this.dataSource.data = agendamentosDisplay;
-        console.log('Agendamentos filtrados por psicólogo:', agendamentosDisplay);
+  isStatusSelecionado(status: string): boolean {
+    return this.statusSelecionados.includes(status);
+  }
 
-        if (this.sort) {
-          this.dataSource.sort = this.sort;
+  @HostListener('document:click', ['$event'])
+  fecharMenuStatus(event: Event): void {
+    const target = event.target as HTMLElement;
+    // Fechar o menu se clicar fora dele
+    if (this.mostrarMenuStatus && !target.closest('.status-header')) {
+      this.mostrarMenuStatus = false;
+    }
+  }
+
+  aplicarFiltros(): void {
+    const psicologoId = this.filtroPsicologoId || undefined;
+
+    // Se não há filtro de psicólogo, carrega todos e filtra por status localmente
+    if (!psicologoId) {
+      this.agendamentosService.getAgendamentos().subscribe({
+        next: (agendamentos) => {
+          // Filtrar por status localmente
+          const agendamentosFiltrados = agendamentos.filter(a =>
+            this.statusSelecionados.includes(a.Status)
+          );
+          const agendamentosDisplay = this.converterParaDisplay(agendamentosFiltrados);
+          this.dataSource.data = agendamentosDisplay;
+
+          if (this.sort) {
+            this.dataSource.sort = this.sort;
+          }
+        },
+        error: (error) => {
+          console.error('Erro ao carregar agendamentos:', error);
         }
-      },
-      error: (error) => {
-        console.error('Erro ao filtrar agendamentos:', error);
-      }
-    });
+      });
+    } else {
+      // Se há filtro de psicólogo, usa o endpoint de filtro e depois filtra por status
+      this.agendamentosService.filtrarAgendamentos(undefined, psicologoId).subscribe({
+        next: (agendamentos) => {
+          // Filtrar por status localmente
+          const agendamentosFiltrados = agendamentos.filter(a =>
+            this.statusSelecionados.includes(a.Status)
+          );
+          const agendamentosDisplay = this.converterParaDisplay(agendamentosFiltrados);
+          this.dataSource.data = agendamentosDisplay;
+
+          if (this.sort) {
+            this.dataSource.sort = this.sort;
+          }
+        },
+        error: (error) => {
+          console.error('Erro ao filtrar agendamentos:', error);
+        }
+      });
+    }
   }
 
   carregarAgendamentos(): void {
