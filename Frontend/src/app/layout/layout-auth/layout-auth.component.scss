@@ -1,4 +1,4 @@
-.layout-auth-body{
+.layout-auth-body {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -8,13 +8,13 @@
   margin: 0px;
   height: 100%;
   width: 100%;
-  .logo-container{
+  .logo-container {
     margin-bottom: 15px;
-    .logo{
+    .logo {
       width: 300px;
     }
   }
-  .layout-auth-container{
+  .layout-auth-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -22,9 +22,9 @@
     background-color: white;
     border-radius: 15px;
     width: 350px;
-    height:auto;
+    height: 350px;
   }
-  .layout-auth-title{
+  .layout-auth-title {
     display: flex;
     justify-content: center;
     align-items: center;
