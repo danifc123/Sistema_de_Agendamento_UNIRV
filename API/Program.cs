@@ -27,13 +27,16 @@ builder.Services.AddEndpointsApiExplorer();
 // CORS - Permitir acesso do Angular
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngular", policy =>
+    options.AddPolicy("AllowDevelopment", policy =>
     {
-        // policy.WithOrigins("http://localhost:4200") // Porta padrão do Angular
-        //       .AllowAnyHeader()
-        //       .AllowAnyMethod(); 
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 
-        policy.WithOrigins("https://frontend-production-25f9.up.railway.app") // Porta padrão do Angular
+    options.AddPolicy("AllowProduction", policy =>
+    {
+        policy.WithOrigins("https://frontend-production-25f9.up.railway.app")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -88,12 +91,13 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseDeveloperExceptionPage();
+    app.UseCors("AllowDevelopment");
+}
+else{
+  app.UseCors("AllowProduction");
 }
 
 app.UseHttpsRedirection();
-
-// Usar CORS
-app.UseCors("AllowAngular");
 
 // Usar Authentication e Authorization
 app.UseAuthentication();

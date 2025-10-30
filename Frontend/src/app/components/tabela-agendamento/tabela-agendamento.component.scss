@@ -1,5 +1,13 @@
+.filtros-topo {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
 .table-input-seach{
   display: flex;
+  flex: 1;
 
   .material-symbols-outlined {
     font-weight: 900;
@@ -34,6 +42,15 @@
 .status-cancelado {
   background-color: #f8d7da;
   color: #721c24;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-apresentado {
+  background-color: #d1ecf1;
+  color: #0c5460;
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 12px;

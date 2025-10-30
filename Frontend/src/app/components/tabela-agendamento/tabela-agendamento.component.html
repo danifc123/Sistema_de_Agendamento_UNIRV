@@ -1,9 +1,21 @@
 <div class=" tabela">
-  <mat-form-field class='table-input-seach'>
-    <mat-label>Filtrar agendamentos</mat-label>
-    <span matPrefix class="material-symbols-outlined">search</span>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. João Silva" #input>
-  </mat-form-field>
+  <div class="filtros-topo">
+    <mat-form-field class='table-input-seach'>
+      <mat-label>Filtrar agendamentos</mat-label>
+      <span matPrefix class="material-symbols-outlined">search</span>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Ex. João Silva" #input>
+    </mat-form-field>
+
+    @if (isAdmin) {
+      <app-select
+        label="Filtrar por Psicólogo"
+        [options]="opcoesPsicologos"
+        [(ngModel)]="filtroPsicologoId"
+        (ngModelChange)="filtrarPorPsicologo()"
+        placeholder="Todos os psicólogos">
+      </app-select>
+    }
+  </div>
 
   <div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource" matSort matSortActive="data" matSortDirection="desc" matSortDisableClear>

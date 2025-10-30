@@ -2,11 +2,12 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AuthService, LoginRequest, RegisterRequest, AuthResponse, UserInfo } from './auth.service';
+import { environment } from '../../environments/environment';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
-  const baseUrl = 'https://backend-production-612b.up.railway.app/api/auth';
+  const baseUrl = environment.apiUrl + '/auth';
 
   // Mock data
   const mockUser: UserInfo = {
@@ -211,7 +212,7 @@ describe('AuthService', () => {
       req.flush(mockUser);
     });
 
-        it('should load user from localStorage on service creation', () => {
+    it('should load user from localStorage on service creation', () => {
       localStorage.setItem('user', JSON.stringify(mockUser));
 
       // Criar nova instância do service para testar o constructor

@@ -12,6 +12,9 @@ import { InfoAgendamentoDialogComponent } from "../dialogs/info-agendamento-dial
 import { AgendamentosService, Agendamento } from '../../services/agendamentos.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { PsicologosService } from '../../services/psicologos.service';
+import { SelectComponent } from '../select/select.component';
+import { FormsModule } from '@angular/forms';
 
 export interface AgendamentoDisplay {
   Id: number;
@@ -26,7 +29,7 @@ export interface AgendamentoDisplay {
 
 @Component({
   selector: 'app-tabela-agendamento',
-  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatDialogModule, MatButtonModule, ButtonComponent],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatDialogModule, MatButtonModule, ButtonComponent, SelectComponent],
   templateUrl: './tabela-agendamento.component.html',
   styleUrl: './tabela-agendamento.component.scss'
 })
@@ -37,10 +40,16 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort!: MatSort;
 
+  // Filtro de psicólogo (apenas para admin)
+  filtroPsicologoId: number | null = null;
+  opcoesPsicologos: { value: number | null, label: string }[] = [];
+  isAdmin: boolean = false;
+
   constructor(
     private dialog: MatDialog,
     private agendamentosService: AgendamentosService,
-    private authService: AuthService
+    private authService: AuthService,
+    private psicologosService: PsicologosService
   ) {
     this.dataSource = new MatTableDataSource<AgendamentoDisplay>([]);
   }
@@ -50,6 +59,7 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
     this.authService.currentUser$.subscribe(user => {
       const isAluno = user?.Tipo === 'Aluno' || this.authService.isAluno();
       const isPsicologo = user?.Tipo === 'Psicologo' || this.authService.isPsicologo();
+      this.isAdmin = user?.Tipo === 'Admin' || this.authService.isAdmin();
 
       if (isAluno) {
         this.displayedColumns = ['data', 'horario', 'aluno', 'psicologo', 'status', 'aceitar', 'info'];
@@ -62,9 +72,55 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
       }
 
       console.log('TabelaAgendamento - Colunas definidas:', this.displayedColumns, 'User:', user);
+
+      // Carregar psicólogos apenas se for admin
+      if (this.isAdmin) {
+        this.carregarPsicologos();
+      }
     });
 
     this.carregarAgendamentos();
+  }
+
+  carregarPsicologos(): void {
+    this.psicologosService.getPsicologos().subscribe({
+      next: (psicologos) => {
+        this.opcoesPsicologos = [
+          { value: null, label: 'Todos os psicólogos' },
+          ...psicologos.map(p => ({
+            value: p.Id,
+            label: p.Usuario?.Nome || `Psicólogo ${p.Id}`
+          }))
+        ];
+      },
+      error: (error) => {
+        console.error('Erro ao carregar psicólogos:', error);
+      }
+    });
+  }
+
+  filtrarPorPsicologo(): void {
+    if (!this.filtroPsicologoId) {
+      // Se for null (Todos), carrega todos os agendamentos
+      this.carregarAgendamentos();
+      return;
+    }
+
+    // Filtrar apenas pelo psicólogo selecionado
+    this.agendamentosService.filtrarAgendamentos(undefined, this.filtroPsicologoId).subscribe({
+      next: (agendamentos) => {
+        const agendamentosDisplay = this.converterParaDisplay(agendamentos);
+        this.dataSource.data = agendamentosDisplay;
+        console.log('Agendamentos filtrados por psicólogo:', agendamentosDisplay);
+
+        if (this.sort) {
+          this.dataSource.sort = this.sort;
+        }
+      },
+      error: (error) => {
+        console.error('Erro ao filtrar agendamentos:', error);
+      }
+    });
   }
 
   carregarAgendamentos(): void {
@@ -202,7 +258,7 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
       PsicologoId: row.PsicologoId,
       Data: this.converterDataParaISO(row.Data),
       Horario: row.Horario,
-      Status: row.Status as 'Pendente' | 'Confirmado' | 'Cancelado',
+      Status: row.Status as 'Pendente' | 'Confirmado' | 'Cancelado' | 'Apresentado',
       Aluno: { Id: row.AlunoId, Usuario: { Nome: row.AlunoNome } },
       Psicologo: { Id: row.PsicologoId, Usuario: { Nome: row.PsicologoNome } }
     };

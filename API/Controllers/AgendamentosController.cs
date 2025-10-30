@@ -145,6 +145,46 @@ namespace SeuProjeto.Controllers
             return await query.ToListAsync();
         }
 
+        // GET: api/agendamentos/filtrar?data=YYYY-MM-DD&psicologoId=ID
+        [HttpGet("filtrar")]
+        public async Task<ActionResult<IEnumerable<Agendamento>>> FiltrarAgendamentos(
+            [FromQuery] string? data = null,
+            [FromQuery] int? psicologoId = null)
+        {
+            var query = _context.Agendamentos
+                .Include(a => a.Aluno)
+                    .ThenInclude(al => al.Usuario)
+                .Include(a => a.Psicologo)
+                    .ThenInclude(p => p.Usuario)
+                .AsQueryable();
+
+            // Aplicar filtro de data se fornecido
+            if (!string.IsNullOrEmpty(data) && DateOnly.TryParse(data, out var dataParsed))
+            {
+                query = query.Where(a => a.Data == dataParsed);
+            }
+
+            // Aplicar filtro de psicólogo se fornecido
+            if (psicologoId.HasValue)
+            {
+                query = query.Where(a => a.PsicologoId == psicologoId.Value);
+            }
+
+            // Aplicar regras de permissão
+            var userId = GetCurrentUserId();
+            if (IsAluno() && userId.HasValue)
+            {
+                query = query.Where(a => a.AlunoId == userId.Value);
+            }
+            else if (IsPsicologo() && userId.HasValue)
+            {
+                query = query.Where(a => a.PsicologoId == userId.Value);
+            }
+
+            var agendamentos = await query.ToListAsync();
+            return Ok(agendamentos);
+        }
+
         // GET: api/agendamentos/verificar-disponibilidade
         [HttpGet("verificar-disponibilidade")]
         public async Task<ActionResult<object>> VerificarDisponibilidade(
@@ -312,6 +352,65 @@ namespace SeuProjeto.Controllers
             if (IsPsicologo() && userId.HasValue && agendamento.PsicologoId != userId.Value)
             {
                 return Forbid();
+            }
+
+            // Buscar agendamento existente para verificar se data/horário mudaram
+            var agendamentoExistente = await _context.Agendamentos.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
+            if (agendamentoExistente == null)
+            {
+                return NotFound();
+            }
+
+            // Se data ou horário mudaram, validar conflitos e bloqueios
+            if (agendamento.Data != agendamentoExistente.Data || agendamento.Horario != agendamentoExistente.Horario)
+            {
+                // Validar se o aluno já tem agendamento na nova data/horário (exceto este próprio)
+                var conflitoAluno = await _context.Agendamentos
+                    .Where(a => a.Id != id 
+                               && a.AlunoId == agendamento.AlunoId 
+                               && a.Data == agendamento.Data 
+                               && a.Horario == agendamento.Horario
+                               && a.Status != StatusAgendamento.Cancelado)
+                    .FirstOrDefaultAsync();
+
+                if (conflitoAluno != null)
+                {
+                    var aluno = await _context.Alunos
+                        .Include(a => a.Usuario)
+                        .FirstOrDefaultAsync(a => a.Id == agendamento.AlunoId);
+                    
+                    return BadRequest(new { message = $"O aluno {aluno?.Usuario?.Nome ?? "N/A"} já possui um agendamento para {agendamento.Data:dd/MM/yyyy} às {agendamento.Horario}." });
+                }
+
+                // Validar se o psicólogo já tem agendamento na nova data/horário (exceto este próprio)
+                var conflitoPsicologo = await _context.Agendamentos
+                    .Where(a => a.Id != id 
+                               && a.PsicologoId == agendamento.PsicologoId 
+                               && a.Data == agendamento.Data 
+                               && a.Horario == agendamento.Horario
+                               && a.Status != StatusAgendamento.Cancelado)
+                    .FirstOrDefaultAsync();
+
+                if (conflitoPsicologo != null)
+                {
+                    var psicologo = await _context.Psicologos
+                        .Include(p => p.Usuario)
+                        .FirstOrDefaultAsync(p => p.Id == agendamento.PsicologoId);
+                    
+                    return BadRequest(new { message = $"O psicólogo {psicologo?.Usuario?.Nome ?? "N/A"} já possui um agendamento para {agendamento.Data:dd/MM/yyyy} às {agendamento.Horario}." });
+                }
+
+                // Validar bloqueios de disponibilidade do psicólogo
+                var bloqueado = await _context.Disponibilidades
+                    .Where(d => d.PsicologoId == agendamento.PsicologoId && d.Data == agendamento.Data)
+                    .AnyAsync(d => agendamento.Horario >= d.HoraInicio && agendamento.Horario < d.HoraFim);
+
+                if (bloqueado)
+                {
+                    return BadRequest(new {
+                        message = $"Horário indisponível para o psicólogo em {agendamento.Data:dd/MM/yyyy} às {agendamento.Horario}."
+                    });
+                }
             }
 
             _context.Entry(agendamento).State = EntityState.Modified;

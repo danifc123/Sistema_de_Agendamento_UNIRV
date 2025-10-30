@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from './api.service';
+import { environment } from '../../environments/environment';
 
 export interface Usuario {
   Id: number;
@@ -32,7 +33,7 @@ export interface Agendamento {
   PsicologoId: number;
   Data: string; // DateOnly como string
   Horario: string; // TimeOnly como string
-  Status: 'Pendente' | 'Confirmado' | 'Cancelado';
+  Status: 'Pendente' | 'Confirmado' | 'Cancelado' | 'Apresentado';
   DataCriacao: string;
   DataConfirmacao?: string;
   DataCancelamento?: string;
@@ -44,7 +45,7 @@ export interface Agendamento {
   providedIn: 'root'
 })
 export class AgendamentosService {
-  private baseUrl = 'https://backend-production-612b.up.railway.app/api';
+  private baseUrl = environment.apiUrl;
 
   constructor(
     private apiService: ApiService,
@@ -65,6 +66,17 @@ export class AgendamentosService {
 
   getAgendamentosPorPsicologo(psicologoId: number): Observable<Agendamento[]> {
     return this.http.get<Agendamento[]>(`${this.baseUrl}/agendamentos/psicologo/${psicologoId}`);
+  }
+
+  filtrarAgendamentos(data?: string, psicologoId?: number): Observable<Agendamento[]> {
+    const params = new URLSearchParams();
+    if (data) params.append('data', data);
+    if (psicologoId) params.append('psicologoId', psicologoId.toString());
+
+    const queryString = params.toString();
+    const url = queryString ? `${this.baseUrl}/agendamentos/filtrar?${queryString}` : `${this.baseUrl}/agendamentos/filtrar`;
+
+    return this.http.get<Agendamento[]>(url);
   }
 
   createAgendamento(agendamento: Omit<Agendamento, 'Id' | 'DataCriacao'>): Observable<Agendamento> {
@@ -90,7 +102,7 @@ export class AgendamentosService {
   }
 
   // Método para verificar se existe conflito de agendamento
-  verificarDisponibilidade(alunoId: number, psicologoId: number, data: string, horario: string): Observable<{disponivel: boolean, message: string, tipo?: string}> {
+  verificarDisponibilidade(alunoId: number, psicologoId: number, data: string, horario: string): Observable<{ disponivel: boolean, message: string, tipo?: string }> {
     const params = new URLSearchParams({
       alunoId: alunoId.toString(),
       psicologoId: psicologoId.toString(),
@@ -98,6 +110,6 @@ export class AgendamentosService {
       horario: horario
     });
 
-    return this.http.get<{disponivel: boolean, message: string, tipo?: string}>(`${this.baseUrl}/agendamentos/verificar-disponibilidade?${params}`);
+    return this.http.get<{ disponivel: boolean, message: string, tipo?: string }>(`${this.baseUrl}/agendamentos/verificar-disponibilidade?${params}`);
   }
 }

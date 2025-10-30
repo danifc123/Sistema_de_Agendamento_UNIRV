@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from './api.service';
+import { environment } from '../../environments/environment';
 
 export interface Usuario {
   Id: number;
@@ -23,7 +24,7 @@ export interface Aluno {
   providedIn: 'root'
 })
 export class AlunosService {
-  private baseUrl = 'https://backend-production-612b.up.railway.app/api';
+  private baseUrl = environment.apiUrl;
 
   constructor(
     private apiService: ApiService,

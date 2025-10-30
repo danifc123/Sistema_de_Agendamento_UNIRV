@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface CriarBloqueioRequest {
   PsicologoId: number;
@@ -11,9 +12,9 @@ export interface CriarBloqueioRequest {
 
 @Injectable({ providedIn: 'root' })
 export class DisponibilidadesService {
-  private baseUrl = 'https://backend-production-612b.up.railway.app/api/disponibilidades';
+  private baseUrl = environment.apiUrl + '/disponibilidades';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   criarBloqueio(payload: CriarBloqueioRequest): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}`, payload);

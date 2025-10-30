@@ -9,6 +9,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
@@ -28,11 +30,14 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([AuthInterceptor])
     ),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
     importProvidersFrom(
       CalendarModule.forRoot({
         provide: DateAdapter,
         useFactory: adapterFactory,
-      })
+      }),
+      MatNativeDateModule,
+      MatDatepickerModule
     )
   ]
 };

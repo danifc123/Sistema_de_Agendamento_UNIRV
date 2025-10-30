@@ -14,12 +14,12 @@
     [(ngModel)]="psicologoSelecionado">
   </app-select>
 
-  <app-input
-    label="Data"
-    type="date"
-    [value]="dataAgendamento"
-    (valueChange)="dataAgendamento = $event">
-  </app-input>
+  <mat-form-field appearance="fill" class="data-field">
+    <mat-label>Data</mat-label>
+    <input matInput [matDatepicker]="picker" [formControl]="dataControl" placeholder="Selecione a data">
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
 
   <app-select-horario
     label="Horário"
@@ -29,6 +29,13 @@
     [intervalo]="30"
     [(ngModel)]="horario">
   </app-select-horario>
+
+  <app-select
+    label="Status"
+    placeholder="Selecione o status"
+    [options]="opcoesStatus"
+    [(ngModel)]="statusSelecionado">
+  </app-select>
 </div>
 <div mat-dialog-actions class="dialog-actions">
   <app-button button="Cancelar" (click)="cancelar()"></app-button>

@@ -1,13 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { InputComponent } from '../../input/input.component';
 import { ButtonComponent } from '../../button/button.component';
 import { SelectComponent, SelectOption } from '../../select/select.component';
 import { SelectHorarioComponent } from '../../select-horario/select-horario.component';
 import { AlunosService } from '../../../services/alunos.service';
 import { PsicologosService } from '../../../services/psicologos.service';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 
 export interface EditAgendamentoDialogData {
   agendamento: {
@@ -25,7 +28,10 @@ export interface EditAgendamentoDialogData {
 @Component({
   selector: 'app-edit-agendamento-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule, InputComponent, ButtonComponent, SelectComponent, SelectHorarioComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatDialogModule, MatDatepickerModule, MatInputModule, MatFormFieldModule, MatNativeDateModule, ButtonComponent, SelectComponent, SelectHorarioComponent],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }
+  ],
   templateUrl: './edit-agendamento-dialog.component.html',
   styleUrl: './edit-agendamento-dialog.component.scss'
 })
@@ -33,10 +39,18 @@ export class EditAgendamentoDialogComponent implements OnInit {
   alunoSelecionado: string = '';
   psicologoSelecionado: string = '';
   dataAgendamento: string = '';
+  dataControl = new FormControl(new Date());
   horario: string = '';
+  statusSelecionado: string = '';
 
   opcoesAlunos: SelectOption[] = [];
   opcoesPsicologos: SelectOption[] = [];
+  opcoesStatus: SelectOption[] = [
+    { value: 'Pendente', label: 'Pendente' },
+    { value: 'Confirmado', label: 'Confirmado' },
+    { value: 'Cancelado', label: 'Cancelado' }
+    // Apresentado será automático, não aparece aqui
+  ];
 
   constructor(
     public dialogRef: MatDialogRef<EditAgendamentoDialogComponent>,
@@ -47,21 +61,32 @@ export class EditAgendamentoDialogComponent implements OnInit {
     // Inicializar com os valores atuais do agendamento
     this.alunoSelecionado = data.agendamento.alunoId.toString();
     this.psicologoSelecionado = data.agendamento.psicologoId.toString();
+    this.statusSelecionado = data.agendamento.status;
 
-    // Converter a data para formato ISO se necessário (para o input type="date")
+    // Converter a data para Date object para o datepicker
     console.log('Data recebida no dialog:', data.agendamento.data);
 
-    let dataParaInput = data.agendamento.data;
+    this.dataAgendamento = data.agendamento.data;
+
+    // Converter para Date object
+    let dataObj: Date;
     if (data.agendamento.data && data.agendamento.data.includes('/')) {
-      // Se a data está no formato DD/MM/AAAA, converter para YYYY-MM-DD
+      // Se a data está no formato DD/MM/AAAA
       const partes = data.agendamento.data.split('/');
-      console.log('Partes da data:', partes);
       if (partes.length === 3) {
-        dataParaInput = `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
+        dataObj = new Date(parseInt(partes[2]), parseInt(partes[1]) - 1, parseInt(partes[0]));
+      } else {
+        dataObj = new Date(data.agendamento.data);
       }
+    } else if (data.agendamento.data && data.agendamento.data.includes('-')) {
+      // Se a data está no formato YYYY-MM-DD
+      dataObj = new Date(data.agendamento.data + 'T00:00:00');
+    } else {
+      dataObj = new Date();
     }
-    console.log('Data convertida para input:', dataParaInput);
-    this.dataAgendamento = dataParaInput;
+
+    console.log('Data convertida para Date:', dataObj);
+    this.dataControl.setValue(dataObj);
 
     this.horario = data.agendamento.horario;
 
@@ -131,21 +156,19 @@ export class EditAgendamentoDialogComponent implements OnInit {
   }
 
   salvar(): void {
-    console.log('Data original no dialog:', this.dataAgendamento);
+    // Converter Date object para string YYYY-MM-DD
+    const dataObj = this.dataControl.value;
+    let dataFormatada = '';
 
-    // A data já deve estar no formato YYYY-MM-DD do input type="date"
-    let dataFormatada = this.dataAgendamento;
-
-    // Se por algum motivo não estiver no formato correto, tentar converter
-    if (this.dataAgendamento && this.dataAgendamento.includes('/')) {
-      const partes = this.dataAgendamento.split('/');
-      console.log('Partes da data:', partes);
-      if (partes.length === 3) {
-        dataFormatada = `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
-      }
+    if (dataObj) {
+      const ano = dataObj.getFullYear();
+      const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+      const dia = String(dataObj.getDate()).padStart(2, '0');
+      dataFormatada = `${ano}-${mes}-${dia}`;
     }
 
-    console.log('Data formatada:', dataFormatada);
+    console.log('Data selecionada:', dataObj);
+    console.log('Data formatada para envio:', dataFormatada);
 
     this.dialogRef.close({
       id: this.data.agendamento.id,
@@ -153,7 +176,7 @@ export class EditAgendamentoDialogComponent implements OnInit {
       psicologoId: parseInt(this.psicologoSelecionado),
       data: dataFormatada,
       horario: this.horario,
-      status: this.data.agendamento.status
+      status: this.statusSelecionado
     });
   }
 }

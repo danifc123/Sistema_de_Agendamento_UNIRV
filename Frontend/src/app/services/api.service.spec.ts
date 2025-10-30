@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ApiService } from './api.service';
+import { environment } from '../../environments/environment';
 
 describe('ApiService', () => {
   let service: ApiService;
   let httpMock: HttpTestingController;
-  const baseUrl = 'https://backend-production-612b.up.railway.app/api';
+  const baseUrl = environment.apiUrl;
 
   // Mock data para testes
   const mockData = {
