@@ -16,7 +16,7 @@
 
   <mat-form-field appearance="fill" class="data-field">
     <mat-label>Data</mat-label>
-    <input matInput [matDatepicker]="picker" [formControl]="dataControl" placeholder="Selecione a data">
+    <input matInput [matDatepicker]="picker" [formControl]="dataControl" [min]="dataMinima" placeholder="Selecione a data">
     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>

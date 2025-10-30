@@ -40,6 +40,7 @@ export class EditAgendamentoDialogComponent implements OnInit {
   psicologoSelecionado: string = '';
   dataAgendamento: string = '';
   dataControl = new FormControl(new Date());
+  dataMinima = new Date(); // Data mínima é hoje
   horario: string = '';
   statusSelecionado: string = '';
 

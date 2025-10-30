@@ -289,6 +289,13 @@ namespace SeuProjeto.Controllers
             {
                 return Forbid();
             }
+
+            // Validar se a data/horário não é no passado
+            var dataHoraAgendamento = agendamento.Data.ToDateTime(agendamento.Horario);
+            if (dataHoraAgendamento < DateTime.Now)
+            {
+                return BadRequest(new { message = "Não é possível criar agendamento para data/horário que já passou." });
+            }
             
             // Validar se o aluno já tem agendamento na mesma data e horário
             var agendamentoExistenteAluno = await _context.Agendamentos
@@ -364,6 +371,13 @@ namespace SeuProjeto.Controllers
             // Se data ou horário mudaram, validar conflitos e bloqueios
             if (agendamento.Data != agendamentoExistente.Data || agendamento.Horario != agendamentoExistente.Horario)
             {
+                // Validar se a nova data/horário não é no passado
+                var dataHoraAgendamento = agendamento.Data.ToDateTime(agendamento.Horario);
+                if (dataHoraAgendamento < DateTime.Now)
+                {
+                    return BadRequest(new { message = "Não é possível alterar agendamento para data/horário que já passou." });
+                }
+
                 // Validar se o aluno já tem agendamento na nova data/horário (exceto este próprio)
                 var conflitoAluno = await _context.Agendamentos
                     .Where(a => a.Id != id 

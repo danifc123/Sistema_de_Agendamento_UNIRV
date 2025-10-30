@@ -107,6 +107,16 @@ export class HomeComponent implements OnInit {
       return;
     }
 
+    // Validar se a data não é no passado
+    const dataSelecionadaObj = new Date(this.data + 'T00:00:00');
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    if (dataSelecionadaObj < hoje) {
+      alert('Não é possível criar agendamento para uma data que já passou.');
+      return;
+    }
+
     console.log('Dados antes de criar agendamento:');
     console.log('- Data selecionada:', this.data);
     console.log('- Data de exibição:', this.dataExibicao);
@@ -186,6 +196,17 @@ export class HomeComponent implements OnInit {
   // Método para receber a data selecionada do calendário
   onDataSelecionada(dadosData: {dataISO: string, dataExibicao: string}): void {
     console.log('Data recebida do calendário:', dadosData);
+
+    // Validar se a data não é no passado
+    const dataSelecionadaObj = new Date(dadosData.dataISO + 'T00:00:00');
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0); // Zerar as horas para comparar apenas a data
+
+    if (dataSelecionadaObj < hoje) {
+      alert('Não é possível selecionar uma data que já passou.');
+      return;
+    }
+
     this.data = dadosData.dataISO; // Para a API
     this.dataExibicao = dadosData.dataExibicao; // Para exibição
     this.dataSelecionada = dadosData.dataExibicao; // Para mostrar no template
