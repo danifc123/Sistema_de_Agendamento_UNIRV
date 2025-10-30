@@ -1,6 +1,6 @@
 .editar-psicologo-container {
   padding: 20px;
-  max-width: 700px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -22,17 +22,47 @@
     width: 100%;
     max-height: calc(100vh - 300px);
     overflow-y: auto;
-    table-layout: fixed;
+    table-layout: auto;
   }
 
   .mat-mdc-header-cell {
     background-color: #004f9f;
     color: white;
     font-weight: 600;
+    padding: 12px 16px;
+    white-space: nowrap;
   }
 
   .mat-mdc-cell {
-    padding: 8px 6px;
+    padding: 12px 16px;
+    word-wrap: break-word;
+  }
+
+  // Larguras mínimas das colunas
+  .mat-column-id {
+    min-width: 60px;
+  }
+
+  .mat-column-nome {
+    min-width: 180px;
+  }
+
+  .mat-column-email {
+    min-width: 200px;
+  }
+
+  .mat-column-crp {
+    min-width: 120px;
+  }
+
+  .mat-column-especialidade {
+    min-width: 180px;
+  }
+
+  .mat-column-editar,
+  .mat-column-excluir {
+    min-width: 100px;
+    text-align: center;
   }
 
   mat-paginator {

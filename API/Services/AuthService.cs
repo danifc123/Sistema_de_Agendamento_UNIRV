@@ -28,10 +28,12 @@ namespace SeuProjeto.Services
         {
             try
             {
+                Console.WriteLine($"[LOGIN] Tentativa de login para email: {request.Email}");
+                
                 // Verificar se é o usuário root
                 if (IsRootUser(request.Email, request.Senha))
                 {
-                    Console.WriteLine("Login root realizado com sucesso");
+                    Console.WriteLine("[LOGIN] Login root realizado com sucesso");
                     var rootUser = CreateRootUser();
                     var rootToken = _jwtService.GenerateToken(rootUser);
                     var rootRefreshToken = _jwtService.GenerateRefreshToken();
@@ -47,6 +49,8 @@ namespace SeuProjeto.Services
                     };
                 }
 
+                Console.WriteLine("[LOGIN] Buscando usuário no banco de dados...");
+                
                 // Buscar usuário por email
                 var usuario = await _context.Usuarios
                     .Include(u => u.Aluno)
@@ -55,16 +59,21 @@ namespace SeuProjeto.Services
 
                 if (usuario == null)
                 {
+                    Console.WriteLine($"[LOGIN] Usuário não encontrado para email: {request.Email}");
                     return new AuthResponse
                     {
                         Success = false,
                         Message = "Email ou senha inválidos"
                     };
                 }
+
+                Console.WriteLine($"[LOGIN] Usuário encontrado: {usuario.Nome} ({usuario.Email})");
+                Console.WriteLine("[LOGIN] Verificando senha...");
 
                 // Verificar senha
                 if (!BCrypt.Net.BCrypt.Verify(request.Senha, usuario.Senha))
                 {
+                    Console.WriteLine("[LOGIN] Senha incorreta");
                     return new AuthResponse
                     {
                         Success = false,
@@ -72,10 +81,14 @@ namespace SeuProjeto.Services
                     };
                 }
 
+                Console.WriteLine("[LOGIN] Senha correta, gerando token...");
+                
                 // Gerar token
                 var token = _jwtService.GenerateToken(usuario);
                 var refreshToken = _jwtService.GenerateRefreshToken();
 
+                Console.WriteLine("[LOGIN] Login realizado com sucesso");
+                
                 return new AuthResponse
                 {
                     Success = true,
@@ -88,7 +101,8 @@ namespace SeuProjeto.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro interno: " + ex);
+                Console.WriteLine($"[LOGIN] Erro interno: {ex.Message}");
+                Console.WriteLine($"[LOGIN] Stack trace: {ex.StackTrace}");
                 return new AuthResponse
                 {
                     Success = false,

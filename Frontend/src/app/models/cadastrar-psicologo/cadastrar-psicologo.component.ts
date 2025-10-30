@@ -85,7 +85,15 @@ export class CadastrarPsicologoComponent {
       },
       error: (error) => {
         console.error('Erro ao criar usuário:', error);
-        alert('Erro ao criar usuário. Tente novamente.');
+
+        // Verificar se o backend retornou uma mensagem específica
+        if (error.error?.message) {
+          alert(error.error.message);
+        } else if (error.status === 400) {
+          alert('Erro de validação: Verifique os dados informados.');
+        } else {
+          alert('Erro ao criar usuário. Tente novamente.');
+        }
       }
     });
   }

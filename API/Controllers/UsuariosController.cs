@@ -49,8 +49,19 @@ namespace SeuProjeto.Controllers
         [AllowAnonymous] // Permitir criação de usuários sem autenticação
         public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
         {
-            // Normalizar email e hash da senha
+            // Normalizar email
             usuario.Email = usuario.Email?.Trim().ToLower();
+
+            // Verificar se o email já existe
+            var emailJaExiste = await _context.Usuarios
+                .AnyAsync(u => u.Email == usuario.Email);
+
+            if (emailJaExiste)
+            {
+                return BadRequest(new { message = "Este email já está cadastrado no sistema." });
+            }
+
+            // Hash da senha
             usuario.Senha = BCrypt.Net.BCrypt.HashPassword(usuario.Senha);
 
             _context.Usuarios.Add(usuario);

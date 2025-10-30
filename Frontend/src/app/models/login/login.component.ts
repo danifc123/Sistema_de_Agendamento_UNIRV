@@ -57,10 +57,20 @@ export class LoginComponent {
       },
       error: (error) => {
         this.loading = false;
-        console.error('Erro no login:', error);
+        console.error('Erro completo no login:', error);
+        console.error('Status:', error.status);
+        console.error('Erro do backend:', error.error);
+
         // Tentar mostrar mensagem vinda do backend se existir
         const backendMsg = error?.error?.Message || error?.error?.message;
-        this.errorMessage = backendMsg || 'Erro ao fazer login. Tente novamente.';
+
+        if (error.status === 0) {
+          this.errorMessage = 'Não foi possível conectar ao servidor. Verifique se a API está rodando.';
+        } else if (error.status === 401) {
+          this.errorMessage = 'Email ou senha incorretos.';
+        } else {
+          this.errorMessage = backendMsg || 'Erro ao fazer login. Tente novamente.';
+        }
       }
     });
   }
