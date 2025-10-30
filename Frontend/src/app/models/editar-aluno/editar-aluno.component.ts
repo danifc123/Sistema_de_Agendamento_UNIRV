@@ -50,6 +50,12 @@ export class EditarAlunoComponent implements AfterViewInit, OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
+    // Definir o tamanho da página explicitamente
+    if (this.paginator) {
+      this.paginator.pageSize = 4;
+      this.paginator._changePageSize(4);
+    }
+
     // Configurar ordenação customizada
     this.dataSource.sortingDataAccessor = (item, property) => {
       switch (property) {
