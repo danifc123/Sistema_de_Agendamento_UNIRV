@@ -50,7 +50,7 @@ export class EditAgendamentoDialogComponent implements OnInit {
     { value: 'Pendente', label: 'Pendente' },
     { value: 'Confirmado', label: 'Confirmado' },
     { value: 'Cancelado', label: 'Cancelado' }
-    // Apresentado será automático, não aparece aqui
+    // Realizado será automático quando passar do horário (se confirmado)
   ];
 
   constructor(

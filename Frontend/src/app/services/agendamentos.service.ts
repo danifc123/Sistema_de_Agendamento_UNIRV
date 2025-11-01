@@ -33,7 +33,7 @@ export interface Agendamento {
   PsicologoId: number;
   Data: string; // DateOnly como string
   Horario: string; // TimeOnly como string
-  Status: 'Pendente' | 'Confirmado' | 'Cancelado' | 'Apresentado';
+  Status: 'Pendente' | 'Confirmado' | 'Cancelado' | 'Realizado';
   DataCriacao: string;
   DataConfirmacao?: string;
   DataCancelamento?: string;

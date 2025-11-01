@@ -46,8 +46,8 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
   isAdmin: boolean = false;
 
   // Filtro de status
-  statusSelecionados: string[] = ['Pendente', 'Confirmado', 'Cancelado', 'Apresentado'];
-  todosStatus: string[] = ['Pendente', 'Confirmado', 'Cancelado', 'Apresentado'];
+  statusSelecionados: string[] = ['Pendente', 'Confirmado', 'Cancelado', 'Realizado'];
+  todosStatus: string[] = ['Pendente', 'Confirmado', 'Cancelado', 'Realizado'];
   mostrarMenuStatus: boolean = false;
 
   constructor(
@@ -314,7 +314,7 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
       PsicologoId: row.PsicologoId,
       Data: this.converterDataParaISO(row.Data),
       Horario: row.Horario,
-      Status: row.Status as 'Pendente' | 'Confirmado' | 'Cancelado' | 'Apresentado',
+      Status: row.Status as 'Pendente' | 'Confirmado' | 'Cancelado' | 'Realizado',
       Aluno: { Id: row.AlunoId, Usuario: { Nome: row.AlunoNome } },
       Psicologo: { Id: row.PsicologoId, Usuario: { Nome: row.PsicologoNome } }
     };

@@ -12,6 +12,6 @@ namespace SeuProjeto.Models
         Pendente,
         Confirmado,
         Cancelado,
-        Apresentado
+        Realizado
     }
 } 
