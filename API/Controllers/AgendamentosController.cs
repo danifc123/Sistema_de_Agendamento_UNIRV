@@ -35,6 +35,9 @@ namespace SeuProjeto.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Agendamento>>> GetAgendamentos()
         {
+            // Cancelar automaticamente agendamentos pendentes expirados
+            await CancelarAgendamentosPendentesExpirados();
+
             var query = _context.Agendamentos
                 .Include(a => a.Aluno)
                     .ThenInclude(al => al.Usuario)
@@ -562,6 +565,120 @@ namespace SeuProjeto.Controllers
         private bool AgendamentoExists(int id)
         {
             return _context.Agendamentos.Any(e => e.Id == id);
+        }
+
+        /// <summary>
+        /// Cancela automaticamente agendamentos pendentes cujo horário já passou
+        /// </summary>
+        private async Task CancelarAgendamentosPendentesExpirados()
+        {
+            try
+            {
+                var dataHoraAtual = DateTime.Now;
+                var dataAtual = DateOnly.FromDateTime(dataHoraAtual);
+                var horaAtual = TimeOnly.FromDateTime(dataHoraAtual);
+
+                Console.WriteLine($"[AUTO-CANCEL] Verificando agendamentos pendentes expirados. Data/Hora atual: {dataHoraAtual:dd/MM/yyyy HH:mm:ss}");
+
+                // Buscar agendamentos pendentes que já passaram
+                var agendamentosExpirados = await _context.Agendamentos
+                    .Where(a => a.Status == StatusAgendamento.Pendente)
+                    .Where(a => a.Data < dataAtual || (a.Data == dataAtual && a.Horario < horaAtual))
+                    .ToListAsync();
+
+                if (agendamentosExpirados.Any())
+                {
+                    Console.WriteLine($"[AUTO-CANCEL] Encontrados {agendamentosExpirados.Count} agendamentos pendentes expirados");
+
+                    foreach (var agendamento in agendamentosExpirados)
+                    {
+                        Console.WriteLine($"[AUTO-CANCEL] Cancelando agendamento ID {agendamento.Id} - Data: {agendamento.Data:dd/MM/yyyy}, Horário: {agendamento.Horario}");
+                        
+                        agendamento.Status = StatusAgendamento.Cancelado;
+                        agendamento.DataCancelamento = DateTime.UtcNow;
+                    }
+
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine($"[AUTO-CANCEL] {agendamentosExpirados.Count} agendamentos cancelados automaticamente");
+                }
+                else
+                {
+                    Console.WriteLine("[AUTO-CANCEL] Nenhum agendamento pendente expirado encontrado");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[AUTO-CANCEL][ERRO] Falha ao cancelar agendamentos: {ex.Message}");
+                // Não lançar exceção para não afetar a requisição principal
+            }
+        }
+
+        /// <summary>
+        /// Endpoint manual para cancelar agendamentos pendentes expirados
+        /// </summary>
+        [HttpPost("cancelar-expirados")]
+        public async Task<ActionResult<object>> CancelarExpirados()
+        {
+            try
+            {
+                var dataHoraAtual = DateTime.Now;
+                var dataAtual = DateOnly.FromDateTime(dataHoraAtual);
+                var horaAtual = TimeOnly.FromDateTime(dataHoraAtual);
+
+                Console.WriteLine($"[MANUAL-CANCEL] Cancelamento manual iniciado. Data/Hora atual: {dataHoraAtual:dd/MM/yyyy HH:mm:ss}");
+
+                // Buscar agendamentos pendentes que já passaram
+                var agendamentosExpirados = await _context.Agendamentos
+                    .Include(a => a.Aluno)
+                        .ThenInclude(al => al.Usuario)
+                    .Include(a => a.Psicologo)
+                        .ThenInclude(p => p.Usuario)
+                    .Where(a => a.Status == StatusAgendamento.Pendente)
+                    .Where(a => a.Data < dataAtual || (a.Data == dataAtual && a.Horario < horaAtual))
+                    .ToListAsync();
+
+                if (agendamentosExpirados.Any())
+                {
+                    var detalhes = new List<object>();
+
+                    foreach (var agendamento in agendamentosExpirados)
+                    {
+                        Console.WriteLine($"[MANUAL-CANCEL] Cancelando agendamento ID {agendamento.Id}");
+                        
+                        detalhes.Add(new
+                        {
+                            id = agendamento.Id,
+                            aluno = agendamento.Aluno?.Usuario?.Nome ?? "N/A",
+                            psicologo = agendamento.Psicologo?.Usuario?.Nome ?? "N/A",
+                            data = agendamento.Data.ToString("dd/MM/yyyy"),
+                            horario = agendamento.Horario.ToString("HH:mm")
+                        });
+
+                        agendamento.Status = StatusAgendamento.Cancelado;
+                        agendamento.DataCancelamento = DateTime.UtcNow;
+                    }
+
+                    await _context.SaveChangesAsync();
+                    
+                    return Ok(new
+                    {
+                        message = $"{agendamentosExpirados.Count} agendamento(s) cancelado(s) automaticamente",
+                        quantidade = agendamentosExpirados.Count,
+                        agendamentos = detalhes
+                    });
+                }
+
+                return Ok(new
+                {
+                    message = "Nenhum agendamento pendente expirado encontrado",
+                    quantidade = 0
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[MANUAL-CANCEL][ERRO] {ex.Message}");
+                return StatusCode(500, new { message = "Erro ao cancelar agendamentos expirados", detail = ex.Message });
+            }
         }
     }
 } 
