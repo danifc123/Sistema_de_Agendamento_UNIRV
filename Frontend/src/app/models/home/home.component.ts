@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CalendarioComponent } from "../../components/calendario/calendario.component";
 import { TabelaAgendamentoComponent } from "../../components/tabela-agendamento/tabela-agendamento.component";
 import { ButtonComponent } from "../../components/button/button.component";
-import { SelectComponent, SelectOption } from "../../components/select/select.component";
+import { AutocompleteComponent, AutocompleteOption } from "../../components/autocomplete/autocomplete.component";
 import { SelectHorarioComponent } from "../../components/select-horario/select-horario.component";
 import { AgendamentosService } from '../../services/agendamentos.service';
 import { AlunosService } from '../../services/alunos.service';
@@ -14,7 +14,7 @@ import { DisponibilidadesService } from '../../services/disponibilidades.service
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, FormsModule, CalendarioComponent, TabelaAgendamentoComponent, ButtonComponent, SelectComponent, SelectHorarioComponent],
+  imports: [CommonModule, FormsModule, CalendarioComponent, TabelaAgendamentoComponent, ButtonComponent, AutocompleteComponent, SelectHorarioComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -36,9 +36,9 @@ export class HomeComponent implements OnInit {
   // Bloqueios do dia selecionado
   bloqueiosDia: { inicio: string, fim: string }[] = [];
 
-  // Opções para os selects
-  opcoesAlunos: SelectOption[] = [];
-  opcoesPsicologos: SelectOption[] = [];
+  // Opções para os selects/autocomplete
+  opcoesAlunos: AutocompleteOption[] = [];
+  opcoesPsicologos: AutocompleteOption[] = [];
 
   // Listas para carregar dados
   alunos: any[] = [];

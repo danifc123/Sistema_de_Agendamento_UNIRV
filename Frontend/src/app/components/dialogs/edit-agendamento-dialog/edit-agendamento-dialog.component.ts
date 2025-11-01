@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ButtonComponent } from '../../button/button.component';
 import { SelectComponent, SelectOption } from '../../select/select.component';
+import { AutocompleteComponent, AutocompleteOption } from '../../autocomplete/autocomplete.component';
 import { SelectHorarioComponent } from '../../select-horario/select-horario.component';
 import { AlunosService } from '../../../services/alunos.service';
 import { PsicologosService } from '../../../services/psicologos.service';
@@ -28,7 +29,7 @@ export interface EditAgendamentoDialogData {
 @Component({
   selector: 'app-edit-agendamento-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatDialogModule, MatDatepickerModule, MatInputModule, MatFormFieldModule, MatNativeDateModule, ButtonComponent, SelectComponent, SelectHorarioComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatDialogModule, MatDatepickerModule, MatInputModule, MatFormFieldModule, MatNativeDateModule, ButtonComponent, SelectComponent, AutocompleteComponent, SelectHorarioComponent],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }
   ],
@@ -44,8 +45,8 @@ export class EditAgendamentoDialogComponent implements OnInit {
   horario: string = '';
   statusSelecionado: string = '';
 
-  opcoesAlunos: SelectOption[] = [];
-  opcoesPsicologos: SelectOption[] = [];
+  opcoesAlunos: AutocompleteOption[] = [];
+  opcoesPsicologos: AutocompleteOption[] = [];
   opcoesStatus: SelectOption[] = [
     { value: 'Pendente', label: 'Pendente' },
     { value: 'Confirmado', label: 'Confirmado' },

@@ -1,18 +1,18 @@
 <h2 mat-dialog-title>Editar Agendamento</h2>
 <div mat-dialog-content class="dialog-content">
-  <app-select
+  <app-autocomplete
     label="Aluno"
-    placeholder="Selecione um aluno"
+    placeholder="Digite o nome do aluno..."
     [options]="opcoesAlunos"
     [(ngModel)]="alunoSelecionado">
-  </app-select>
+  </app-autocomplete>
 
-  <app-select
+  <app-autocomplete
     label="Psicólogo"
-    placeholder="Selecione um psicólogo"
+    placeholder="Digite o nome do psicólogo..."
     [options]="opcoesPsicologos"
     [(ngModel)]="psicologoSelecionado">
-  </app-select>
+  </app-autocomplete>
 
   <mat-form-field appearance="fill" class="data-field">
     <mat-label>Data</mat-label>

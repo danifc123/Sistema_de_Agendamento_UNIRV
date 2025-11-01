@@ -10,18 +10,18 @@
 
       <div class="form-row">
         <div class="form-column">
-          <app-select label="Aluno"
-                      placeholder="Selecione um aluno"
-                      [options]="opcoesAlunos"
-                      [(ngModel)]="alunoSelecionado">
-          </app-select>
+          <app-autocomplete label="Aluno"
+                            placeholder="Digite o nome do aluno..."
+                            [options]="opcoesAlunos"
+                            [(ngModel)]="alunoSelecionado">
+          </app-autocomplete>
 
-          <app-select label="Psicólogo"
-                      placeholder="Selecione um psicólogo"
-                      [options]="opcoesPsicologos"
-                      [(ngModel)]="psicologoSelecionado"
-                      (ngModelChange)="onPsicologoChange($event)">
-          </app-select>
+          <app-autocomplete label="Psicólogo"
+                            placeholder="Digite o nome do psicólogo..."
+                            [options]="opcoesPsicologos"
+                            [(ngModel)]="psicologoSelecionado"
+                            (ngModelChange)="onPsicologoChange($event)">
+          </app-autocomplete>
         </div>
 
         <div class="form-column">
