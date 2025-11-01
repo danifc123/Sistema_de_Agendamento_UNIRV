@@ -1,83 +1,450 @@
+// ========================================
+// VARIÁVEIS
+// ========================================
+:host {
+  --primary-color: #004f9f;
+  --primary-dark: #003d7a;
+  --primary-light: #e3f2fd;
+  --text-primary: #333;
+  --text-secondary: #666;
+  --border-color: #e0e0e0;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --radius-md: 12px;
+  --radius-lg: 16px;
+}
+
+// ========================================
+// CONTAINER PRINCIPAL
+// ========================================
 .relatorio-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  max-width: 960px;
-  margin: 24px auto; /* centraliza horizontalmente */
-  padding: 0 16px; /* respiro lateral no mobile */
-}
-
-.relatorio-card {
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-}
-
-.filtros {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: center; /* centraliza a barra de filtros */
-  flex-wrap: wrap;
-  margin-bottom: 8px;
-}
-
-mat-form-field {
-  width: 160px;
-}
-
-table {
   width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+  animation: fadeIn 0.5s ease-out;
 }
 
-/* Centraliza cabeçalho e linhas da tabela em telas estreitas */
-@media (max-width: 600px) {
-  th.mat-header-cell, td.mat-cell {
-    padding: 8px 6px;
+// ========================================
+// CARD
+// ========================================
+.relatorio-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: visible;
+}
+
+// ========================================
+// HEADER
+// ========================================
+.card-header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  padding: 16px 24px;
+  border-radius: 10px 10px 0 0;
+  color: white;
+
+  .header-content {
+    h2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 4px 0;
+      font-size: 20px;
+      font-weight: 600;
+
+      .material-symbols-outlined {
+        font-size: 26px;
+      }
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 13px;
+      opacity: 0.9;
+      font-weight: 400;
+    }
   }
 }
 
-/* Estilos para informações dos usuários */
-.student-info, .psychologist-info {
+// ========================================
+// FILTROS SECTION
+// ========================================
+.filtros-section {
+  padding: 20px 24px;
+  background: #f8f9fa;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.filtros-row {
   display: flex;
-  flex-direction: column;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+
+  .filter-field {
+    width: 160px;
+  }
+
+  .export-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary-color) !important;
+    color: white !important;
+    padding: 10px 20px;
+    height: 42px;
+
+    .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    &:hover {
+      background: var(--primary-dark) !important;
+    }
+  }
 }
 
-.student-name, .psychologist-name {
-  font-weight: 500;
-  color: #333;
+// ========================================
+// FILTRO DE ALUNO
+// ========================================
+.filtro-aluno {
+  margin-bottom: 16px;
+
+  .aluno-search-container {
+    position: relative;
+    max-width: 500px;
+
+    .aluno-field {
+      width: 100%;
+
+      .clear-button {
+        .material-symbols-outlined {
+          font-size: 18px;
+        }
+      }
+    }
+
+    .alunos-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      max-height: 250px;
+      overflow-y: auto;
+      z-index: 1000;
+
+      .aluno-item {
+        width: 100%;
+        padding: 12px 16px;
+        border: none;
+        background: white;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: var(--text-primary);
+
+        .material-symbols-outlined {
+          font-size: 20px;
+          color: var(--primary-color);
+        }
+
+        &:hover {
+          background-color: var(--primary-light);
+        }
+
+        &:not(:last-child) {
+          border-bottom: 1px solid #f0f0f0;
+        }
+      }
+    }
+  }
+
+  .aluno-selecionado {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: #e3f2fd;
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--primary-color);
+    max-width: 500px;
+
+    .material-symbols-outlined {
+      font-size: 20px;
+      color: var(--primary-color);
+    }
+
+    .texto {
+      font-size: 13px;
+      color: var(--text-primary);
+      flex: 1;
+
+      strong {
+        color: var(--primary-color);
+      }
+    }
+
+    .btn-remover {
+      padding: 4px;
+      width: 32px;
+      height: 32px;
+
+      .material-symbols-outlined {
+        font-size: 18px;
+      }
+    }
+  }
 }
 
-/* Melhorar aparência da tabela */
-table {
-  border-radius: 8px;
-  overflow: hidden;
+// ========================================
+// INFO TOTAL
+// ========================================
+.info-total {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  max-width: fit-content;
+
+  .material-symbols-outlined {
+    font-size: 22px;
+    color: var(--primary-color);
+  }
+
+  span {
+    font-size: 14px;
+    color: var(--text-primary);
+
+    strong {
+      color: var(--primary-color);
+      font-size: 16px;
+    }
+  }
 }
 
-.mat-header-cell {
-  background-color: #f5f5f5;
-  font-weight: 600;
-  color: #333;
+// ========================================
+// TABLE
+// ========================================
+.table-container {
+  padding: 20px 24px;
+
+  .modern-table {
+    width: 100%;
+    background: white;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+
+    .mat-mdc-header-cell {
+      background: #f8f9fa;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 14px 16px;
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    .mat-mdc-cell {
+      padding: 14px 16px;
+      color: var(--text-primary);
+      font-size: 13px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .mat-row {
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: rgba(0, 79, 159, 0.03);
+      }
+    }
+
+    .student-info, .psychologist-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .student-name, .psychologist-name {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    // Status com cores
+    .status-pendente {
+      display: inline-block;
+      padding: 4px 10px;
+      background: #fff3e0;
+      color: #e65100;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .status-confirmado {
+      display: inline-block;
+      padding: 4px 10px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .status-cancelado {
+      display: inline-block;
+      padding: 4px 10px;
+      background: #ffebee;
+      color: #c62828;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+  }
 }
 
-.mat-row:hover {
-  background-color: #f8f9fa;
+// ========================================
+// EMPTY STATE
+// ========================================
+.no-data-row {
+  .no-data-cell {
+    padding: 64px 24px !important;
+    text-align: center;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+
+    .material-symbols-outlined {
+      font-size: 64px;
+      color: var(--text-secondary);
+      opacity: 0.5;
+    }
+
+    p {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .empty-hint {
+      font-size: 13px;
+      color: var(--text-secondary);
+      opacity: 0.7;
+    }
+  }
 }
 
-/* Status com cores */
-.status-pendente {
-  color: #ff9800;
-  font-weight: 500;
+// ========================================
+// GLOBAL STYLES
+// ========================================
+::ng-deep {
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none !important;
+  }
 }
 
-.status-confirmado {
-  color: #4caf50;
-  font-weight: 500;
+// ========================================
+// ANIMATIONS
+// ========================================
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-.status-cancelado {
-  color: #f44336;
-  font-weight: 500;
+.relatorio-card {
+  animation: slideIn 0.4s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ========================================
+// RESPONSIVIDADE
+// ========================================
+@media (max-width: 768px) {
+  .card-header {
+    padding: 14px 16px;
+
+    .header-content h2 {
+      font-size: 18px;
+
+      .material-symbols-outlined {
+        font-size: 22px;
+      }
+    }
+
+    .header-content .subtitle {
+      font-size: 11px;
+    }
+  }
+
+  .filtros-section {
+    padding: 16px;
+  }
+
+  .filtros-row {
+    .filter-field {
+      width: 100%;
+    }
+
+    .export-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .filtro-aluno {
+    .aluno-search-container {
+      max-width: 100%;
+    }
+
+    .aluno-selecionado {
+      max-width: 100%;
+    }
+  }
+
+  .table-container {
+    padding: 16px;
+    overflow-x: auto;
+
+    .modern-table {
+      .mat-mdc-header-cell,
+      .mat-mdc-cell {
+        padding: 10px 12px;
+        font-size: 12px;
+      }
+    }
+  }
 }

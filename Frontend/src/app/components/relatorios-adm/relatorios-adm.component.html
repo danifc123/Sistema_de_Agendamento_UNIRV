@@ -1,26 +1,86 @@
 <div class="relatorio-container">
   <div class="relatorio-card">
-    <div class="filtros">
-      <mat-form-field appearance="outline">
-        <mat-label>Mês</mat-label>
-        <mat-select [value]="selectedMonth" (selectionChange)="onMonthChange($event.value)">
-          <mat-option *ngFor="let m of monthOptions" [value]="m.value">{{ m.label }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Ano</mat-label>
-        <mat-select [value]="selectedYear" (selectionChange)="onYearChange($event.value)">
-          <mat-option *ngFor="let y of yearOptions" [value]="y">{{ y }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <button mat-raised-button color="primary" (click)="exportToPdf()">
-        Exportar PDF
-      </button>
+    <!-- Header -->
+    <div class="card-header">
+      <div class="header-content">
+        <h2>
+          <span class="material-symbols-outlined">assessment</span>
+          Relatório de Agendamentos
+        </h2>
+        <p class="subtitle">Visualize e exporte relatórios de agendamentos</p>
+      </div>
     </div>
 
-    <table mat-table [dataSource]="filteredAppointments" class="mat-elevation-z2">
+    <!-- Filtros -->
+    <div class="filtros-section">
+      <div class="filtros-row">
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Mês</mat-label>
+          <mat-select [value]="selectedMonth" (selectionChange)="onMonthChange($event.value)">
+            <mat-option *ngFor="let m of monthOptions" [value]="m.value">{{ m.label }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Ano</mat-label>
+          <mat-select [value]="selectedYear" (selectionChange)="onYearChange($event.value)">
+            <mat-option *ngFor="let y of yearOptions" [value]="y">{{ y }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" (click)="exportToPdf()" class="export-btn">
+          <span class="material-symbols-outlined">picture_as_pdf</span>
+          Exportar PDF
+        </button>
+      </div>
+
+      <!-- Filtro de Aluno -->
+      <div class="filtro-aluno">
+        <div class="aluno-search-container">
+          <mat-form-field appearance="outline" class="aluno-field">
+            <mat-label>Filtrar por Aluno</mat-label>
+            <input matInput
+                   type="text"
+                   placeholder="Digite o nome do aluno..."
+                   [value]="buscaAluno"
+                   (input)="onBuscaAlunoChange($any($event.target).value)">
+            <button matSuffix
+                    mat-icon-button
+                    *ngIf="alunoSelecionadoId !== null"
+                    (click)="limparFiltroAluno()"
+                    class="clear-button">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </mat-form-field>
+
+          <div class="alunos-dropdown" *ngIf="alunosFiltrados.length > 0 && mostrarListaAlunos">
+            <button class="aluno-item"
+                    *ngFor="let a of alunosFiltrados"
+                    (click)="selecionarAluno(a)">
+              <span class="material-symbols-outlined">account_circle</span>
+              {{ a.nome }}
+            </button>
+          </div>
+        </div>
+
+        <div class="aluno-selecionado" *ngIf="alunoSelecionadoId !== null">
+          <span class="material-symbols-outlined">filter_alt</span>
+          <span class="texto">Filtrando por: <strong>{{alunoSelecionadoNome}}</strong></span>
+          <button mat-icon-button (click)="limparFiltroAluno()" class="btn-remover">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="info-total">
+        <span class="material-symbols-outlined">event</span>
+        <span><strong>{{filteredAppointments.length}}</strong> agendamento(s) encontrado(s)</span>
+      </div>
+    </div>
+
+    <!-- Tabela -->
+    <div class="table-container">
+      <table mat-table [dataSource]="filteredAppointments" class="modern-table">
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef> Data </th>
         <td mat-cell *matCellDef="let a"> {{ a.date | date:'dd/MM/yyyy' }} </td>
@@ -59,11 +119,16 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 
-      <tr class="mat-row" *ngIf="filteredAppointments.length === 0">
-        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-          Nenhum agendamento encontrado para o período selecionado.
+      <tr class="mat-row no-data-row" *ngIf="filteredAppointments.length === 0">
+        <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
+          <div class="empty-state">
+            <span class="material-symbols-outlined">event_busy</span>
+            <p>Nenhum agendamento encontrado</p>
+            <span class="empty-hint">Tente ajustar os filtros ou selecione outro período</span>
+          </div>
         </td>
       </tr>
     </table>
+    </div>
   </div>
 </div>

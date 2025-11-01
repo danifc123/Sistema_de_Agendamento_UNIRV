@@ -5,9 +5,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { AgendamentosService, Agendamento } from '../../services/agendamentos.service';
+import { AlunosService } from '../../services/alunos.service';
 
 export interface Appointment {
   id: string;
@@ -16,6 +18,11 @@ export interface Appointment {
   date: Date;
   time: string; // HH:mm
   notes?: string;
+}
+
+interface AlunoOption {
+  id: number;
+  nome: string;
 }
 
 @Component({
@@ -28,6 +35,7 @@ export interface Appointment {
     MatIconModule,
     MatFormFieldModule,
     MatSelectModule,
+    MatInputModule,
   ],
   templateUrl: './relatorios-adm.component.html',
   styleUrl: './relatorios-adm.component.scss'
@@ -57,10 +65,70 @@ export class RelatoriosADMComponent implements OnInit {
   public filteredAppointments: Appointment[] = [];
   public allAppointments: Appointment[] = [];
 
-  constructor(private agendamentosService: AgendamentosService) {}
+  // Filtro de Aluno
+  public alunos: AlunoOption[] = [];
+  public alunosFiltrados: AlunoOption[] = [];
+  public buscaAluno: string = '';
+  public alunoSelecionadoId: number | null = null;
+  public alunoSelecionadoNome: string = '';
+  public mostrarListaAlunos: boolean = false;
+
+  constructor(
+    private agendamentosService: AgendamentosService,
+    private alunosService: AlunosService
+  ) {}
 
   ngOnInit(): void {
+    this.carregarAlunos();
     this.carregarAgendamentos();
+  }
+
+  carregarAlunos(): void {
+    this.alunosService.getAlunos().subscribe({
+      next: (alunos) => {
+        this.alunos = alunos
+          .filter(a => !!a.Usuario?.Nome)
+          .map(a => ({ id: a.Id, nome: a.Usuario!.Nome }))
+          .sort((a, b) => a.nome.localeCompare(b.nome));
+      },
+      error: (error) => {
+        console.error('Erro ao carregar alunos:', error);
+      }
+    });
+  }
+
+  onBuscaAlunoChange(busca: string): void {
+    this.buscaAluno = busca;
+
+    if (!busca.trim()) {
+      this.alunosFiltrados = [];
+      this.mostrarListaAlunos = false;
+      return;
+    }
+
+    const buscaLower = busca.toLowerCase();
+    this.alunosFiltrados = this.alunos.filter(a =>
+      a.nome.toLowerCase().includes(buscaLower)
+    );
+    this.mostrarListaAlunos = this.alunosFiltrados.length > 0;
+  }
+
+  selecionarAluno(aluno: AlunoOption): void {
+    this.alunoSelecionadoId = aluno.id;
+    this.alunoSelecionadoNome = aluno.nome;
+    this.buscaAluno = aluno.nome;
+    this.mostrarListaAlunos = false;
+    this.alunosFiltrados = [];
+    this.updateFilteredAppointments();
+  }
+
+  limparFiltroAluno(): void {
+    this.alunoSelecionadoId = null;
+    this.alunoSelecionadoNome = '';
+    this.buscaAluno = '';
+    this.alunosFiltrados = [];
+    this.mostrarListaAlunos = false;
+    this.updateFilteredAppointments();
   }
 
   carregarAgendamentos(): void {
@@ -110,7 +178,12 @@ export class RelatoriosADMComponent implements OnInit {
     const doc = new jsPDF({ unit: 'pt', format: 'a4' });
 
     const monthLabel = this.monthOptions.find(m => m.value === this.selectedMonth)?.label ?? '';
-    const title = `Relatório de Agendamentos - ${monthLabel}/${this.selectedYear}`;
+    let title = `Relatório de Agendamentos - ${monthLabel}/${this.selectedYear}`;
+
+    // Adiciona nome do aluno ao título se filtrado
+    if (this.alunoSelecionadoId !== null) {
+      title += ` - Aluno: ${this.alunoSelecionadoNome}`;
+    }
 
     // Título principal
     doc.setFontSize(16);
@@ -175,7 +248,12 @@ export class RelatoriosADMComponent implements OnInit {
     this.filteredAppointments = this.allAppointments.filter(appointment => {
       const isSameMonth = appointment.date.getMonth() + 1 === this.selectedMonth;
       const isSameYear = appointment.date.getFullYear() === this.selectedYear;
-      return isSameMonth && isSameYear;
+
+      // Filtro por aluno (se selecionado)
+      const matchAluno = this.alunoSelecionadoId === null ||
+                         appointment.studentName === this.alunoSelecionadoNome;
+
+      return isSameMonth && isSameYear && matchAluno;
     }).sort((a, b) => a.date.getTime() - b.date.getTime());
   }
 
