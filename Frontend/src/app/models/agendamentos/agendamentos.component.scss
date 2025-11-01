@@ -89,6 +89,21 @@
       font-weight: 500;
     }
 
+    .feriado-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 14px;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(255, 107, 107, 0.4);
+      margin-bottom: 8px;
+      animation: pulseIn 0.5s ease-out;
+    }
+
     .anotacao-info {
       color: #6c757d;
       font-size: 0.875rem;
@@ -234,6 +249,20 @@
     min-width: auto;
     max-width: 100%;
     width: 100%;
+  }
+}
+
+@keyframes pulseIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 

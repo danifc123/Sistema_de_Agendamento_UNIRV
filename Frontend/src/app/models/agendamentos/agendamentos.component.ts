@@ -23,6 +23,7 @@ export class AgendamentosComponent implements OnInit {
   public dataSelecionada: string = '';
   public textoAnotacao: string = '';
   public carregando: boolean = false;
+  public feriadoNome: string = '';
 
   private readonly STORAGE_KEY = 'agenda_anotacoes';
 
@@ -53,6 +54,11 @@ export class AgendamentosComponent implements OnInit {
   public onDataSelecionada(evento: {dataISO: string, dataExibicao: string}): void {
     console.log('Evento recebido:', evento);
     this.dataSelecionada = evento.dataISO;
+
+    // Verificar se é feriado
+    const dataObj = new Date(evento.dataISO + 'T00:00:00');
+    this.feriadoNome = this.getFeriadoNome(dataObj);
+
     this.buscarAnotacaoPorData(evento.dataISO);
   }
 
@@ -170,5 +176,77 @@ export class AgendamentosComponent implements OnInit {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
+  }
+
+  private getFeriadoNome(date: Date): string {
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const key = `${month}-${day}`;
+
+    const feriadosFixos: Record<string, string> = {
+      '01-01': 'Ano Novo',
+      '04-21': 'Tiradentes',
+      '05-01': 'Dia do Trabalho',
+      '06-12': 'Dia dos Namorados',
+      '09-07': 'Independência do Brasil',
+      '10-12': 'Nossa Senhora Aparecida',
+      '11-02': 'Finados',
+      '11-15': 'Proclamação da República',
+      '11-20': 'Consciência Negra',
+      '12-25': 'Natal',
+    };
+
+    if (feriadosFixos[key]) {
+      return feriadosFixos[key];
+    }
+
+    const year = date.getFullYear();
+    const carnaval = this.getCarnaval(year);
+    const pascoa = this.getPascoa(year);
+    const corpusChristi = this.getCorpusChristi(year);
+
+    if (this.isSameDate(date, carnaval)) return 'Carnaval';
+    if (this.isSameDate(date, pascoa)) return 'Páscoa';
+    if (this.isSameDate(date, corpusChristi)) return 'Corpus Christi';
+
+    return '';
+  }
+
+  private getCarnaval(year: number): Date {
+    const pascoa = this.getPascoa(year);
+    const carnaval = new Date(pascoa);
+    carnaval.setDate(pascoa.getDate() - 47);
+    return carnaval;
+  }
+
+  private getPascoa(year: number): Date {
+    const a = year % 19;
+    const b = Math.floor(year / 100);
+    const c = year % 100;
+    const d = Math.floor(b / 4);
+    const e = b % 4;
+    const f = Math.floor((b + 8) / 25);
+    const g = Math.floor((b - f + 1) / 3);
+    const h = (19 * a + b - d - g + 15) % 30;
+    const i = Math.floor(c / 4);
+    const k = c % 4;
+    const l = (32 + 2 * e + 2 * i - h - k) % 7;
+    const m = Math.floor((a + 11 * h + 22 * l) / 451);
+    const month = Math.floor((h + l - 7 * m + 114) / 31);
+    const day = ((h + l - 7 * m + 114) % 31) + 1;
+    return new Date(year, month - 1, day);
+  }
+
+  private getCorpusChristi(year: number): Date {
+    const pascoa = this.getPascoa(year);
+    const corpus = new Date(pascoa);
+    corpus.setDate(pascoa.getDate() + 60);
+    return corpus;
+  }
+
+  private isSameDate(a: Date, b: Date): boolean {
+    return a.getFullYear() === b.getFullYear() &&
+           a.getMonth() === b.getMonth() &&
+           a.getDate() === b.getDate();
   }
 }

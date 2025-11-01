@@ -14,6 +14,9 @@
   <div class="anotacoes-section" *ngIf="dataSelecionada">
     <div class="anotacao-header">
       <h3>Anotações para {{ dataSelecionada | date:'dd/MM/yyyy' }}</h3>
+      <div class="feriado-badge" *ngIf="feriadoNome">
+        🎉 {{ feriadoNome }}
+      </div>
       <div class="anotacao-info" *ngIf="anotacaoAtual">
         <small>
           Criada em: {{ anotacaoAtual.dataCriacao | date:'dd/MM/yyyy HH:mm' }}
