@@ -1,0 +1,231 @@
+// ========================================
+// VARIÁVEIS
+// ========================================
+:host {
+  --primary-color: #004f9f;
+  --primary-dark: #003d7a;
+  --primary-light: #e3f2fd;
+  --success-color: #2e7d32;
+  --text-primary: #333;
+  --text-secondary: #666;
+  --border-color: #e0e0e0;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --radius-md: 12px;
+  --radius-lg: 16px;
+}
+
+// ========================================
+// DIALOG CONTAINER
+// ========================================
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 550px;
+  max-width: 650px;
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    min-width: 90vw;
+    max-width: 95vw;
+  }
+}
+
+// ========================================
+// HEADER
+// ========================================
+.dialog-header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .material-symbols-outlined {
+      font-size: 26px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+  }
+
+  .close-button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .material-symbols-outlined {
+      font-size: 24px;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+  }
+}
+
+// ========================================
+// CONTENT
+// ========================================
+.dialog-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: #f8f9fa;
+}
+
+// ========================================
+// INFO RESUMO
+// ========================================
+.info-resumo {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .resumo-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-primary);
+
+    .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--primary-color);
+    }
+
+    .resumo-text {
+      strong {
+        font-weight: 600;
+        color: var(--text-secondary);
+      }
+    }
+  }
+}
+
+// ========================================
+// FORM SECTION
+// ========================================
+.form-section {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--primary-light);
+
+    .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--primary-color);
+    }
+  }
+
+  app-input {
+    display: block;
+  }
+
+  .char-count {
+    margin-top: 8px;
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+}
+
+// ========================================
+// ACTIONS
+// ========================================
+.dialog-actions {
+  padding: 16px 24px;
+  background: white;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  .btn-cancelar {
+    color: var(--text-secondary);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
+
+  .btn-salvar {
+    background: var(--success-color);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    &:hover {
+      background: #1b5e20;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+    }
+  }
+}
+
+// ========================================
+// GLOBAL DIALOG STYLES
+// ========================================
+::ng-deep {
+  .editar-anotacao-dialog {
+    .mat-mdc-dialog-container {
+      padding: 0 !important;
+      border-radius: var(--radius-lg) !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+    }
+  }
+}
+

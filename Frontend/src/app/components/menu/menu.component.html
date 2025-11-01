@@ -1,15 +1,56 @@
 <div class="menu-container">
+  <div class="menu-header">
+    <span class="menu-title">Menu</span>
+  </div>
+
   <div class="menu-content">
     <ng-container *ngIf="!isAluno(); else alunoMenu">
-      <button class="menu-buttons" *ngIf="isAdmin()" (click)="cadastrarAluno()">Cadastrar Aluno</button>
-      <button class="menu-buttons" *ngIf="isAdmin()" (click)="editarAluno()">Editar Aluno</button>
-      <button class="menu-buttons" *ngIf="isAdmin()" (click)="cadastrarPsicologo()">Cadastrar Psicólogo</button>
-      <button class="menu-buttons" *ngIf="isAdmin()" (click)="editarPsicologo()">Editar Psicólogo</button>
-      <button class="menu-buttons" *ngIf="isPsicologo()" (click)="gerenciarBloqueios()">Meus Bloqueios</button>
-      <button class="menu-buttons" (click)="sair()">Sair</button>
+      <!-- Seção Admin -->
+      <div class="menu-section" *ngIf="isAdmin()">
+        <span class="section-title">Gerenciar</span>
+        <button class="menu-item" (click)="cadastrarAluno()">
+          <span class="material-symbols-outlined">person_add</span>
+          <span class="menu-text">Cadastrar Aluno</span>
+        </button>
+        <button class="menu-item" (click)="editarAluno()">
+          <span class="material-symbols-outlined">edit</span>
+          <span class="menu-text">Editar Aluno</span>
+        </button>
+        <button class="menu-item" (click)="cadastrarPsicologo()">
+          <span class="material-symbols-outlined">psychology</span>
+          <span class="menu-text">Cadastrar Psicólogo</span>
+        </button>
+        <button class="menu-item" (click)="editarPsicologo()">
+          <span class="material-symbols-outlined">edit_note</span>
+          <span class="menu-text">Editar Psicólogo</span>
+        </button>
+      </div>
+
+      <!-- Seção Psicólogo -->
+      <div class="menu-section" *ngIf="isPsicologo()">
+        <span class="section-title">Disponibilidade</span>
+        <button class="menu-item" (click)="gerenciarBloqueios()">
+          <span class="material-symbols-outlined">event_busy</span>
+          <span class="menu-text">Meus Bloqueios</span>
+        </button>
+      </div>
+
+      <!-- Botão Sair -->
+      <div class="menu-footer">
+        <button class="menu-item logout" (click)="sair()">
+          <span class="material-symbols-outlined">logout</span>
+          <span class="menu-text">Sair</span>
+        </button>
+      </div>
     </ng-container>
+
     <ng-template #alunoMenu>
-      <button class="menu-buttons" (click)="sair()">Sair</button>
+      <div class="menu-footer">
+        <button class="menu-item logout" (click)="sair()">
+          <span class="material-symbols-outlined">logout</span>
+          <span class="menu-text">Sair</span>
+        </button>
+      </div>
     </ng-template>
   </div>
 </div>

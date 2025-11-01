@@ -9,6 +9,9 @@ import { AuthService, UserInfo } from '../../services/auth.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { InfoAnotacaoDialogComponent } from './info-anotacao-dialog/info-anotacao-dialog.component';
+import { EditarAnotacaoDialogComponent } from './editar-anotacao-dialog/editar-anotacao-dialog.component';
 
 interface AlunoOption {
   id: number;
@@ -31,7 +34,7 @@ export class AnotacoesPsicologoComponent implements OnInit, AfterViewInit {
   mostrarLista: boolean = false;
 
   dataSource = new MatTableDataSource<Anotacao>([]);
-  displayedColumns: string[] = ['data', 'diaSemana', 'aluno', 'info', 'editar', 'excluir'];
+  displayedColumns: string[] = ['data', 'diaSemana', 'acoes'];
 
   descricaoNovaNota: string = '';
   dataNota: string = '';
@@ -46,7 +49,8 @@ export class AnotacoesPsicologoComponent implements OnInit, AfterViewInit {
   constructor(
     private alunosService: AlunosService,
     private anotacoesService: AnotacoesService,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -182,20 +186,44 @@ export class AnotacoesPsicologoComponent implements OnInit, AfterViewInit {
   onInfo(nota: Anotacao): void {
     const dataFormatada = this.formatarData(nota.Data);
     const diaSemana = this.obterDiaSemana(nota.Data);
-    alert(`Aluno: ${this.alunoSelecionadoNome}\nData: ${dataFormatada} (${diaSemana})\n\n${nota.Descricao}`);
+
+    this.dialog.open(InfoAnotacaoDialogComponent, {
+      width: '600px',
+      maxWidth: '95vw',
+      panelClass: 'info-anotacao-dialog',
+      data: {
+        alunoNome: this.alunoSelecionadoNome,
+        data: dataFormatada,
+        diaSemana: diaSemana,
+        descricao: nota.Descricao
+      }
+    });
   }
 
   onEditar(nota: Anotacao): void {
     if (!nota?.Id) return;
-    const nova = prompt('Editar anotação:', nota.Descricao);
-    if (nova === null) return;
-    const trimmed = (nova || '').trim();
-    if (!trimmed) { alert('A descrição não pode ficar vazia.'); return; }
 
-    const editada: Anotacao = { ...nota, Descricao: trimmed };
-    this.anotacoesService.atualizarAnotacao(nota.Id, editada).subscribe({
-      next: () => this.carregarNotas(),
-      error: () => alert('Erro ao atualizar anotação.')
+    const dataFormatada = this.formatarData(nota.Data);
+
+    const dialogRef = this.dialog.open(EditarAnotacaoDialogComponent, {
+      width: '650px',
+      maxWidth: '95vw',
+      panelClass: 'editar-anotacao-dialog',
+      data: {
+        alunoNome: this.alunoSelecionadoNome,
+        data: dataFormatada,
+        descricao: nota.Descricao
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((novaDescricao) => {
+      if (novaDescricao) {
+        const editada: Anotacao = { ...nota, Descricao: novaDescricao };
+        this.anotacoesService.atualizarAnotacao(nota.Id!, editada).subscribe({
+          next: () => this.carregarNotas(),
+          error: () => alert('Erro ao atualizar anotação.')
+        });
+      }
     });
   }
 

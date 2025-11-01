@@ -1,0 +1,60 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-content">
+      <span class="material-symbols-outlined">edit_note</span>
+      <h2>Editar Anotação</h2>
+    </div>
+    <button class="close-button" (click)="fechar()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content">
+    <!-- Info Resumida -->
+    <div class="info-resumo">
+      <div class="resumo-item">
+        <span class="material-symbols-outlined">person</span>
+        <span class="resumo-text"><strong>Aluno:</strong> {{data.alunoNome}}</span>
+      </div>
+      <div class="resumo-item">
+        <span class="material-symbols-outlined">calendar_today</span>
+        <span class="resumo-text"><strong>Data:</strong> {{data.data}}</span>
+      </div>
+    </div>
+
+    <!-- Campo de Edição -->
+    <div class="form-section">
+      <div class="section-label">
+        <span class="material-symbols-outlined">description</span>
+        <span>Anotações do Psicólogo</span>
+      </div>
+
+      <app-input
+        label="Anotações do Psicólogo"
+        type="textarea"
+        [rows]="6"
+        placeholder="Escreva sua anotação aqui..."
+        [value]="descricaoEditada"
+        (valueChange)="descricaoEditada = $event">
+      </app-input>
+
+      <div class="char-count">
+        {{descricaoEditada.length || 0}} caracteres
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions">
+    <button mat-button class="btn-cancelar" (click)="fechar()">
+      Cancelar
+    </button>
+    <button mat-flat-button class="btn-salvar" (click)="salvar()">
+      <span class="material-symbols-outlined">save</span>
+      Salvar Alterações
+    </button>
+  </div>
+</div>
+

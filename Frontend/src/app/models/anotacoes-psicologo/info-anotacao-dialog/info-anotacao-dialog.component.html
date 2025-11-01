@@ -1,0 +1,60 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-content">
+      <span class="material-symbols-outlined">info</span>
+      <h2>Detalhes da Anotação</h2>
+    </div>
+    <button class="close-button" (click)="fechar()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content">
+    <!-- Info Card: Aluno -->
+    <div class="info-card aluno-card">
+      <div class="info-label">
+        <span class="material-symbols-outlined">person</span>
+        <span>Aluno</span>
+      </div>
+      <div class="info-value">{{data.alunoNome}}</div>
+    </div>
+
+    <!-- Info Card: Data -->
+    <div class="info-row">
+      <div class="info-card">
+        <div class="info-label">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <span>Data</span>
+        </div>
+        <div class="info-value">{{data.data}}</div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-label">
+          <span class="material-symbols-outlined">schedule</span>
+          <span>Dia da Semana</span>
+        </div>
+        <div class="info-value">{{data.diaSemana}}</div>
+      </div>
+    </div>
+
+    <!-- Descrição -->
+    <div class="descricao-card">
+      <div class="info-label">
+        <span class="material-symbols-outlined">description</span>
+        <span>Descrição da Anotação</span>
+      </div>
+      <div class="descricao-content">{{data.descricao}}</div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions">
+    <button mat-flat-button class="btn-fechar" (click)="fechar()">
+      Fechar
+    </button>
+  </div>
+</div>
+

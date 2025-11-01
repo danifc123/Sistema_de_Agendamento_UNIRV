@@ -27,7 +27,7 @@ export interface PsicologoDisplay {
   styleUrl: './editar-psicologo.component.scss'
 })
 export class EditarPsicologoComponent implements AfterViewInit, OnInit {
-  displayedColumns: string[] = ['id', 'nome', 'email', 'crp', 'especialidade', 'editar', 'excluir'];
+  displayedColumns: string[] = ['id', 'nome', 'email', 'crp', 'especialidade', 'acoes'];
   dataSource: MatTableDataSource<PsicologoDisplay>;
 
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
@@ -48,10 +48,10 @@ export class EditarPsicologoComponent implements AfterViewInit, OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
 
-    // Definir o tamanho da página explicitamente
+    // Definir o tamanho da página para mostrar poucos itens sem scroll
     if (this.paginator) {
-      this.paginator.pageSize = 4;
-      this.paginator._changePageSize(4);
+      this.paginator.pageSize = 5;
+      this.paginator._changePageSize(5);
     }
 
     // Configurar ordenação customizada
@@ -70,6 +70,18 @@ export class EditarPsicologoComponent implements AfterViewInit, OnInit {
         default:
           return item[property as keyof PsicologoDisplay];
       }
+    };
+
+    // Configurar filtro customizado para buscar em múltiplos campos
+    this.dataSource.filterPredicate = (data: PsicologoDisplay, filter: string) => {
+      const searchStr = filter.toLowerCase();
+
+      // Buscar em todos os campos relevantes
+      return data.Id.toString().includes(searchStr) ||
+             data.Nome.toLowerCase().includes(searchStr) ||
+             data.Email.toLowerCase().includes(searchStr) ||
+             data.Crp.toLowerCase().includes(searchStr) ||
+             data.Especialidade.toLowerCase().includes(searchStr);
     };
   }
 
@@ -99,6 +111,14 @@ export class EditarPsicologoComponent implements AfterViewInit, OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
 
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  clearFilter(input: HTMLInputElement) {
+    input.value = '';
+    this.dataSource.filter = '';
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }

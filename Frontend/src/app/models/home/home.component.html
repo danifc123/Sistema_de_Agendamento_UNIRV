@@ -1,15 +1,46 @@
 <div class="home-page">
-  <div class="form-section">
-    <app-calendario tipo="Calendario"
-                    (dataSelecionada)="onDataSelecionada($event)" />
+  <!-- Seção Superior: Calendário e Formulário lado a lado -->
+  <div class="top-section">
+    <!-- Card do Calendário -->
+    <div class="calendar-card">
+      <div class="card-header">
+        <div class="header-content">
+          <div>
+            <h3>Calendário</h3>
+            <p class="subtitle">Selecione uma data para agendar</p>
+          </div>
+          <button class="toggle-button" (click)="toggleCalendario()">
+            <span *ngIf="calendarioVisivel">▲</span>
+            <span *ngIf="!calendarioVisivel">▼</span>
+          </button>
+        </div>
+      </div>
+      <div class="card-content" [class.collapsed]="!calendarioVisivel">
+        <app-calendario tipo="Calendario"
+                        (dataSelecionada)="onDataSelecionada($event)" />
+        <div class="selected-date-info" *ngIf="dataExibicao">
+          <span class="date-icon">📅</span>
+          <span class="date-text">{{ dataExibicao }}</span>
+        </div>
+      </div>
+    </div>
 
-    <div class="agendamento-form"
-         *ngIf="authService.isAdmin()">
-      <h3>Novo Agendamento</h3>
-      <p class="form-instructions">Selecione uma data no calendário acima e preencha os dados abaixo: {{ dataExibicao || 'Nenhuma data selecionada' }}</p>
-
-      <div class="form-row">
-        <div class="form-column">
+    <!-- Card do Formulário Admin -->
+    <div class="form-card" *ngIf="authService.isAdmin()">
+      <div class="card-header">
+        <div class="header-content">
+          <div>
+            <h3>Novo Agendamento</h3>
+            <p class="subtitle">Preencha os dados para criar um agendamento</p>
+          </div>
+          <button class="toggle-button" (click)="toggleFormulario()">
+            <span *ngIf="formularioVisivel">▲</span>
+            <span *ngIf="!formularioVisivel">▼</span>
+          </button>
+        </div>
+      </div>
+      <div class="card-content" [class.collapsed]="!formularioVisivel">
+        <div class="form-grid">
           <app-autocomplete label="Aluno"
                             placeholder="Digite o nome do aluno..."
                             [options]="opcoesAlunos"
@@ -22,9 +53,7 @@
                             [(ngModel)]="psicologoSelecionado"
                             (ngModelChange)="onPsicologoChange($event)">
           </app-autocomplete>
-        </div>
 
-        <div class="form-column">
           <app-select-horario label="Horário"
                               placeholder="Selecione o horário"
                               inicioExpediente="08:00"
@@ -34,52 +63,69 @@
                               [bloqueios]="bloqueiosDia"
                               (ngModelChange)="verificarDisponibilidadeHorario()">
           </app-select-horario>
-          <div class="form-actions">
+        </div>
 
-            <app-button button="Agendar"
-                        (click)="agendarConsulta()"></app-button>
-          </div>
+        <div class="form-actions">
+          <app-button button="Agendar"
+                      (click)="agendarConsulta()"></app-button>
         </div>
       </div>
-
-
     </div>
 
-    <div class="agendamento-form"
-         *ngIf="authService.isPsicologo()">
-      <h3>Bloquear Horário</h3>
-      <p class="form-instructions">Selecione a data e o intervalo que você não estará disponível: {{ dataExibicao || 'Nenhuma data selecionada' }}</p>
-
-      <div class="form-row">
-        <div class="form-column">
+    <!-- Card do Formulário Psicólogo -->
+    <div class="form-card" *ngIf="authService.isPsicologo()">
+      <div class="card-header">
+        <div class="header-content">
+          <div>
+            <h3>Bloquear Horário</h3>
+            <p class="subtitle">Defina o período de indisponibilidade</p>
+          </div>
+          <button class="toggle-button" (click)="toggleFormulario()">
+            <span *ngIf="formularioVisivel">▲</span>
+            <span *ngIf="!formularioVisivel">▼</span>
+          </button>
+        </div>
+      </div>
+      <div class="card-content" [class.collapsed]="!formularioVisivel">
+        <div class="form-grid two-columns">
           <app-select-horario label="Início"
-                              placeholder="Selecione o horário de início"
+                              placeholder="Horário de início"
                               inicioExpediente="08:00"
                               fimExpediente="18:00"
                               [intervalo]="30"
                               [(ngModel)]="horaInicio">
           </app-select-horario>
-        </div>
-        <div class="form-column">
+
           <app-select-horario label="Fim"
-                              placeholder="Selecione o horário de fim"
+                              placeholder="Horário de fim"
                               inicioExpediente="08:00"
                               fimExpediente="18:00"
                               [intervalo]="30"
                               [(ngModel)]="horaFim">
           </app-select-horario>
         </div>
-      </div>
 
-      <div class="form-actions">
-        <app-button button="Bloquear"
-                    (click)="bloquearHorario()"></app-button>
+        <div class="form-actions">
+          <app-button button="Bloquear"
+                      (click)="bloquearHorario()"></app-button>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="table-section">
-    <h3>Agendamentos</h3>
-    <app-tabela-agendamento />
+  <!-- Seção Inferior: Tabela de Agendamentos -->
+  <div class="table-card">
+    <div class="card-header">
+      <div class="header-content">
+        <h3>Agendamentos</h3>
+        <button class="toggle-button" (click)="toggleTabela()">
+          <span *ngIf="tabelaVisivel">▲</span>
+          <span *ngIf="!tabelaVisivel">▼</span>
+        </button>
+      </div>
+    </div>
+    <div class="card-content table-content" [class.collapsed]="!tabelaVisivel">
+      <app-tabela-agendamento />
+    </div>
   </div>
 </div>

@@ -45,6 +45,11 @@ export class HomeComponent implements OnInit {
   psicologos: any[] = [];
   agendamentos: any[] = [];
 
+  // Controle de visibilidade dos cards
+  calendarioVisivel: boolean = true;
+  formularioVisivel: boolean = true;
+  tabelaVisivel: boolean = true;
+
   constructor(
     private agendamentosService: AgendamentosService,
     private alunosService: AlunosService,
@@ -304,6 +309,19 @@ export class HomeComponent implements OnInit {
         alert(msg);
       }
     });
+  }
+
+  // Métodos para alternar visibilidade dos cards
+  toggleCalendario(): void {
+    this.calendarioVisivel = !this.calendarioVisivel;
+  }
+
+  toggleFormulario(): void {
+    this.formularioVisivel = !this.formularioVisivel;
+  }
+
+  toggleTabela(): void {
+    this.tabelaVisivel = !this.tabelaVisivel;
   }
 
   // Método chamado quando o admin troca o psicólogo

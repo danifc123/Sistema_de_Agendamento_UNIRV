@@ -1,29 +1,141 @@
-.menu-container{
+.menu-container {
+  position: relative;
+  width: 320px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: slideDown 0.3s ease-out;
+  z-index: 1000;
+  border: 1px solid rgba(0, 79, 159, 0.1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menu-header {
+  background: linear-gradient(135deg, #004f9f 0%, #003d7a 100%);
+  padding: 20px 24px;
+  color: white;
+
+  .menu-title {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+}
+
+.menu-content {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  background: linear-gradient(to top,var(--primary-color), var(--primary-color-light));
-  height: 590px;
-  width: 300px;
-  border-radius: 5px;
-  .menu-content{
-    display: flex;
-    flex-direction: column;
-    margin-top: 100px;
-    gap: 40px;
+  padding: 8px 0;
+  max-height: 500px;
+  overflow-y: auto;
+}
 
-    .menu-buttons{
-      width: 250px;
-      height: 40px;
-      border-radius: 10px;
-      font-size: 18px;
-      background-color: white;
-      &:hover{
-        background-color: var(--secondary-color-light);
-        color: white;
-        cursor: pointer;
-      }
+.menu-section {
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .section-title {
+    display: block;
+    padding: 8px 24px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 14px 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #333;
+  font-size: 15px;
+
+  .material-symbols-outlined {
+    font-size: 22px;
+    color: #004f9f;
+    transition: all 0.2s ease;
+  }
+
+  .menu-text {
+    flex: 1;
+    text-align: left;
+    font-weight: 500;
+  }
+
+  &:hover {
+    background: linear-gradient(90deg, rgba(0, 79, 159, 0.08) 0%, rgba(0, 79, 159, 0.04) 100%);
+    padding-left: 28px;
+
+    .material-symbols-outlined {
+      color: #003d7a;
+      transform: scale(1.1);
+    }
+  }
+
+  &:active {
+    background: rgba(0, 79, 159, 0.15);
+  }
+
+  &.logout {
+    color: #dc3545;
+
+    .material-symbols-outlined {
+      color: #dc3545;
     }
 
+    &:hover {
+      background: linear-gradient(90deg, rgba(220, 53, 69, 0.08) 0%, rgba(220, 53, 69, 0.04) 100%);
+
+      .material-symbols-outlined {
+        color: #c82333;
+      }
+    }
+  }
+}
+
+.menu-footer {
+  padding: 8px 0;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 8px;
+}
+
+// Scrollbar customizada
+.menu-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.menu-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.menu-content::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 3px;
+
+  &:hover {
+    background: #ccc;
   }
 }

@@ -1,128 +1,158 @@
-<div class="anotacoes-container">
-  <h2>Anotações do Psicólogo</h2>
-
-  <div class="filtros">
-    <app-input label="Nome do Aluno"
-               type="text"
-               placeholder="Digite o nome do aluno"
-               [value]="nomeAlunoBusca"
-               (valueChange)="onBuscaAlunoChange($event)">
-    </app-input>
-
-    <div class="lista-alunos"
-         *ngIf="alunosFiltrados.length > 0 && mostrarLista">
-      <button class="aluno-item"
-              *ngFor="let a of alunosFiltrados"
-              (click)="selecionarAluno(a)">
-        {{ a.nome }}
-      </button>
-    </div>
-  </div>
-
-  <div class="conteudo"
-       *ngIf="alunoSelecionadoId">
-    <div class="col nova-nota">
-      <h3>Nova anotação</h3>
-
-      <app-input label="Data"
-                 type="date"
-                 placeholder="Selecione a data"
-                 [value]="dataNota"
-                 (valueChange)="dataNota = $event">
-      </app-input>
-
-      <app-input label="Descrição"
-                 type="textarea"
-                 [rows]="6"
-                 placeholder="Escreva sua observação"
-                 [value]="descricaoNovaNota"
-                 (valueChange)="descricaoNovaNota = $event">
-      </app-input>
-
-      <div class="acoes">
-        <app-button button="Salvar"
-                    (clicked)="criarNota()"></app-button>
+<div class="anotacoes-page">
+  <!-- Card Container -->
+  <div class="content-card">
+    <!-- Header -->
+    <div class="card-header">
+      <div class="header-content">
+        <div class="header-left">
+          <h2>
+            <span class="material-symbols-outlined">note_alt</span>
+            Anotações do Psicólogo
+          </h2>
+          <p class="subtitle">Gerencie as anotações dos seus atendimentos</p>
+        </div>
+        <div class="header-stats" *ngIf="alunoSelecionadoId">
+          <div class="stat-card">
+            <span class="stat-number">{{dataSource.data.length}}</span>
+            <span class="stat-label">Anotações</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="col lista-notas">
-      <h3>Anotações</h3>
+    <!-- Search Section -->
+    <div class="search-section">
+      <div class="search-container">
+        <span class="material-symbols-outlined search-icon">person_search</span>
+        <app-input
+          label="Buscar Aluno"
+          type="text"
+          placeholder="Digite o nome do aluno para buscar..."
+          [value]="nomeAlunoBusca"
+          (valueChange)="onBuscaAlunoChange($event)">
+        </app-input>
 
-      <div *ngIf="isLoading">Carregando...</div>
-      <div *ngIf="!isLoading && dataSource.data.length === 0">Nenhuma anotação encontrada.</div>
+        <div class="alunos-dropdown" *ngIf="alunosFiltrados.length > 0 && mostrarLista">
+          <button class="aluno-item"
+                  *ngFor="let a of alunosFiltrados"
+                  (click)="selecionarAluno(a)">
+            <span class="material-symbols-outlined">account_circle</span>
+            {{ a.nome }}
+          </button>
+        </div>
+      </div>
 
-      <table mat-table
-             [dataSource]="dataSource"
-             matSort
-             class="mat-elevation-z1"
-             *ngIf="dataSource.data.length > 0">
-        <!-- Data Column -->
-        <ng-container matColumnDef="data">
-          <th mat-header-cell
-              *matHeaderCellDef
-              mat-sort-header> Data </th>
-          <td mat-cell
-              *matCellDef="let n">{{ formatarData(n.Data) }}</td>
-        </ng-container>
+      <div class="aluno-selecionado" *ngIf="alunoSelecionadoId && alunoSelecionadoNome">
+        <span class="material-symbols-outlined">check_circle</span>
+        <span class="texto">Aluno selecionado: <strong>{{alunoSelecionadoNome}}</strong></span>
+      </div>
+    </div>
 
-        <!-- Dia da Semana Column -->
-        <ng-container matColumnDef="diaSemana">
-          <th mat-header-cell
-              *matHeaderCellDef> Dia da Semana </th>
-          <td mat-cell
-              *matCellDef="let n">{{ obterDiaSemana(n.Data) }}</td>
-        </ng-container>
+    <!-- Content Section -->
+    <div class="content-section" *ngIf="alunoSelecionadoId">
+      <!-- Nova Anotação Card -->
+      <div class="nova-anotacao-card">
+        <div class="section-header">
+          <span class="material-symbols-outlined">edit_note</span>
+          <h3>Nova Anotação</h3>
+        </div>
 
-        <!-- Aluno Column -->
-        <ng-container matColumnDef="aluno">
-          <th mat-header-cell
-              *matHeaderCellDef
-              mat-sort-header> Aluno </th>
-          <td mat-cell
-              *matCellDef="let n">{{ alunoSelecionadoNome }}</td>
-        </ng-container>
+        <div class="form-content">
+          <app-input
+            label="Data"
+            type="date"
+            placeholder="Selecione a data"
+            [value]="dataNota"
+            (valueChange)="dataNota = $event">
+          </app-input>
 
-        <!-- Info Column -->
-        <ng-container matColumnDef="info">
-          <th mat-header-cell
-              *matHeaderCellDef> Info </th>
-          <td mat-cell
-              *matCellDef="let n">
-            <app-button button="Info"
-                        (clicked)="onInfo(n)"></app-button>
-          </td>
-        </ng-container>
+          <app-input
+            label="Descrição"
+            type="textarea"
+            [rows]="8"
+            placeholder="Escreva sua anotação aqui..."
+            [value]="descricaoNovaNota"
+            (valueChange)="descricaoNovaNota = $event">
+          </app-input>
 
-        <!-- Editar Column -->
-        <ng-container matColumnDef="editar">
-          <th mat-header-cell
-              *matHeaderCellDef> Editar </th>
-          <td mat-cell
-              *matCellDef="let n">
-            <app-button button="Editar"
-                        (clicked)="onEditar(n)"></app-button>
-          </td>
-        </ng-container>
+          <div class="form-actions">
+            <app-button button="Salvar" (clicked)="criarNota()"></app-button>
+          </div>
+        </div>
+      </div>
 
-        <!-- Excluir Column -->
-        <ng-container matColumnDef="excluir">
-          <th mat-header-cell
-              *matHeaderCellDef> Excluir </th>
-          <td mat-cell
-              *matCellDef="let n">
-            <app-button button="Excluir"
-                        (clicked)="onExcluir(n)"></app-button>
-          </td>
-        </ng-container>
+      <!-- Lista de Anotações Card -->
+      <div class="lista-anotacoes-card">
+        <div class="section-header">
+          <span class="material-symbols-outlined">history_edu</span>
+          <h3>Histórico de Anotações</h3>
+        </div>
 
-        <tr mat-header-row
-            *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row
-            *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+        <!-- Loading State -->
+        <div class="empty-state" *ngIf="isLoading">
+          <span class="material-symbols-outlined loading">progress_activity</span>
+          <p>Carregando anotações...</p>
+        </div>
 
-      <mat-paginator [pageSize]="5"
-                     [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="!isLoading && dataSource.data.length === 0">
+          <span class="material-symbols-outlined">assignment</span>
+          <p>Nenhuma anotação encontrada</p>
+          <span class="empty-hint">Crie uma nova anotação ao lado</span>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container" *ngIf="!isLoading && dataSource.data.length > 0">
+          <table mat-table [dataSource]="dataSource" matSort class="modern-table">
+            <!-- Data Column -->
+            <ng-container matColumnDef="data">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Data </th>
+              <td mat-cell *matCellDef="let n">
+                <div class="cell-with-icon">
+                  <span class="material-symbols-outlined">calendar_today</span>
+                  <span>{{ formatarData(n.Data) }}</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Dia da Semana Column -->
+            <ng-container matColumnDef="diaSemana">
+              <th mat-header-cell *matHeaderCellDef> Dia </th>
+              <td mat-cell *matCellDef="let n">
+                <span class="cell-badge">{{ obterDiaSemana(n.Data) }}</span>
+              </td>
+            </ng-container>
+
+            <!-- Ações Column -->
+            <ng-container matColumnDef="acoes">
+              <th mat-header-cell *matHeaderCellDef> Ações </th>
+              <td mat-cell *matCellDef="let n">
+                <div class="action-buttons">
+                  <app-button button="Info" (clicked)="onInfo(n)"></app-button>
+                  <app-button button="Editar" (clicked)="onEditar(n)"></app-button>
+                  <app-button button="Excluir" (clicked)="onExcluir(n)"></app-button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+          </table>
+
+          <mat-paginator
+            [pageSize]="5"
+            [pageSizeOptions]="[5, 10, 20]"
+            showFirstLastButtons
+            aria-label="Selecione a página">
+          </mat-paginator>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensagem quando nenhum aluno foi selecionado -->
+    <div class="no-aluno-selected" *ngIf="!alunoSelecionadoId">
+      <span class="material-symbols-outlined">search</span>
+      <p>Busque e selecione um aluno acima para gerenciar as anotações</p>
     </div>
   </div>
 </div>

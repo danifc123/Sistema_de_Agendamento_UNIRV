@@ -1,65 +1,87 @@
-<div class="cadastrar-psicologo-container">
-  <h2>Cadastrar Novo Psicólogo</h2>
+<div class="cadastrar-psicologo-page">
+  <!-- Card Container -->
+  <div class="content-card">
+    <!-- Header -->
+    <div class="card-header">
+      <div class="header-content">
+        <div class="header-left">
+          <h2>
+            <span class="material-symbols-outlined">psychology</span>
+            Cadastrar Novo Psicólogo
+          </h2>
+          <p class="subtitle">Preencha os dados pessoais e profissionais do psicólogo</p>
+        </div>
+      </div>
+    </div>
 
-  <div class="form-fields">
-    <div class="form-row">
-      <!-- Coluna Esquerda - Dados Pessoais -->
-      <div class="form-column">
-        <h3>Dados Pessoais</h3>
+    <!-- Form Section -->
+    <div class="form-section">
+      <div class="form-grid">
+        <!-- Coluna Esquerda - Dados Pessoais -->
+        <div class="form-column">
+          <div class="section-header">
+            <span class="material-symbols-outlined">account_circle</span>
+            <h3>Dados Pessoais</h3>
+          </div>
 
-        <app-input
-          label="Nome Completo"
-          placeholder="Digite o nome completo do psicólogo"
-          [value]="nome"
-          (valueChange)="nome = $event">
-        </app-input>
+          <app-input
+            label="Nome Completo"
+            placeholder="Digite o nome completo do psicólogo"
+            [value]="nome"
+            (valueChange)="nome = $event">
+          </app-input>
 
-        <app-input
-          label="Email"
-          type="email"
-          placeholder="Digite o email do psicólogo"
-          [value]="email"
-          (valueChange)="email = $event">
-        </app-input>
+          <app-input
+            label="Email"
+            type="email"
+            placeholder="Digite o email do psicólogo"
+            [value]="email"
+            (valueChange)="email = $event">
+          </app-input>
 
-        <app-input
-          label="Senha"
-          type="password"
-          placeholder="Digite a senha"
-          [value]="senha"
-          (valueChange)="senha = $event">
-        </app-input>
+          <app-input
+            label="Senha"
+            type="password"
+            placeholder="Digite a senha"
+            [value]="senha"
+            (valueChange)="senha = $event">
+          </app-input>
 
-        <app-input
-          label="Confirmar Senha"
-          type="password"
-          placeholder="Confirme a senha"
-          [value]="confirmarSenha"
-          (valueChange)="confirmarSenha = $event">
-        </app-input>
+          <app-input
+            label="Confirmar Senha"
+            type="password"
+            placeholder="Confirme a senha"
+            [value]="confirmarSenha"
+            (valueChange)="confirmarSenha = $event">
+          </app-input>
+        </div>
+
+        <!-- Coluna Direita - Dados Profissionais -->
+        <div class="form-column">
+          <div class="section-header">
+            <span class="material-symbols-outlined">work</span>
+            <h3>Dados Profissionais</h3>
+          </div>
+
+          <app-input
+            label="CRP"
+            placeholder="Digite o número do CRP"
+            [value]="crp"
+            (valueChange)="crp = $event">
+          </app-input>
+
+          <app-input
+            label="Especialidade"
+            placeholder="Digite a especialidade"
+            [value]="especialidade"
+            (valueChange)="especialidade = $event">
+          </app-input>
+        </div>
       </div>
 
-      <!-- Coluna Direita - Dados Profissionais -->
-      <div class="form-column">
-        <h3>Dados Profissionais</h3>
-
-        <app-input
-          label="CRP"
-          placeholder="Digite o número do CRP"
-          [value]="crp"
-          (valueChange)="crp = $event">
-        </app-input>
-
-        <app-input
-          label="Especialidade"
-          placeholder="Digite a especialidade"
-          [value]="especialidade"
-          (valueChange)="especialidade = $event">
-        </app-input>
-
-        <div class="button-container">
-          <app-button button="Salvar" (click)="cadastrarPsicologo()"></app-button>
-        </div>
+      <!-- Action Buttons -->
+      <div class="form-actions">
+        <app-button button="Salvar" (click)="cadastrarPsicologo()"></app-button>
       </div>
     </div>
   </div>
