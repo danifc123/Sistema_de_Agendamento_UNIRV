@@ -46,6 +46,29 @@ builder.Services.AddCors(options =>
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
 
+// Log de diagnóstico das configurações de email
+var emailConfig = builder.Configuration.GetSection("Email");
+Console.WriteLine("==========================================");
+Console.WriteLine("📧 CONFIGURAÇÕES DE EMAIL:");
+Console.WriteLine("==========================================");
+Console.WriteLine($"Provider: {emailConfig["Provider"]}");
+Console.WriteLine($"From: {emailConfig["From"]}");
+
+if (emailConfig["Provider"]?.Equals("SendGrid", StringComparison.OrdinalIgnoreCase) == true)
+{
+    var apiKey = emailConfig["SendGridApiKey"];
+    if (string.IsNullOrWhiteSpace(apiKey))
+    {
+        Console.WriteLine("❌ SendGridApiKey: NÃO CONFIGURADA");
+        Console.WriteLine("💡 Adicione a variável: Email__SendGridApiKey");
+    }
+    else
+    {
+        Console.WriteLine($"✅ SendGridApiKey: PRESENTE ({apiKey.Substring(0, Math.Min(10, apiKey.Length))}...)");
+    }
+}
+Console.WriteLine("==========================================");
+
 // DbContext
 builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
