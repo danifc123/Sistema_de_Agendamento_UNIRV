@@ -74,7 +74,17 @@ export class AuthService {
   }
 
   requestPasswordReset(email: string): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(`${this.baseUrl}/forgot-password`, { email });
+    console.log('=== AUTH SERVICE - requestPasswordReset ===');
+    console.log('URL:', `${this.baseUrl}/forgot-password`);
+    console.log('Email:', email);
+    console.log('Payload:', { email });
+
+    return this.http.post<{ message: string }>(`${this.baseUrl}/forgot-password`, { email }).pipe(
+      tap({
+        next: (response) => console.log('✅ AuthService - Resposta recebida:', response),
+        error: (error) => console.error('❌ AuthService - Erro:', error)
+      })
+    );
   }
 
   resetPassword(token: string, novaSenha: string): Observable<{ message: string }> {

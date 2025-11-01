@@ -70,6 +70,11 @@ export class InputComponent implements OnInit, OnChanges, ControlValueAccessor {
   }
 
   onValueChange(newValue: any) {
+    console.log('📝 InputComponent - Valor alterado:', {
+      label: this.label,
+      oldValue: this.value,
+      newValue: newValue
+    });
     this.value = newValue;
     this.valueChange.emit(newValue);
     this.onChange();

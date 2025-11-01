@@ -11,4 +11,11 @@ export class ButtonComponent {
 @Input() tipo?: string;
 @Input() disabled?: boolean;
 @Output() clicked = new EventEmitter<void>();
+
+emitClick(): void {
+  console.log('🔘 ButtonComponent - Click detectado, emitindo evento clicked');
+  console.log('🔘 Botão:', this.button);
+  console.log('🔘 Disabled:', this.disabled);
+  this.clicked.emit();
+}
 }
