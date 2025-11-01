@@ -13,10 +13,10 @@
 </header>
 <nav class="layout-defaul-nav">
   <ul class="layout-defaul-list">
-    <li><a routerLink="/">Agendar</a></li>
-    <li><a routerLink="/agendamentos">Calendários</a></li>
-    <li *ngIf="!isAluno() && isAdmin()"><a routerLink="/relatorio">Relatórios</a></li>
-    <li *ngIf="!isAluno() && isPsicologo()"><a routerLink="/anotacoes">Anotações</a></li>
+    <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Agendar</a></li>
+    <li><a routerLink="/agendamentos" routerLinkActive="active">Calendários</a></li>
+    <li *ngIf="!isAluno() && isAdmin()"><a routerLink="/relatorio" routerLinkActive="active">Relatórios</a></li>
+    <li *ngIf="!isAluno() && isPsicologo()"><a routerLink="/anotacoes" routerLinkActive="active">Anotações</a></li>
   </ul>
 </nav>
 <div class="layout-default-contain">
