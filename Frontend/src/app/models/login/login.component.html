@@ -1,35 +1,65 @@
-<div class="login-container">
-  <form (ngSubmit)="onLogin()"
-        #loginForm="ngForm">
-    <app-input label="Email"
-               type="email"
-               [value]="loginData.email"
-               (valueChange)="loginData.email = $event"
-               name="email"
-               required>
-    </app-input>
-
-    <app-input label="Senha"
-               type="password"
-               [value]="loginData.senha"
-               (valueChange)="loginData.senha = $event"
-               name="senha"
-               required>
-    </app-input>
-
-    <div class="login-buttons">
-      @if (errorMessage) {
-      <div class="error-message">
-        {{ errorMessage }}
-      </div>
-      }
-      <a routerLink="/auth/forgetpassword">Esqueceu sua senha?</a>
-
-      <app-button button="Login"
-                  (clicked)="onLogin()"
-                  [disabled]="loading">
-      </app-button>
+<div class="login-page">
+  <div class="login-container">
+    <!-- Logo -->
+    <div class="logo-section">
+      <img src="logo/Logo.png"
+           alt="Logo UNIRV"
+           class="logo">
     </div>
-  </form>
-</div>
 
+    <!-- Card de Login -->
+    <div class="login-card">
+      <div class="card-header">
+        <div class="header-icon">
+          <span class="material-symbols-outlined">login</span>
+        </div>
+        <h2>Bem-vindo</h2>
+        <p class="subtitle">Faça login para acessar o sistema</p>
+      </div>
+
+      <div class="card-content">
+        <form (ngSubmit)="onLogin()"
+              #loginForm="ngForm">
+          <app-input label="Email"
+                     type="email"
+                     placeholder="Digite seu email"
+                     [value]="loginData.email"
+                     (valueChange)="loginData.email = $event"
+                     name="email"
+                     required>
+          </app-input>
+
+          <app-input label="Senha"
+                     type="password"
+                     placeholder="Digite sua senha"
+                     [value]="loginData.senha"
+                     (valueChange)="loginData.senha = $event"
+                     name="senha"
+                     required>
+          </app-input>
+
+          <div class="forgot-password">
+            <a routerLink="/auth/forgetpassword">Esqueceu sua senha?</a>
+          </div>
+
+          <div class="error-message"
+               *ngIf="errorMessage">
+            <span class="material-symbols-outlined">error</span>
+            {{ errorMessage }}
+          </div>
+
+          <div class="form-actions">
+            <app-button button="Entrar"
+                        (clicked)="onLogin()"
+                        [disabled]="loading">
+            </app-button>
+          </div>
+
+          <div class="register-link">
+            <p>Não tem uma conta? <a routerLink="/auth/register">Criar conta</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

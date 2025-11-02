@@ -1,13 +1,352 @@
-.login-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+// ========================================
+// VARIÁVEIS CSS
+// ========================================
+:host {
+  --primary-color: #004f9f;
+  --primary-dark: #003d7a;
+  --primary-light: #e3f2fd;
+  --error-color: #dc3545;
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
-.login-buttons {
+
+// ========================================
+// PÁGINA DE LOGIN
+// ========================================
+.login-page {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  min-height: 100vh;
+  background-color: var(--primary-color);
+  background-image: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+}
+
+.login-container {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+// ========================================
+// LOGO
+// ========================================
+.logo-section {
+  text-align: center;
+  animation: fadeIn 0.6s ease-out;
+
+  .logo {
+    width: 200px;
+    max-width: 100%;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+  }
+}
+
+// ========================================
+// CARD DE LOGIN
+// ========================================
+.login-card {
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: slideUp 0.5s ease-out;
+}
+
+// ========================================
+// HEADER DO CARD
+// ========================================
+.card-header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  padding: 16px 20px;
+  text-align: center;
+  color: white;
+
+  .header-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    margin-bottom: 8px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+    .material-symbols-outlined {
+      font-size: 26px;
+      color: white;
+    }
+  }
+
+  h2 {
+    margin: 0 0 3px 0;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .subtitle {
+    margin: 0;
+    font-size: 11px;
+    opacity: 0.95;
+    font-weight: 400;
+  }
+}
+
+// ========================================
+// CONTEÚDO DO CARD
+// ========================================
+.card-content {
+  padding: 20px 28px;
+  display: flex;
+  justify-content: center;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 280px;
+  }
+
+  app-input {
+    display: block;
+    width: 100%;
+
+    // Forçar largura 100% nos mat-form-field internos
+    ::ng-deep mat-form-field {
+      width: 100% !important;
+
+      &.input-container-email,
+      &.example-full-width,
+      &.full-width {
+        width: 100% !important;
+      }
+
+      // Reduzir altura dos inputs
+      .mat-mdc-form-field-infix {
+        min-height: 38px !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+      }
+
+      .mat-mdc-text-field-wrapper {
+        padding-top: 0 !important;
+      }
+
+      .mat-mdc-form-field-subscript-wrapper {
+        margin-top: 2px !important;
+      }
+
+      input {
+        font-size: 14px !important;
+      }
+
+      mat-label {
+        font-size: 13px !important;
+      }
+    }
+
+    ::ng-deep .mat-mdc-text-field-wrapper {
+      width: 100% !important;
+    }
+
+    ::ng-deep .mat-mdc-form-field-infix {
+      width: 100% !important;
+    }
+  }
+}
+
+// ========================================
+// ESQUECEU A SENHA
+// ========================================
+.forgot-password {
+  text-align: center;
+  margin-top: -6px;
+  width: 100%;
+
+  a {
+    color: var(--primary-color);
+    font-size: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+
+    &:hover {
+      text-decoration: underline;
+      color: var(--primary-dark);
+    }
+  }
+}
+
+// ========================================
+// MENSAGEM DE ERRO
+// ========================================
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 8px;
+  color: var(--error-color);
+  font-size: 12px;
+  animation: shake 0.3s ease-out;
+  width: 100%;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+}
+
+// ========================================
+// AÇÕES DO FORMULÁRIO
+// ========================================
+.form-actions {
+  margin-top: 4px;
+  width: 100%;
+
+  app-button {
+    width: 100%;
+    display: block;
+
+    // Forçar o botão interno a ocupar 100% da largura
+    ::ng-deep .button-container {
+      width: 100% !important;
+      height: 40px !important;
+
+      .button {
+        width: 100% !important;
+        height: 100% !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.5px !important;
+        transition: all 0.3s ease !important;
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 79, 159, 0.3);
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
+
+// ========================================
+// LINK DE REGISTRO
+// ========================================
+.register-link {
+  text-align: center;
+  padding-top: 10px;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 2px;
+  width: 100%;
+
+  p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  a {
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// ========================================
+// ANIMAÇÕES
+// ========================================
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
+}
+
+// ========================================
+// RESPONSIVIDADE
+// ========================================
+@media (max-width: 480px) {
+  .login-page {
+    padding: 16px;
+  }
+
+  .logo-section .logo {
+    width: 240px;
+  }
+
+  .card-header {
+    padding: 24px 20px;
+
+    .header-icon {
+      width: 56px;
+      height: 56px;
+      margin-bottom: 12px;
+
+      .material-symbols-outlined {
+        font-size: 32px;
+      }
+    }
+
+    h2 {
+      font-size: 24px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+    }
+  }
+
+  .card-content {
+    padding: 24px 20px;
+  }
 }

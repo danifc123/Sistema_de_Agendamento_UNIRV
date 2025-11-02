@@ -27,13 +27,11 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: LoginComponent,
-        data: { title: 'Login' }
+        component: LoginComponent
       },
       {
         path: 'register',
-        component: RegisterComponent,
-        data: { title: 'Register' }
+        component: RegisterComponent
       },
       {
         path: 'forgetpassword',
