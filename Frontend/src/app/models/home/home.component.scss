@@ -76,6 +76,9 @@
     font-size: 20px;
     font-weight: 600;
     letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
   .subtitle {
@@ -97,6 +100,31 @@
 
     .subtitle {
       margin-top: 4px;
+    }
+  }
+
+  // Badges de Etapas (Step 1, Step 2)
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    animation: pulse 2s ease-in-out infinite;
+
+    &.step-1 {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: white;
+    }
+
+    &.step-2 {
+      background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+      color: white;
     }
   }
 
@@ -237,6 +265,20 @@
 
   &:hover {
     transform: none; // Não mover a tabela no hover
+  }
+}
+
+// ========================================
+// ANIMAÇÕES
+// ========================================
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   }
 }
 
