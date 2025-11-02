@@ -241,7 +241,7 @@
 // TABLE
 // ========================================
 .table-container {
-  padding: 20px 24px;
+  padding: 2px 8px;
 
   .modern-table {
     width: 100%;
@@ -275,12 +275,14 @@
       }
     }
 
-    .student-info, .psychologist-info {
+    .student-info,
+    .psychologist-info {
       display: flex;
       flex-direction: column;
     }
 
-    .student-name, .psychologist-name {
+    .student-name,
+    .psychologist-name {
       font-weight: 500;
       color: var(--text-primary);
     }
