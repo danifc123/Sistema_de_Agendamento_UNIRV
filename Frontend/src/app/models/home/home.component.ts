@@ -67,10 +67,15 @@ export class HomeComponent implements OnInit {
     this.alunosService.getAlunos().subscribe({
       next: (alunos) => {
         this.alunos = alunos;
-        this.opcoesAlunos = alunos.map(aluno => ({
-          value: aluno.Id.toString(),
-          label: aluno.Usuario?.Nome || 'Nome não disponível'
-        }));
+        this.opcoesAlunos = alunos.map(aluno => {
+          const nome = aluno.Usuario?.Nome || 'Nome não disponível';
+          const matricula = aluno.Matricula || 'Sem matrícula';
+          const curso = aluno.Curso || 'Sem curso';
+          return {
+            value: aluno.Id.toString(),
+            label: `${nome} - Mat: ${matricula} (${curso})`
+          };
+        });
         console.log('Alunos carregados:', alunos);
       },
       error: (error) => {
@@ -82,10 +87,15 @@ export class HomeComponent implements OnInit {
     this.psicologosService.getPsicologos().subscribe({
       next: (psicologos) => {
         this.psicologos = psicologos;
-        this.opcoesPsicologos = psicologos.map(psicologo => ({
-          value: psicologo.Id.toString(),
-          label: psicologo.Usuario?.Nome || 'Nome não disponível'
-        }));
+        this.opcoesPsicologos = psicologos.map(psicologo => {
+          const nome = psicologo.Usuario?.Nome || 'Nome não disponível';
+          const crp = psicologo.Crp || 'Sem CRP';
+          const especialidade = psicologo.Especialidade || 'Sem especialidade';
+          return {
+            value: psicologo.Id.toString(),
+            label: `${nome} - CRP: ${crp} (${especialidade})`
+          };
+        });
         console.log('Psicólogos carregados:', psicologos);
       },
       error: (error) => {
