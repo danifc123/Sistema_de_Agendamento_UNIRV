@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 import { InputComponent } from "../../components/input/input.component";
 import { ButtonComponent } from "../../components/button/button.component";
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-forget-password',
   standalone: true,
-  imports: [InputComponent, ButtonComponent, CommonModule],
+  imports: [InputComponent, ButtonComponent, CommonModule, RouterModule],
   templateUrl: './forget-password.component.html',
   styleUrl: './forget-password.component.scss'
 })

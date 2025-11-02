@@ -214,6 +214,7 @@
 // ========================================
 .form-actions {
   margin-top: 4px;
+  margin-bottom: 8px;
   width: 100%;
 
   app-button {
@@ -247,32 +248,6 @@
   }
 }
 
-// ========================================
-// LINK DE REGISTRO
-// ========================================
-.register-link {
-  text-align: center;
-  padding-top: 10px;
-  border-top: 1px solid #e0e0e0;
-  margin-top: 2px;
-  width: 100%;
-
-  p {
-    margin: 0;
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
-
-  a {
-    color: var(--primary-color);
-    font-weight: 600;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
 
 // ========================================
 // ANIMAÇÕES
