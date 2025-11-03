@@ -1,20 +1,301 @@
-.dialog-form {
-  display: block;
+// ===========================
+// CSS VARIABLES
+// ===========================
+:host {
+  --primary-color: #004F9F;
+  --primary-dark: #003d7a;
+  --primary-light: #52A8FF;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --border-radius: 12px;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-.full-width {
-  width: 100%;
-}
-
-.row-2 {
+// ===========================
+// DIALOG CONTAINER
+// ===========================
+.dialog-container {
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  max-height: 85vh;
+  overflow: hidden;
+  border-radius: var(--border-radius);
 }
 
-.flex-1 {
+// ===========================
+// DIALOG HEADER
+// ===========================
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: white;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .material-symbols-outlined {
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+  }
+
+  .close-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+
+    .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
+// ===========================
+// DIALOG CONTENT
+// ===========================
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 16px;
+  overflow-y: auto;
+  max-height: calc(85vh - 140px);
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 3px;
+
+    &:hover {
+      background: var(--primary-dark);
+    }
+  }
+}
+
+// ===========================
+// FORM
+// ===========================
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  min-width: 450px;
+}
+
+// ===========================
+// FORM FIELDS
+// ===========================
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   flex: 1;
+
+  .field-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    .material-symbols-outlined {
+      font-size: 14px;
+      color: var(--primary-color);
+    }
+  }
+
+  .full-width {
+    width: 100%;
+
+    // Ocultar o label do app-input pois já temos o field-label acima
+    ::ng-deep mat-form-field {
+      mat-label {
+        display: none;
+      }
+
+      // Reduzir altura dos campos
+      .mat-mdc-form-field-infix {
+        min-height: 36px !important;
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+      }
+
+      .mat-mdc-text-field-wrapper {
+        padding-top: 0 !important;
+      }
+
+      input {
+        font-size: 13px !important;
+      }
+    }
+  }
 }
 
-mat-form-field {
-  margin-bottom: 12px;
+// ===========================
+// INFO ROW (Two columns)
+// ===========================
+.info-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ===========================
+// DIALOG ACTIONS
+// ===========================
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: #f8f9fa;
+  border-top: 1px solid #e2e8f0;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+
+    .material-symbols-outlined {
+      font-size: 14px;
+    }
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .btn-cancelar {
+    color: var(--text-secondary);
+    border: 1px solid #cbd5e0;
+    background: white;
+
+    &:hover {
+      background: #f7fafc;
+      border-color: #a0aec0;
+    }
+  }
+
+  .btn-salvar {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+
+    &:hover {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, #002d5e 100%);
+    }
+  }
+}
+
+// ===========================
+// RESPONSIVE
+// ===========================
+@media (max-width: 600px) {
+  .dialog-form {
+    min-width: 100%;
+  }
+
+  .dialog-header {
+    padding: 12px 16px;
+
+    .header-content {
+      gap: 8px;
+
+      .material-symbols-outlined {
+        font-size: 20px;
+      }
+
+      h2 {
+        font-size: 16px;
+      }
+    }
+
+    .close-button {
+      width: 28px;
+      height: 28px;
+
+      .material-symbols-outlined {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .dialog-content {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .dialog-actions {
+    padding: 12px 16px;
+    gap: 8px;
+
+    button {
+      font-size: 12px;
+      padding: 6px 16px;
+    }
+  }
 }

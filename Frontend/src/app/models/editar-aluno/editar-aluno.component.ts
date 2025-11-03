@@ -131,9 +131,10 @@ export class EditarAlunoComponent implements AfterViewInit, OnInit {
   }
 
   editarAluno(aluno: AlunoDisplay): void {
-
     const dialogRef = this.dialog.open(EditarAlunoDialogComponent, {
-      width: '500px',
+      width: '550px',
+      maxWidth: '95vw',
+      panelClass: 'editar-aluno-dialog',
       data: {
         aluno: {
           id: aluno.Id.toString(),

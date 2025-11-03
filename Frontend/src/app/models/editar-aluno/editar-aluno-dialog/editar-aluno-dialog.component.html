@@ -1,19 +1,75 @@
-<h2 mat-dialog-title>Editar Aluno</h2>
-<mat-dialog-content>
-  <form class="dialog-form">
-    <app-input class="full-width" label="Nome do Aluno" [type]="'text'" placeholder="Nome completo" [value]="alunoNome" (valueChange)="alunoNome = $event"></app-input>
-
-    <app-input class="full-width" label="Email" [type]="'email'" placeholder="email@exemplo.com" [value]="email" (valueChange)="email = $event"></app-input>
-
-    <app-input class="full-width" label="Matrícula" [type]="'text'" placeholder="Número da matrícula" [value]="matricula" (valueChange)="matricula = $event"></app-input>
-
-    <div class="row-2">
-      <app-input class="flex-1" label="Curso" [type]="'text'" placeholder="Nome do curso" [value]="curso" (valueChange)="curso = $event"></app-input>
-      <app-input class="flex-1" label="Semestre" [type]="'text'" placeholder="Ex: 3º" [value]="semestre" (valueChange)="semestre = $event"></app-input>
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-content">
+      <span class="material-symbols-outlined">person</span>
+      <h2>Editar Aluno</h2>
     </div>
-  </form>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button (click)="fechar()">Cancelar</button>
-  <button mat-flat-button color="primary" (click)="salvar()">Salvar</button>
-</mat-dialog-actions>
+    <button class="close-button" (click)="fechar()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content">
+    <form class="dialog-form">
+      <!-- Campo Nome -->
+      <div class="form-field">
+        <label class="field-label">
+          <span class="material-symbols-outlined">person</span>
+          <span>Nome do Aluno</span>
+        </label>
+        <app-input class="full-width" label="Nome do Aluno" [type]="'text'" placeholder="Nome completo" [value]="alunoNome" (valueChange)="alunoNome = $event"></app-input>
+      </div>
+
+      <!-- Campo Email -->
+      <div class="form-field">
+        <label class="field-label">
+          <span class="material-symbols-outlined">email</span>
+          <span>Email</span>
+        </label>
+        <app-input class="full-width" label="Email" [type]="'email'" placeholder="email@exemplo.com" [value]="email" (valueChange)="email = $event"></app-input>
+      </div>
+
+      <!-- Campo Matrícula -->
+      <div class="form-field">
+        <label class="field-label">
+          <span class="material-symbols-outlined">badge</span>
+          <span>Matrícula</span>
+        </label>
+        <app-input class="full-width" label="Matrícula" [type]="'text'" placeholder="Número da matrícula" [value]="matricula" (valueChange)="matricula = $event"></app-input>
+      </div>
+
+      <!-- Info Row: Curso e Semestre -->
+      <div class="info-row">
+        <div class="form-field">
+          <label class="field-label">
+            <span class="material-symbols-outlined">school</span>
+            <span>Curso</span>
+          </label>
+          <app-input class="full-width" label="Curso" [type]="'text'" placeholder="Nome do curso" [value]="curso" (valueChange)="curso = $event"></app-input>
+        </div>
+
+        <div class="form-field">
+          <label class="field-label">
+            <span class="material-symbols-outlined">calendar_month</span>
+            <span>Semestre</span>
+          </label>
+          <app-input class="full-width" label="Semestre" [type]="'text'" placeholder="Ex: 3" [value]="semestre" (valueChange)="semestre = $event"></app-input>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions">
+    <button mat-stroked-button class="btn-cancelar" (click)="fechar()">
+      <span class="material-symbols-outlined">close</span>
+      Cancelar
+    </button>
+    <button mat-flat-button class="btn-salvar" (click)="salvar()">
+      <span class="material-symbols-outlined">check</span>
+      Salvar
+    </button>
+  </div>
+</div>
