@@ -370,7 +370,9 @@ export class TabelaAgendamentoComponent implements AfterViewInit, OnInit {
 
   onInfo(row: AgendamentoDisplay): void {
     this.dialog.open(InfoAgendamentoDialogComponent, {
-      width: '520px',
+      width: '500px',
+      maxWidth: '95vw',
+      panelClass: 'info-agendamento-dialog',
       data: {
         student: { id: row.Id.toString(), name: row.AlunoNome },
         psychologist: { id: row.Id.toString(), name: row.PsicologoNome },

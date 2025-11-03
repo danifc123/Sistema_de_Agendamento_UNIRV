@@ -1,20 +1,69 @@
-<h2 mat-dialog-title>Detalhes do Agendamento</h2>
-<mat-dialog-content>
-  <mat-list>
-    <mat-list-item>
-      <strong>Aluno:</strong>&nbsp;{{dialogData.student.name}}
-    </mat-list-item>
-    <mat-list-item>
-      <strong>Psicólogo:</strong>&nbsp;{{dialogData.psychologist.name}}
-    </mat-list-item>
-    <mat-list-item>
-      <strong>Data:</strong>&nbsp;{{dialogData.appointment.date}}
-    </mat-list-item>
-    <mat-list-item>
-      <strong>Hora:</strong>&nbsp;{{dialogData.appointment.time}}
-    </mat-list-item>
-  </mat-list>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button (click)="fechar()">Fechar</button>
-</mat-dialog-actions>
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-content">
+      <span class="material-symbols-outlined">event_note</span>
+      <h2>Detalhes do Agendamento</h2>
+    </div>
+    <button class="close-button" (click)="fechar()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content">
+    <!-- Info Card: Aluno -->
+    <div class="info-card primary-card">
+      <div class="info-label">
+        <span class="material-symbols-outlined">person</span>
+        <span>Aluno</span>
+      </div>
+      <div class="info-value">{{dialogData.student.name}}</div>
+    </div>
+
+    <!-- Info Card: Psicólogo -->
+    <div class="info-card primary-card">
+      <div class="info-label">
+        <span class="material-symbols-outlined">psychology</span>
+        <span>Psicólogo</span>
+      </div>
+      <div class="info-value">{{dialogData.psychologist.name}}</div>
+    </div>
+
+    <!-- Info Row: Data e Hora -->
+    <div class="info-row">
+      <div class="info-card">
+        <div class="info-label">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <span>Data</span>
+        </div>
+        <div class="info-value">{{dialogData.appointment.date}}</div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-label">
+          <span class="material-symbols-outlined">schedule</span>
+          <span>Horário</span>
+        </div>
+        <div class="info-value">{{dialogData.appointment.time}}</div>
+      </div>
+    </div>
+
+    <!-- Status/Observações -->
+    <div class="status-card">
+      <div class="info-label">
+        <span class="material-symbols-outlined">info</span>
+        <span>Informações Adicionais</span>
+      </div>
+      <div class="status-content">{{dialogData.appointment.notes}}</div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions">
+    <button mat-flat-button class="btn-fechar" (click)="fechar()">
+      <span class="material-symbols-outlined">check</span>
+      Fechar
+    </button>
+  </div>
+</div>

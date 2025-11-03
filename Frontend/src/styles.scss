@@ -10,3 +10,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   --secondary-color-light:#fc9d7d;
 }
 
+// ========================================
+// ESTILOS GLOBAIS PARA DIALOGS
+// ========================================
+
+// Dialog de Info de Agendamento
+.info-agendamento-dialog {
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+
+    .mdc-dialog__surface {
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
