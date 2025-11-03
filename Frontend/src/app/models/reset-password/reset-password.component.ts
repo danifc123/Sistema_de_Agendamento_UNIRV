@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { InputComponent } from "../../components/input/input.component";
 import { ButtonComponent } from "../../components/button/button.component";
@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, InputComponent, ButtonComponent],
+  imports: [CommonModule, InputComponent, ButtonComponent, RouterModule],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss'
 })
