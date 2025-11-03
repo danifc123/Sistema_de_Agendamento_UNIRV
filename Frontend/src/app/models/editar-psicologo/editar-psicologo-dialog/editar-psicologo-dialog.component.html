@@ -1,16 +1,66 @@
-<h2 mat-dialog-title>Editar Psicólogo</h2>
-<mat-dialog-content>
-  <form class="dialog-form">
-    <app-input class="full-width" label="Nome do Psicólogo" [type]="'text'" placeholder="Nome completo" [value]="nome" (valueChange)="nome = $event"></app-input>
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-content">
+      <span class="material-symbols-outlined">psychology</span>
+      <h2>Editar Psicólogo</h2>
+    </div>
+    <button class="close-button" (click)="fechar()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
 
-    <app-input class="full-width" label="Email" [type]="'email'" placeholder="email@exemplo.com" [value]="email" (valueChange)="email = $event"></app-input>
+  <!-- Content -->
+  <div class="dialog-content">
+    <form class="dialog-form">
+      <!-- Campo Nome -->
+      <div class="form-field">
+        <label class="field-label">
+          <span class="material-symbols-outlined">person</span>
+          <span>Nome do Psicólogo</span>
+        </label>
+        <app-input class="full-width" label="Nome do Psicólogo" [type]="'text'" placeholder="Nome completo" [value]="nome" (valueChange)="nome = $event"></app-input>
+      </div>
 
-    <app-input class="full-width" label="CRP" [type]="'text'" placeholder="Ex: 06/123456 ou 06-123456" [value]="crp" (valueChange)="crp = $event"></app-input>
+      <!-- Campo Email -->
+      <div class="form-field">
+        <label class="field-label">
+          <span class="material-symbols-outlined">email</span>
+          <span>Email</span>
+        </label>
+        <app-input class="full-width" label="Email" [type]="'email'" placeholder="email@exemplo.com" [value]="email" (valueChange)="email = $event"></app-input>
+      </div>
 
-    <app-input class="full-width" label="Especialidade" [type]="'text'" placeholder="Ex: Psicologia Clínica" [value]="especialidade" (valueChange)="especialidade = $event"></app-input>
-  </form>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button (click)="fechar()">Cancelar</button>
-  <button mat-flat-button color="primary" (click)="salvar()">Salvar</button>
-</mat-dialog-actions>
+      <!-- Info Row: CRP e Especialidade -->
+      <div class="info-row">
+        <div class="form-field">
+          <label class="field-label">
+            <span class="material-symbols-outlined">badge</span>
+            <span>CRP</span>
+          </label>
+          <app-input class="full-width" label="CRP" [type]="'text'" placeholder="Ex: 06/123456" [value]="crp" (valueChange)="crp = $event"></app-input>
+        </div>
+
+        <div class="form-field">
+          <label class="field-label">
+            <span class="material-symbols-outlined">school</span>
+            <span>Especialidade</span>
+          </label>
+          <app-input class="full-width" label="Especialidade" [type]="'text'" placeholder="Ex: Psicologia Clínica" [value]="especialidade" (valueChange)="especialidade = $event"></app-input>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions">
+    <button mat-stroked-button class="btn-cancelar" (click)="fechar()">
+      <span class="material-symbols-outlined">close</span>
+      Cancelar
+    </button>
+    <button mat-flat-button class="btn-salvar" (click)="salvar()">
+      <span class="material-symbols-outlined">check</span>
+      Salvar
+    </button>
+  </div>
+</div>

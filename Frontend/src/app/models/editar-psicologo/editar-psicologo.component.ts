@@ -126,7 +126,9 @@ export class EditarPsicologoComponent implements AfterViewInit, OnInit {
 
   editarPsicologo(psicologo: PsicologoDisplay): void {
     const dialogRef = this.dialog.open(EditarPsicologoDialogComponent, {
-      width: '500px',
+      width: '550px',
+      maxWidth: '95vw',
+      panelClass: 'editar-psicologo-dialog',
       data: {
         psicologo: {
           id: psicologo.Id.toString(),

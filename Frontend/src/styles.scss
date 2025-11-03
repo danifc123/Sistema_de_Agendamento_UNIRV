@@ -42,3 +42,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   }
 }
 
+// Dialog de Editar Psicólogo
+.editar-psicologo-dialog {
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+    overflow: visible;
+
+    .mdc-dialog__surface {
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      overflow: visible;
+    }
+  }
+}
+
