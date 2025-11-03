@@ -16,7 +16,6 @@ D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\Microsoft.
 D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\Microsoft.OpenApi.dll
 D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\Npgsql.dll
 D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
-D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\System.Text.Json.dll
 D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\NuGet.Config
 D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\appsettings.Development.json
 D:\ESTUDOS\PROJETOS\Sistema_de_Agendamento_UNIRV\API\bin\Debug\net9.0\appsettings.json
