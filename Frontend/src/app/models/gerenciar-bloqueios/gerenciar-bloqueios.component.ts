@@ -9,6 +9,7 @@ import { DisponibilidadesService, Disponibilidade } from '../../services/disponi
 import { AuthService } from '../../services/auth.service';
 import { ButtonComponent } from '../../components/button/button.component';
 import { SelectComponent } from '../../components/select/select.component';
+import { EditBloqueioDialogComponent } from './edit-bloqueio-dialog/edit-bloqueio-dialog.component';
 
 @Component({
   selector: 'app-gerenciar-bloqueios',
@@ -137,55 +138,34 @@ export class GerenciarBloqueiosComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const novaData = prompt('Nova data (formato: DD/MM/YYYY):', this.formatarData(bloqueio.Data));
-    if (novaData === null) return;
+    const dialogRef = this.dialog.open(EditBloqueioDialogComponent, {
+      width: '500px',
+      maxWidth: '95vw',
+      panelClass: 'edit-bloqueio-dialog',
+      data: {
+        bloqueio: bloqueio
+      }
+    });
 
-    const novaHoraInicio = prompt('Nova hora de início (formato: HH:mm):', bloqueio.HoraInicio);
-    if (novaHoraInicio === null) return;
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const payload = {
+          PsicologoId: bloqueio.PsicologoId,
+          Data: result.Data,
+          HoraInicio: result.HoraInicio,
+          HoraFim: result.HoraFim
+        };
 
-    const novaHoraFim = prompt('Nova hora de fim (formato: HH:mm):', bloqueio.HoraFim);
-    if (novaHoraFim === null) return;
-
-    if (!novaData.trim() || !novaHoraInicio.trim() || !novaHoraFim.trim()) {
-      alert('Todos os campos são obrigatórios.');
-      return;
-    }
-
-    // Converter data de DD/MM/YYYY para YYYY-MM-DD
-    let dataFormatada = '';
-    const partesData = novaData.trim().split('/');
-    if (partesData.length === 3) {
-      const dia = partesData[0].padStart(2, '0');
-      const mes = partesData[1].padStart(2, '0');
-      const ano = partesData[2];
-      dataFormatada = `${ano}-${mes}-${dia}`;
-    } else {
-      alert('Formato de data inválido. Use DD/MM/YYYY');
-      return;
-    }
-
-    // Validar formato de hora
-    const regexHora = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-    if (!regexHora.test(novaHoraInicio.trim()) || !regexHora.test(novaHoraFim.trim())) {
-      alert('Formato de hora inválido. Use HH:mm (exemplo: 08:00)');
-      return;
-    }
-
-    const payload = {
-      PsicologoId: bloqueio.PsicologoId,
-      Data: dataFormatada,
-      HoraInicio: novaHoraInicio.trim(),
-      HoraFim: novaHoraFim.trim()
-    };
-
-    this.disponibilidadesService.atualizarBloqueio(bloqueio.Id, payload).subscribe({
-      next: () => {
-        alert('Bloqueio atualizado com sucesso!');
-        this.carregarBloqueios();
-      },
-      error: (err) => {
-        const msg = err?.error?.message || 'Erro ao atualizar bloqueio.';
-        alert(msg);
+        this.disponibilidadesService.atualizarBloqueio(bloqueio.Id, payload).subscribe({
+          next: () => {
+            alert('Bloqueio atualizado com sucesso!');
+            this.carregarBloqueios();
+          },
+          error: (err) => {
+            const msg = err?.error?.message || 'Erro ao atualizar bloqueio.';
+            alert(msg);
+          }
+        });
       }
     });
   }

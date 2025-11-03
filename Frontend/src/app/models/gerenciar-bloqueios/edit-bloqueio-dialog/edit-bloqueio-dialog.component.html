@@ -1,0 +1,64 @@
+<div class="dialog-container">
+  <!-- Header -->
+  <div class="dialog-header">
+    <div class="header-content">
+      <span class="material-symbols-outlined">edit_calendar</span>
+      <h2>Editar Bloqueio</h2>
+    </div>
+    <button class="close-button" (click)="fechar()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="dialog-content">
+    <!-- Campo Data -->
+    <div class="form-field">
+      <label class="field-label">
+        <span class="material-symbols-outlined">calendar_today</span>
+        <span>Data</span>
+      </label>
+      <mat-form-field appearance="outline" class="full-width">
+        <input matInput [matDatepicker]="picker" [(ngModel)]="dataSelecionada" (dateChange)="onDateChange($event)" placeholder="Selecione a data">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <!-- Info Row: Hora Início e Hora Fim -->
+    <div class="info-row">
+      <div class="form-field">
+        <label class="field-label">
+          <span class="material-symbols-outlined">schedule</span>
+          <span>Hora Início</span>
+        </label>
+        <mat-form-field appearance="outline" class="full-width">
+          <input matInput type="time" [(ngModel)]="horaInicio" placeholder="08:00">
+        </mat-form-field>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">
+          <span class="material-symbols-outlined">schedule</span>
+          <span>Hora Fim</span>
+        </label>
+        <mat-form-field appearance="outline" class="full-width">
+          <input matInput type="time" [(ngModel)]="horaFim" placeholder="18:00">
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions">
+    <button mat-stroked-button class="btn-cancelar" (click)="fechar()">
+      <span class="material-symbols-outlined">close</span>
+      Cancelar
+    </button>
+    <button mat-flat-button class="btn-salvar" (click)="salvar()">
+      <span class="material-symbols-outlined">check</span>
+      Salvar
+    </button>
+  </div>
+</div>
+
